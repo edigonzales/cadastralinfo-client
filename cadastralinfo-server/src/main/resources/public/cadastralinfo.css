@@ -25,3 +25,18 @@ body, div {
     font-size: 40px;
     text-align: right;
 }
+
+.content-row {
+    padding: 2px 0px 2px 0px;
+}
+
+.content-key {
+    font-weight: 700;
+}
+
+.sup { 
+    position: relative; 
+    top: -0.8ex; 
+    font-size: 75%; 
+}
+

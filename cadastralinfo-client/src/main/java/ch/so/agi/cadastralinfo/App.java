@@ -6,12 +6,19 @@ import static elemental2.dom.DomGlobal.location;
 import static elemental2.dom.DomGlobal.fetch;
 import static org.jboss.elemento.Elements.*;
 
+import org.dominokit.domino.ui.grid.Column;
+import org.dominokit.domino.ui.grid.Row;
+import org.dominokit.domino.ui.style.Color;
 import org.dominokit.domino.ui.style.ColorScheme;
+import org.dominokit.domino.ui.tabs.Tab;
+import org.dominokit.domino.ui.tabs.TabsPanel;
 import org.dominokit.domino.ui.themes.Theme;
 import org.gwtproject.i18n.client.NumberFormat;
+import org.gwtproject.safehtml.shared.SafeHtmlUtils;
 
 import com.google.gwt.core.client.EntryPoint;
 
+import elemental2.dom.CSSProperties;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.Location;
@@ -75,9 +82,102 @@ public class App implements EntryPoint {
                         .add(img().attr("src", DomGlobal.window.location.href + "Logo.png").attr("alt", "Logo Kanton")).element())
                 .element();
         container.appendChild(logoDiv);
-
-
+        
+        HTMLElement searchContainerDiv = div().id("search-container").element();
+        searchContainerDiv.style.backgroundColor = "wheat";
+        searchContainerDiv.style.height = CSSProperties.HeightUnionType.of("100px");
+        container.appendChild(searchContainerDiv);
+        
+        TabsPanel tabsPanel = TabsPanel.create().setColor(Color.RED);
+        tabsPanel.setId("tabs-panel");
+        
+        Tab tabAv = Tab.create("AMTLICHE VERMESSUNG");
+        Tab tabGrundbuch = Tab.create("GRUNDBUCH");
+        Tab tabOereb = Tab.create("ÖREB");
+        
+        //Row containerRowAv = createTabContainerRow("container-row-av");
+        //tabAv.appendChild(containerRowAv);
+        
+//        Row containerRowGrundbuch = createTabContainerRow("container-row-grundbuch");
+//        tabGrundbuch.appendChild(containerRowGrundbuch);
+        
+        tabsPanel.appendChild(tabAv);
+        tabsPanel.appendChild(tabGrundbuch);
+        tabsPanel.appendChild(Tab.create("ÖREB")
+                .appendChild(b().textContent("Home Content")));
+        container.appendChild(tabsPanel.element());
+       
         body().add(container);
+        
+        
+        this.processAv(tabAv);
+
+        
         console.log("fubar");
+	}
+	
+	private void processAv(Tab tabAv) {
+	    Row row = Row.create();//createTabContainerRow("container-row-av");
+        tabAv.appendChild(row);
+        
+        Column contentColumn = Column.span6();
+        Column mapColumn = Column.span6();
+        mapColumn.element().style.backgroundColor = "lightblue";
+
+
+//        contentColumn
+//            .appendChild(span().textContent("GB-Nr.: "))
+//            .appendChild(span().textContent("198"));
+        
+        contentColumn
+        .appendChild(Row.create().css("content-row")
+                .appendChild(Column.span3()
+                        .appendChild(span().css("content-key").textContent("GB-Nr.:")))
+                .appendChild(Column.span3()
+                        .appendChild(span().css("content-value").textContent("198")))
+                .appendChild(Column.span3()
+                        .appendChild(span().css("content-key").textContent("E-GRID:")))
+                .appendChild(Column.span3()
+                        .appendChild(span().css("content-value").textContent("CH955832730623"))))
+        .appendChild(Row.create().css("content-row")
+                .appendChild(Column.span3()
+                        .appendChild(span().css("content-key").textContent("Gemeinde:")))
+                .appendChild(Column.span3()
+                        .appendChild(span().css("content-value").textContent("Messen")))
+                .appendChild(Column.span3()
+                        .appendChild(span().css("content-key").textContent("Grundbuch:")))
+                .appendChild(Column.span3()
+                        .appendChild(span().css("content-value").textContent("Messen"))))
+        .appendChild(Row.create().css("content-row")
+                .appendChild(Column.span3()
+                        .appendChild(span().css("content-key").textContent("BFS-Nr:")))
+                .appendChild(Column.span3()
+                        .appendChild(span().css("content-value").textContent("2457")))
+                .appendChild(Column.span3()
+                        .appendChild(span().css("content-key").textContent("NBIdent:")))
+                .appendChild(Column.span3()
+                        .appendChild(span().css("content-value").textContent("SO0200002457"))))
+        .appendChild(Row.create().css("content-row")
+                .appendChild(Column.span3()
+                        .appendChild(span().css("content-key").textContent("Grundstücksart:")))
+                .appendChild(Column.span3()
+                        .appendChild(span().css("content-value").textContent("Liegenschaft")))
+                .appendChild(Column.span3()
+                        .appendChild(span().css("content-key").textContent("Grundstücksfläche:")))
+                .appendChild(Column.span3()
+                        .appendChild(span().css("content-value").textContent(fmtDefault.format(19897)+ " m").add(span().css("sup").textContent("2")))));
+        
+        row.appendChild(contentColumn);
+        row.appendChild(mapColumn);
+        
+        
+	}
+	
+	private Row createTabContainerRow(String id) {
+        Row row = Row.create();
+        row.setId(id);
+        row.appendChild(Column.span6().appendChild(div().style("background-color: lightblue").textContent("fubar")));
+        row.appendChild(Column.span6().appendChild(div().style("background-color: pink").textContent("fubar")));
+        return row;
 	}
 }
