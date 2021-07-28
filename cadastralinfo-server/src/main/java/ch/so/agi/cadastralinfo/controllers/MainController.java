@@ -6,9 +6,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import ch.so.agi.cadastralinfo.Settings;
@@ -31,8 +33,8 @@ public class MainController {
     }
     
     //@GetMapping("/av")
-    @RequestMapping(value = "/av", produces = "application/json")
-    public GetExtractByIdResponse getAv() {
+    @RequestMapping(value = "/av", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ch.so.agi.cadastralinfo.models.av.RealEstateDPR getAv() {
         try {
             return avService.getParcel("CH955832730623");
         } catch (IOException e) {

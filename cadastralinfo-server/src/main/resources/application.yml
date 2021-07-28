@@ -22,6 +22,9 @@ spring:
     devtools:
         restart:
             additional-exclude: launcherDir/**
+    jackson:
+        default-property-inclusion: NON_NULL
+
 
 # spring:
 #     profiles:

@@ -10,7 +10,8 @@
   <inherits name="org.dominokit.domino.ui.DominoUI" />
   <inherits name="ol.GwtOL" />
   <inherits name="proj4.GwtProj4" />
-        
+  <inherits name="com.github.nmorel.gwtjackson.GwtJackson" />
+
   <source path="" />
 
   <entry-point class="ch.so.agi.cadastralinfo.App" />
