@@ -169,7 +169,10 @@ public class App implements EntryPoint {
 //        console.log(p.getAge() + 1);
         
         
-        this.processAv(tabAv);
+        //this.processAv(tabAv);
+        
+        AvTabContent avTabContent = new AvTabContent(tabAv);
+        tabAv.appendChild(avTabContent.element());
 
         
         /*
