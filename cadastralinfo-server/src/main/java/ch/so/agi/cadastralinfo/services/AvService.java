@@ -34,7 +34,7 @@ public class AvService {
     public String getParcel(String egrid) throws IOException {
         String tmpdir = Files.createTempDirectory("cadastralinfo").toFile().getAbsolutePath();
         
-        InputStream resource = new ClassPathResource("CH955832730623.xml").getInputStream();        
+        InputStream resource = new ClassPathResource("av_CH670679613281.xml").getInputStream();        
         File targetFile = Paths.get(tmpdir, egrid + ".xml").toFile();
         Files.copy(resource,targetFile.toPath(),StandardCopyOption.REPLACE_EXISTING);
         IOUtils.closeQuietly(resource);

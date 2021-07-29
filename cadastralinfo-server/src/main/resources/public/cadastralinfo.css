@@ -15,7 +15,7 @@ body, div {
 #container {
     margin-left: auto;
     margin-right: auto;
-    width: 1400px;
+    width: 1800px;
     max-width: 95%;
     background-color: #FFFFFF;        
 }
@@ -40,3 +40,18 @@ body, div {
     font-size: 75%; 
 }
 
+.empty-row {
+    padding: 24px 0px 2px 0px;
+}
+
+.content-table-header-sm {
+    font-size: 10px;
+}
+
+.content-row-slim {
+    padding: 0px 0px 0px 0px;
+}
+
+.right-align {
+    float: right;
+}
