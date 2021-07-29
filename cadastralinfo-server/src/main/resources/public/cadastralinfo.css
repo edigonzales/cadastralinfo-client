@@ -12,6 +12,11 @@ body, div {
   height: 100%;
 }
 
+#map-av {
+    min-height: 400px;
+    max-height: calc(100vh - 280px);
+}
+
 #container {
     margin-left: auto;
     margin-right: auto;
@@ -53,5 +58,23 @@ body, div {
 }
 
 .right-align {
-    float: right;
+    display: inline-block;
+    text-align: right;
+    width: 100%;
 }
+
+.default-link {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #ef5350; 
+}
+
+a.default-link:hover {
+    color: #ef5350;
+    text-decoration: underline !important;
+}  
+
+a.default-link:visited {
+    color: #ef5350; 
+    text-decoration: underline !important;
+}  
