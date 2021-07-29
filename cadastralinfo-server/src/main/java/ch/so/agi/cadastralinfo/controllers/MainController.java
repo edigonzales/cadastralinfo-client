@@ -34,7 +34,7 @@ public class MainController {
     
     //@GetMapping("/av")
     @RequestMapping(value = "/av", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ch.so.agi.cadastralinfo.models.av.RealEstateDPR getAv() {
+    public String getAv() {
         try {
             return avService.getParcel("CH955832730623");
         } catch (IOException e) {

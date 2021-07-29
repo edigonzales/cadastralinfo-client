@@ -6,8 +6,12 @@ import static elemental2.dom.DomGlobal.location;
 import static elemental2.dom.DomGlobal.fetch;
 import static org.jboss.elemento.Elements.*;
 
+import java.util.ArrayList;
+
 import org.dominokit.domino.ui.grid.Column;
 import org.dominokit.domino.ui.grid.Row;
+import org.dominokit.domino.ui.loaders.Loader;
+import org.dominokit.domino.ui.loaders.LoaderEffect;
 import org.dominokit.domino.ui.style.Color;
 import org.dominokit.domino.ui.style.ColorScheme;
 import org.dominokit.domino.ui.tabs.Tab;
@@ -21,10 +25,16 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 
 import ch.so.agi.cadastralinfo.models.av.RealEstateDPR;
+import elemental2.core.Global;
+import elemental2.core.JsArray;
+import elemental2.core.JsString;
+import elemental2.core.JsNumber;
 import elemental2.dom.CSSProperties;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.Location;
+import jsinterop.base.Js;
+import jsinterop.base.JsPropertyMap;
 import ol.Extent;
 import ol.Map;
 import ol.OLFactory;
@@ -50,39 +60,39 @@ public class App implements EntryPoint {
     private String MAP_DIV_ID = "map";
     private Map map;
 
-    public static interface PersonMapper extends ObjectMapper<Person> {}
-    public static interface RealEstateDPRMapper extends ObjectMapper<RealEstateDPR> {}
-
-    public static class Person {
-
-        private String firstName;
-        private String lastName;
-        private Integer age;
-
-        public String getFirstName() {
-            return firstName;
-        }
-
-        public void setFirstName(String firstName) {
-            this.firstName = firstName;
-        }
-
-        public String getLastName() {
-            return lastName;
-        }
-
-        public void setLastName(String lastName) {
-            this.lastName = lastName;
-        }
-        
-        public Integer getAge() {
-            return age;
-        }
-        
-        public void setAge(Integer age) {
-            this.age = age;
-        }
-    }
+//    public static interface PersonMapper extends ObjectMapper<Person> {}
+//    public static interface RealEstateDPRMapper extends ObjectMapper<RealEstateDPR> {}
+//
+//    public static class Person {
+//
+//        private String firstName;
+//        private String lastName;
+//        private Integer age;
+//
+//        public String getFirstName() {
+//            return firstName;
+//        }
+//
+//        public void setFirstName(String firstName) {
+//            this.firstName = firstName;
+//        }
+//
+//        public String getLastName() {
+//            return lastName;
+//        }
+//
+//        public void setLastName(String lastName) {
+//            this.lastName = lastName;
+//        }
+//        
+//        public Integer getAge() {
+//            return age;
+//        }
+//        
+//        public void setAge(Integer age) {
+//            this.age = age;
+//        }
+//    }
 
     
 	public void onModuleLoad() {
@@ -140,7 +150,7 @@ public class App implements EntryPoint {
         
         tabsPanel.appendChild(tabAv);
         tabsPanel.appendChild(tabGrundbuch);
-        tabsPanel.appendChild(Tab.create("ÖREB")
+        tabsPanel.appendChild(Tab.create("ÖREB-KATASTER")
                 .appendChild(b().textContent("Home Content")));
         container.appendChild(tabsPanel.element());
        
@@ -150,13 +160,13 @@ public class App implements EntryPoint {
 
         
         
-        PersonMapper mapper = GWT.create( PersonMapper.class );   
-        String json = "{\"age\" : 10}";
-        Person p = mapper.read(json);
-        console.log(p.getAge() + 1);
+//        PersonMapper mapper = GWT.create( PersonMapper.class );   
+//        String json = "{\"age\" : 10}";
+//        Person p = mapper.read(json);
+//        console.log(p.getAge() + 1);
         
         
-        this.processAv(tabAv, p.getAge());
+        this.processAv(tabAv);
 
         
         /*
@@ -178,56 +188,115 @@ public class App implements EntryPoint {
         console.log("fubar");
 	}
 	
-	private void processAv(Tab tabAv, Integer age) {
+	private void processAv(Tab tabAv) {
 	    Row row = Row.create();//createTabContainerRow("container-row-av");
-        tabAv.appendChild(row);
-        
+	    tabAv.appendChild(row);
+
         Column contentColumn = Column.span6();
         Column mapColumn = Column.span6();
         mapColumn.element().style.backgroundColor = "lightblue";
+
+	    Loader loader;
+        loader = Loader.create((HTMLElement) row.element(), LoaderEffect.ROTATION).setLoadingText(null);
+        loader.start();
+        
+        DomGlobal.fetch("/av")
+        .then(response -> {
+            if (!response.ok) {
+                return null;
+            }
+            return response.text();
+        })
+        .then(json -> {
+            JsPropertyMap<?> parsed = Js.cast(Global.JSON.parse(json));
+            
+            JsPropertyMap<?> responsibleOffice = Js.asPropertyMap(parsed.nestedGet("GetExtractByIdResponse.Extract.ResponsibleOffice"));
+            JsPropertyMap<?> realEstate = Js.asPropertyMap(parsed.nestedGet("GetExtractByIdResponse.Extract.RealEstate"));
+                    
+            String gbnr = "-";
+            if (realEstate.get("Number") != null) {
+                gbnr = Js.asString(realEstate.get("Number"));
+            }
+            
+            String egrid = "-";
+            if (realEstate.get("EGRID") != null) {
+                egrid = Js.asString(realEstate.get("EGRID"));
+            }
+            
+            
+  
+            console.log(parsed.nestedGet("GetExtractByIdResponse.Extract"));
+            
+            
+            contentColumn
+            .appendChild(Row.create().css("content-row")
+                    .appendChild(Column.span3()
+                            .appendChild(span().css("content-key").textContent("GB-Nr.:")))
+                    .appendChild(Column.span3()
+                            .appendChild(span().css("content-value").textContent(gbnr)))
+                    .appendChild(Column.span3()
+                            .appendChild(span().css("content-key").textContent("E-GRID:")))
+                    .appendChild(Column.span3()
+                            .appendChild(span().css("content-value").textContent(egrid))))
+            .appendChild(Row.create().css("content-row")
+                    .appendChild(Column.span3()
+                            .appendChild(span().css("content-key").textContent("Gemeinde:")))
+                    .appendChild(Column.span3()
+                            .appendChild(span().css("content-value").textContent("Messen")))
+                    .appendChild(Column.span3()
+                            .appendChild(span().css("content-key").textContent("Grundbuch:")))
+                    .appendChild(Column.span3()
+                            .appendChild(span().css("content-value").textContent("Messen"))))
+            .appendChild(Row.create().css("content-row")
+                    .appendChild(Column.span3()
+                            .appendChild(span().css("content-key").textContent("BFS-Nr:")))
+                    .appendChild(Column.span3()
+                            .appendChild(span().css("content-value").textContent("2457")))
+                    .appendChild(Column.span3()
+                            .appendChild(span().css("content-key").textContent("NBIdent:")))
+                    .appendChild(Column.span3()
+                            .appendChild(span().css("content-value").textContent("SO0200002457"))))
+            .appendChild(Row.create().css("content-row")
+                    .appendChild(Column.span3()
+                            .appendChild(span().css("content-key").textContent("Grundstücksart:")))
+                    .appendChild(Column.span3()
+                            .appendChild(span().css("content-value").textContent("Liegenschaft")))
+                    .appendChild(Column.span3()
+                            .appendChild(span().css("content-key").textContent("Grundstücksfläche:")))
+                    .appendChild(Column.span3()
+                            .appendChild(span().css("content-value").textContent(fmtDefault.format(19897)+ " m").add(span().css("sup").textContent("2")))));
+
+            
+            
+            
+//            console.log(parsed.nestedGetAsAny("GetExtractByIdResponse.Extract"));
+            
+//            console.log(Js.asPropertyMap(parsed.get("GetExtractByIdResponse")).get);
+//            JsArray<?> results = Js.cast(parsed.get("results"));
+//            for (int i = 0; i < results.length; i++) {
+//                JsPropertyMap<?> feature = Js.cast(results.getAt(i));
+//                console.log(feature);
+////                JsPropertyMap<?> attrs = Js.cast(feature.get("attrs"));
+//
+//                
+//            }
+            return null;
+        }).catch_(error -> {
+            console.log(error);
+            return null;
+        });
+        
+        loader.stop();
+	    
+	    
+	    
+        
 
 
 //        contentColumn
 //            .appendChild(span().textContent("GB-Nr.: "))
 //            .appendChild(span().textContent("198"));
         
-        contentColumn
-        .appendChild(Row.create().css("content-row")
-                .appendChild(Column.span3()
-                        .appendChild(span().css("content-key").textContent("GB-Nr.:")))
-                .appendChild(Column.span3()
-                        .appendChild(span().css("content-value").textContent("198")))
-                .appendChild(Column.span3()
-                        .appendChild(span().css("content-key").textContent("E-GRID:")))
-                .appendChild(Column.span3()
-                        .appendChild(span().css("content-value").textContent("CH955832730623"))))
-        .appendChild(Row.create().css("content-row")
-                .appendChild(Column.span3()
-                        .appendChild(span().css("content-key").textContent("Gemeinde:")))
-                .appendChild(Column.span3()
-                        .appendChild(span().css("content-value").textContent("Messen")))
-                .appendChild(Column.span3()
-                        .appendChild(span().css("content-key").textContent("Grundbuch:")))
-                .appendChild(Column.span3()
-                        .appendChild(span().css("content-value").textContent("Messen"))))
-        .appendChild(Row.create().css("content-row")
-                .appendChild(Column.span3()
-                        .appendChild(span().css("content-key").textContent("BFS-Nr:")))
-                .appendChild(Column.span3()
-                        .appendChild(span().css("content-value").textContent("2457")))
-                .appendChild(Column.span3()
-                        .appendChild(span().css("content-key").textContent("NBIdent:")))
-                .appendChild(Column.span3()
-                        .appendChild(span().css("content-value").textContent("SO0200002457"))))
-        .appendChild(Row.create().css("content-row")
-                .appendChild(Column.span3()
-                        .appendChild(span().css("content-key").textContent("Grundstücksart:")))
-                .appendChild(Column.span3()
-                        .appendChild(span().css("content-value").textContent(age.toString())))
-                .appendChild(Column.span3()
-                        .appendChild(span().css("content-key").textContent("Grundstücksfläche:")))
-                .appendChild(Column.span3()
-                        .appendChild(span().css("content-value").textContent(fmtDefault.format(19897)+ " m").add(span().css("sup").textContent("2")))));
         
         row.appendChild(contentColumn);
         row.appendChild(mapColumn);

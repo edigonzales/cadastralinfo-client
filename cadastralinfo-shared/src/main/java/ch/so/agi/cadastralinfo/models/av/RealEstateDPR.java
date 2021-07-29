@@ -2,6 +2,7 @@ package ch.so.agi.cadastralinfo.models.av;
 
 import java.util.ArrayList;
 
+// TODO: rename to GetParcelByIdResponse?
 public class RealEstateDPR {
     private String realEstateType;
     

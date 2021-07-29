@@ -22,6 +22,8 @@ import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.github.underscore.lodash.U;
+
 @Service
 public class AvService {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
@@ -29,7 +31,7 @@ public class AvService {
     @Autowired
     Jaxb2Marshaller marshaller;
 
-    public RealEstateDPR getParcel(String egrid) throws IOException {
+    public String getParcel(String egrid) throws IOException {
         String tmpdir = Files.createTempDirectory("cadastralinfo").toFile().getAbsolutePath();
         
         InputStream resource = new ClassPathResource("CH955832730623.xml").getInputStream();        
@@ -48,8 +50,12 @@ public class AvService {
         realEstateDPR.setEgrid(egrid);
         realEstateDPR.setLandRegistryArea(xmlRealEstate.getLandRegistryArea());
         
+        String content = Files.readString(targetFile.toPath());
+        String contentJson = U.xmlToJson((String) content);
         
-        return realEstateDPR;
+        
+        
+        return contentJson;
 
     } 
 }
