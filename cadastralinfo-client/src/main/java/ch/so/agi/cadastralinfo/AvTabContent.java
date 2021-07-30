@@ -1,401 +1,70 @@
 package ch.so.agi.cadastralinfo;
 
 import static elemental2.dom.DomGlobal.console;
-import static elemental2.dom.DomGlobal.fetch;
-import static elemental2.dom.DomGlobal.location;
-import static elemental2.dom.DomGlobal.fetch;
+import static org.jboss.elemento.Elements.span;
+import static org.jboss.elemento.EventType.bind;
+import static org.jboss.elemento.EventType.mouseout;
+import static org.jboss.elemento.EventType.mouseover;
+import static org.dominokit.domino.ui.style.Unit.px;
 import static org.jboss.elemento.Elements.*;
 import static org.jboss.elemento.EventType.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-import java.util.function.Consumer;
 
-import org.dominokit.domino.ui.dropdown.DropDownMenu;
-import org.dominokit.domino.ui.forms.SuggestBox;
-import org.dominokit.domino.ui.forms.AbstractSuggestBox.DropDownPositionDown;
-import org.dominokit.domino.ui.forms.SuggestBoxStore;
-import org.dominokit.domino.ui.forms.SuggestItem;
+import org.dominokit.domino.ui.button.Button;
+import org.dominokit.domino.ui.button.ButtonSize;
 import org.dominokit.domino.ui.grid.Column;
 import org.dominokit.domino.ui.grid.Row;
-import org.dominokit.domino.ui.icons.Icon;
-import org.dominokit.domino.ui.icons.Icons;
-import org.dominokit.domino.ui.icons.MdiIcon;
 import org.dominokit.domino.ui.loaders.Loader;
 import org.dominokit.domino.ui.loaders.LoaderEffect;
 import org.dominokit.domino.ui.style.Color;
-import org.dominokit.domino.ui.style.ColorScheme;
 import org.dominokit.domino.ui.tabs.Tab;
-import org.dominokit.domino.ui.tabs.TabsPanel;
-import org.dominokit.domino.ui.themes.Theme;
-import org.dominokit.domino.ui.utils.HasSelectionHandler.SelectionHandler;
+import org.dominokit.domino.ui.icons.Icons;
 import org.gwtproject.i18n.client.NumberFormat;
 import org.gwtproject.safehtml.shared.SafeHtmlUtils;
-
-import com.gargoylesoftware.htmlunit.javascript.host.Console;
-import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Window;
 
 import elemental2.core.Global;
 import elemental2.core.JsArray;
-import elemental2.core.JsString;
-import elemental2.core.JsNumber;
-import elemental2.dom.CSSProperties;
 import elemental2.dom.DomGlobal;
-import elemental2.dom.Event;
-import elemental2.dom.EventListener;
 import elemental2.dom.HTMLElement;
-import elemental2.dom.HTMLInputElement;
-import elemental2.dom.Headers;
-import elemental2.dom.Location;
-import elemental2.dom.RequestInit;
-import jsinterop.base.Any;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import ol.Extent;
-import ol.Feature;
-import ol.FeatureOptions;
 import ol.Map;
-import ol.OLFactory;
-import ol.format.GeoJson;
-import ol.proj.Projection;
-import ol.proj.ProjectionOptions;
-import ol.style.Stroke;
-import ol.style.Style;
-import proj4.Proj4;
 
-public class App implements EntryPoint {
-
-    // Application settings
-    private String myVar;
-
-    // Format settings
+public class AvTabContent {    
     private NumberFormat fmtDefault = NumberFormat.getDecimalFormat();
     private NumberFormat fmtPercent = NumberFormat.getFormat("#0.0");
     private NumberFormat fmtInteger = NumberFormat.getFormat("#,##0");
 
-    private static final String EPSG_2056 = "EPSG:2056";
-    private static final String EPSG_4326 = "EPSG:4326"; 
-    private Projection projection;
-    
-    private HTMLElement container;
-
-    private String MAP_DIV_ID = "map";
+    private HTMLElement root;
+    private String MAP_DIV_ID = "map-av";
     private Map map;
     
-    private SuggestBox suggestBox;
-    private Feature parcel;
-
-    private String SEARCH_SERVICE_URL = "https://geo.so.ch/api/search/v2/?filter=ch.so.agi.av.gebaeudeadressen.gebaeudeeingaenge,ch.so.agi.av.grundstuecke.rechtskraeftig&searchtext=";    
-    private String DATA_SERVICE_URL = "https://geo.so.ch/api/data/v1/";
-
-
-//    public static interface PersonMapper extends ObjectMapper<Person> {}
-//    public static interface RealEstateDPRMapper extends ObjectMapper<RealEstateDPR> {}
-//
-//    public static class Person {
-//
-//        private String firstName;
-//        private String lastName;
-//        private Integer age;
-//
-//        public String getFirstName() {
-//            return firstName;
-//        }
-//
-//        public void setFirstName(String firstName) {
-//            this.firstName = firstName;
-//        }
-//
-//        public String getLastName() {
-//            return lastName;
-//        }
-//
-//        public void setLastName(String lastName) {
-//            this.lastName = lastName;
-//        }
-//        
-//        public Integer getAge() {
-//            return age;
-//        }
-//        
-//        public void setAge(Integer age) {
-//            this.age = age;
-//        }
-//    }
-
+    private void init() {
+        
+    }
     
-	public void onModuleLoad() {
-	    init();
-	}
-	
-	@SuppressWarnings("unchecked")
-    public void init() {
-	    // Registering EPSG:2056 / LV95 reference frame.
-//        Proj4.defs(EPSG_2056, "+proj=somerc +lat_0=46.95240555555556 +lon_0=7.439583333333333 +k_0=1 +x_0=2600000 +y_0=1200000 +ellps=bessel +towgs84=674.374,15.056,405.346,0,0,0,0 +units=m +no_defs");
-//        ol.proj.Proj4.register(Proj4.get());
-//
-//        ProjectionOptions projectionOptions = OLFactory.createOptions();
-//        projectionOptions.setCode(EPSG_2056);
-//        projectionOptions.setUnits("m");
-//        projectionOptions.setExtent(new Extent(2420000, 1030000, 2900000, 1350000));
-//        projection = new Projection(projectionOptions);
-//        Projection.addProjection(projection);
-        
-        // Change Domino UI color scheme.
-        Theme theme = new Theme(ColorScheme.RED);
-        theme.apply();
-        
-        // Add the Openlayers map (element) to the body.
-//        HTMLElement mapElement = div().id(MAP_DIV_ID).element();
-//        body().add(mapElement);
-//        map = MapPresets.getColorMap(MAP_DIV_ID);
-        
-        container = div().id("container").element();
-        Location location = DomGlobal.window.location;
-
-        HTMLElement logoDiv = div().css("logo")
-                .add(div()
-                        .add(img().attr("src", DomGlobal.window.location.href + "Logo.png").attr("alt", "Logo Kanton")).element())
-                .element();
-        container.appendChild(logoDiv);
-        
-        HTMLElement searchContainerDiv = div().id("search-container").element();
-        //searchContainerDiv.style.backgroundColor = "wheat";
-        //searchContainerDiv.style.height = CSSProperties.HeightUnionType.of("100px");
-        container.appendChild(searchContainerDiv);
-
-        SuggestBoxStore dynamicStore = new SuggestBoxStore() {
-            @Override
-            public void filter(String value, SuggestionsHandler suggestionsHandler) {
-                if (value.trim().length() == 0) {
-                    return;
-                }
-                
-                RequestInit requestInit = RequestInit.create();
-                Headers headers = new Headers();
-                headers.append("Content-Type", "application/x-www-form-urlencoded");
-                requestInit.setHeaders(headers);
-                
-                DomGlobal.fetch(SEARCH_SERVICE_URL + value.trim().toLowerCase(), requestInit)
-                .then(response -> {
-                    if (!response.ok) {
-                        return null;
-                    }
-                    return response.text();
-                })
-                .then(json -> {
-                    List<SuggestItem<SearchResult>> featureResults = new ArrayList<SuggestItem<SearchResult>>();
-                    List<SuggestItem<SearchResult>> suggestItems = new ArrayList<>();
-                    JsPropertyMap<?> parsed = Js.cast(Global.JSON.parse(json));
-                    JsArray<?> results = Js.cast(parsed.get("results"));
-                    for (int i = 0; i < results.length; i++) {
-                        JsPropertyMap<?> resultObj = Js.cast(results.getAt(i));
-                                                    
-                        if (resultObj.has("feature")) {
-                            JsPropertyMap feature = (JsPropertyMap) resultObj.get("feature");
-                            String display = ((JsString) feature.get("display")).normalize();
-                            String dataproductId = ((JsString) feature.get("dataproduct_id")).normalize();
-                            String idFieldName = ((JsString) feature.get("id_field_name")).normalize();
-                            int featureId = new Double(((JsNumber) feature.get("feature_id")).valueOf()).intValue();
-                            List<Double> bbox = ((JsArray) feature.get("bbox")).asList();
- 
-                            SearchResult searchResult = new SearchResult();
-                            searchResult.setLabel(display);
-                            searchResult.setDataproductId(dataproductId);
-                            searchResult.setIdFieldName(idFieldName);
-                            searchResult.setFeatureId(featureId);
-                            searchResult.setBbox(bbox);
-                            searchResult.setType("feature");
-                            
-                            Icon icon;
-                            if (dataproductId.contains("gebaeudeadressen")) {
-                                icon = Icons.ALL.mail();
-                            } else if (dataproductId.contains("grundstueck")) {
-                                icon = Icons.ALL.home();
-                            } else if (dataproductId.contains("flurname"))  {
-                                icon = Icons.ALL.terrain();
-                            } else {
-                                icon = Icons.ALL.place();
-                            }
-                            
-                            SuggestItem<SearchResult> suggestItem = SuggestItem.create(searchResult, searchResult.getLabel(), icon);
-                            featureResults.add(suggestItem);
-//                            suggestItems.add(suggestItem);                            
-                        }
-                    }
-                    suggestItems.addAll(featureResults);
-                    suggestionsHandler.onSuggestionsReady(suggestItems);
-                    return null;
-                }).catch_(error -> {
-                    console.log(error);
-                    return null;
-                });
-            }
-
-            @Override
-            public void find(Object searchValue, Consumer handler) {
-                if (searchValue == null) {
-                    return;
-                }
-                HTMLInputElement el =(HTMLInputElement) suggestBox.getInputElement().element();
-                SearchResult searchResult = (SearchResult) searchValue;
-                SuggestItem<SearchResult> suggestItem = SuggestItem.create(searchResult, el.value);
-                handler.accept(suggestItem);
-            }
-        };
-        
-        suggestBox = SuggestBox.create("Suche: Grundstücke und Adressen", dynamicStore);
-        suggestBox.addLeftAddOn(Icons.ALL.search());
-        suggestBox.setAutoSelect(false);
-        suggestBox.setFocusColor(Color.RED);
-        suggestBox.setFocusOnClose(false);
-        
-        HTMLElement resetIcon = Icons.ALL.close().setId("SearchResetIcon").element();
-        resetIcon.addEventListener("click", new EventListener() {
-            @Override
-            public void handleEvent(Event evt) {
-                HTMLInputElement el =(HTMLInputElement) suggestBox.getInputElement().element();
-                el.value = "";
-                suggestBox.unfocus();
-//                ol.source.Vector vectorSource = map.getHighlightLayer().getSource();
-//                vectorSource.clear(false); 
-            }
-        });
-        suggestBox.addRightAddOn(resetIcon);
-
-        suggestBox.getInputElement().setAttribute("autocomplete", "off");
-        suggestBox.getInputElement().setAttribute("spellcheck", "false");
-        DropDownMenu suggestionsMenu = suggestBox.getSuggestionsMenu();
-        suggestionsMenu.setPosition(new DropDownPositionDown());
-        suggestionsMenu.setSearchable(false);
-
-        suggestBox.addSelectionHandler(new SelectionHandler() {
-            @Override
-            public void onSelection(Object value) {
-                SuggestItem<SearchResult> item = (SuggestItem<SearchResult>) value;
-                SearchResult result = (SearchResult) item.getValue();
-                
-                RequestInit requestInit = RequestInit.create();
-                Headers headers = new Headers();
-                headers.append("Content-Type", "application/x-www-form-urlencoded"); // CORS and preflight...
-                requestInit.setHeaders(headers);
-                
-                if (result.getType().equalsIgnoreCase("feature")) {
-                    String dataproductId = result.getDataproductId();
-                    String idFieldName = result.getIdFieldName();
-                    String featureId = String.valueOf(result.getFeatureId());
-                    
-                    DomGlobal.fetch(DATA_SERVICE_URL + dataproductId + "/?filter=[[\""+idFieldName+"\",\"=\","+featureId+"]]", requestInit)
-                    .then(response -> {
-                        if (!response.ok) {
-                            return null;
-                        }
-                        return response.text();
-                    })
-                    .then(json -> {
-                        Feature[] features = (new GeoJson()).readFeatures(json);
-                        console.log(features[0]);
-
-                        FeatureOptions featureOptions = OLFactory.createOptions();
-                        featureOptions.setGeometry(features[0].getGeometry());
-                        parcel = new Feature(featureOptions);
-
-                        Stroke stroke = new Stroke();
-                        stroke.setWidth(8);
-                        stroke.setColor(new ol.color.Color(230, 0, 0, 0.6));
-                        Style style = new Style();
-                        style.setStroke(stroke);
-                        parcel.setStyle(style);
-
-//                        ol.source.Vector vectorSource = map.getHighlightLayer().getSource();
-//                        vectorSource.clear(false); // false=opt_fast resp. eben nicht. Keine Events, falls true?
-//                        vectorSource.addFeature(feature);
-                        return null;
-                    }).catch_(error -> {
-                        console.log(error);
-                        return null;
-                    });
-                    
-                    // Zoom to feature.
-//                    List<Double> bbox = result.getBbox();                 
-//                    Extent extent = new Extent(bbox.get(0), bbox.get(1), bbox.get(2), bbox.get(3));
-//                    View view = map.getView();
-//                    double resolution = view.getResolutionForExtent(extent);
-//                    view.setZoom(Math.floor(view.getZoomForResolution(resolution)) - 1);
-//                    double x = extent.getLowerLeftX() + extent.getWidth() / 2;
-//                    double y = extent.getLowerLeftY() + extent.getHeight() / 2;
-//                    view.setCenter(new Coordinate(x,y));
-                }
-            }
-        });
-
-        searchContainerDiv.appendChild(Row.create()
-                .appendChild(Column.span6()
-                        .appendChild(div().id("suggestbox").add(suggestBox).element())).element());
-        
-        TabsPanel tabsPanel = TabsPanel.create()
-                .setColor(Color.RED);
-                //.setBackgroundColor(Color.RED)
-                //.setColor(Color.WHITE);
-        tabsPanel.setId("tabs-panel");
-        
-        Tab tabAv = Tab.create("AMTLICHE VERMESSUNG");
-        Tab tabGrundbuch = Tab.create("GRUNDBUCH");
-        Tab tabOereb = Tab.create("ÖREB");
-                
-        tabsPanel.appendChild(tabAv);
-        tabsPanel.appendChild(tabGrundbuch);
-        tabsPanel.appendChild(Tab.create("ÖREB-KATASTER")
-                .appendChild(b().textContent("Home Content")));
-        container.appendChild(tabsPanel.element());
-       
-        body().add(container);
-        
-//        PersonMapper mapper = GWT.create( PersonMapper.class );   
-//        String json = "{\"age\" : 10}";
-//        Person p = mapper.read(json);
-//        console.log(p.getAge() + 1);
-        
-        
-        //this.processAv(tabAv);
-        
-        AvTabContent avTabContent = new AvTabContent(tabAv);
-        //tabAv.appendChild(avTabContent.element());
-
-        
-        /*
-        RealEstateDPRMapper aaaaaa = GWT.create( RealEstateDPRMapper.class );
-        
-        String json = "{\"egrid\":\"CH955832730623\",\"fosnNr\":0,\"landRegistryArea\":19897}";
-        RealEstateDPR person = aaaaaa.read( json );
-        console.log(person.getLandRegistryArea());
-        
-        String foo = person.getEgrid();
-        console.log(foo);
-        
-        String area = String.valueOf(person.getLandRegistryArea());
-        Integer areaInt = (person.getLandRegistryArea());
-        console.log(area);
-        console.log(areaInt);
-        */
-        
-        console.log("fubar");
-	}
-	
-	private void processAv(Tab tabAv) {
-	    Row row = Row.create();
-	    tabAv.appendChild(row);
+    public AvTabContent(Tab tabAv) {
+        Row row = Row.create();
+        tabAv.appendChild(row);
 
         Column contentColumn = Column.span6();
         Column mapColumn = Column.span6();
-        mapColumn.setId("map-av");
+        mapColumn.setId("map-av-column");
         mapColumn.element().style.backgroundColor = "lightblue";
 
-	    Loader loader;
+        row.appendChild(mapColumn);
+        
+        
+        HTMLElement mapElement = div().id(MAP_DIV_ID).element();
+        mapColumn.appendChild(mapElement);
+        map = MapPresets.getColorMap(MAP_DIV_ID);
+        
+        Loader loader;
         loader = Loader.create((HTMLElement) row.element(), LoaderEffect.ROTATION).setLoadingText(null);
         loader.start();
         
@@ -409,9 +78,33 @@ public class App implements EntryPoint {
         .then(json -> {
             JsPropertyMap<?> parsed = Js.cast(Global.JSON.parse(json));
             
+            // TODO: nur ab hier in die eigene Klasse!?
+            
             /*
              * Allgemeine Informationen
              */
+            
+            Button pdfBtn = Button.create(Icons.ALL.file_pdf_box_outline_mdi())
+                    .setSize(ButtonSize.SMALL)
+                    .setContent("PDF")
+                    .setBackground(Color.WHITE)
+                    .elevate(0)
+                    .style()
+                    .setColor("#e53935")
+                    .setBorder("1px #e53935 solid")
+                    .setPadding("5px 5px 5px 0px;")
+                    .setMinWidth(px.of(100)).get();
+            
+            pdfBtn.addClickListener(evt -> {
+                Window.open("https://agi.so.ch", "_blank", null);
+            });
+
+            contentColumn
+            .appendChild(Row.create().css("empty-row-5"))
+            .appendChild(Row.create().css("content-row")
+                    .appendChild(pdfBtn.element()))
+            .appendChild(Row.create().css("empty-row-20"));
+
             
             JsPropertyMap<?> realEstate = Js.asPropertyMap(parsed.nestedGet("GetExtractByIdResponse.Extract.RealEstate"));
                     
@@ -887,9 +580,9 @@ public class App implements EntryPoint {
         });
         
         loader.stop();
-	    
-	    
-	    
+        
+        
+        
         
 
 
@@ -899,16 +592,15 @@ public class App implements EntryPoint {
         
         
         row.appendChild(contentColumn);
-        row.appendChild(mapColumn);
         
         
-	}
-	
-	private Row createTabContainerRow(String id) {
-        Row row = Row.create();
-        row.setId(id);
-        row.appendChild(Column.span6().appendChild(div().style("background-color: lightblue").textContent("fubar")));
-        row.appendChild(Column.span6().appendChild(div().style("background-color: pink").textContent("fubar")));
-        return row;
-	}
+        root = row.element();
+
+    }
+    
+    public HTMLElement element() {
+        return root;
+    }
+    
+
 }

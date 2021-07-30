@@ -12,9 +12,13 @@ body, div {
   height: 100%;
 }
 
-#map-av {
+#map-av-column {
     min-height: 600px;
     max-height: calc(100vh - 280px);
+}
+
+#map-av {
+    height: 100%;    
 }
 
 #container {
@@ -30,6 +34,27 @@ body, div {
     font-size: 40px;
     text-align: right;
 }
+
+#suggestbox {
+    padding-top: 40px;
+    padding-bottom: 30px;
+}
+
+.field-group input, .field-group textarea {
+    /*font-family: 'Fira Sans', sans-serif !important;*/
+    font-family: Frutiger, 'Fira Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif !important;   
+    font-size: 16px;   
+    font-weight: 300;     
+}
+
+.field-group .field-label {
+    font-size: 12px;
+    font-weight: 300;   
+}
+
+.dropdown-menu>li>a {
+    font-weight: 300;
+} 
 
 .content-row {
     padding: 2px 0px 2px 0px;
@@ -47,6 +72,18 @@ body, div {
 
 .empty-row {
     padding: 40px 0px 2px 0px;
+}
+
+.empty-row-20 {
+    padding: 20px 0px 2px 0px;
+}
+
+.empty-row-10 {
+    padding: 10px 0px 2px 0px;
+}
+
+.empty-row-10 {
+    padding: 5px 0px 2px 0px;
 }
 
 .content-table-header-sm {
