@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import ch.so.agi.cadastralinfo.Settings;
@@ -34,12 +35,13 @@ public class MainController {
     
     //@GetMapping("/av")
     @RequestMapping(value = "/av", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public String getAv() {
+    public String getAv(@RequestParam(value = "egrid", required = true) String egrid) {
         try {
-            return avService.getParcel("CH955832730623");
-        } catch (IOException e) {
+            return avService.getParcel(egrid);
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
             throw new IllegalArgumentException("could not process: CH...");
+            // TODO: return json
         }
         //return ResponseEntity.ok().body("av");
     }

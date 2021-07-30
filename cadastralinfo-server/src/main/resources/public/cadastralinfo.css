@@ -2,14 +2,20 @@ body {
   margin: 0px;
   padding: 0px;
   background: #FFFFFF; 
+  height: 100%;
 }
 
 body, div {
   font-family: Frutiger, 'Fira Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;   
 }
 
+div body {
+    font-family: serif !important;
+}
+
 #map {
   height: 100%;
+  /*border: 1px solid lightgrey;*/
 }
 
 #map-av-column {
@@ -26,15 +32,30 @@ body, div {
 #container {
     margin-left: auto;
     margin-right: auto;
-    width: 1800px;
+    width: 2000px;
     max-width: 95%;
-    background-color: #FFFFFF;        
+    background-color: #FFFFFF;  
+    height: calc(100% - 230px);      
 }
 
 .logo {
     margin-top: 10px;
     font-size: 40px;
     text-align: right;
+}
+
+#root-content-row {
+    height: 100%;
+}
+
+#map-content-col {
+    height: 100%;
+    /*background-color: lightgreen;*/
+}
+
+#text-content-col {
+    height: 100%;
+    /*background-color: wheat;*/
 }
 
 #suggestbox {
@@ -59,7 +80,11 @@ body, div {
 } 
 
 .content-row {
-    padding: 2px 0px 2px 0px;
+    padding: 2px 0px 2px 0px !important;
+}
+
+.card .body .grid-col {
+    margin-bottom: 0px !important;
 }
 
 .content-key {
@@ -72,7 +97,7 @@ body, div {
     font-size: 75%; 
 }
 
-.empty-row {
+.empty-row-40 {
     padding: 40px 0px 2px 0px;
 }
 
@@ -93,7 +118,7 @@ body, div {
 }
 
 .content-row-slim {
-    padding: 0px 0px 0px 0px;
+    padding: 0px 0px 0px 0px !important;
 }
 
 .right-align {

@@ -35,7 +35,7 @@ import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import ol.Map;
 
-public class AvTabContent {    
+public class AvTabContent2 {    
     private NumberFormat fmtDefault = NumberFormat.getDecimalFormat();
     private NumberFormat fmtPercent = NumberFormat.getFormat("#0.0");
     private NumberFormat fmtInteger = NumberFormat.getFormat("#,##0");
@@ -48,7 +48,7 @@ public class AvTabContent {
         
     }
     
-    public AvTabContent(Tab tabAv) {
+    public AvTabContent2(Tab tabAv) {
         Row row = Row.create();
         tabAv.appendChild(row);
 

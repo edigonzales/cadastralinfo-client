@@ -35,3 +35,6 @@ spring:
 # ========================
 app:
     myVar: ${VAR:defaultValue}
+    server:
+        av:
+            serviceBaseUrl: ${AV_SERVICE_BASE_URL:http://localhost:8081/extract/xml/geometry/}

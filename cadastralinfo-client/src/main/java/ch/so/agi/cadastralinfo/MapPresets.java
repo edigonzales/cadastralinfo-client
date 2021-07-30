@@ -75,7 +75,7 @@ public class MapPresets {
         Coordinate centerCoordinate = new Coordinate(2616491, 1240287);
 
         view.setCenter(centerCoordinate);
-        view.setZoom(6);
+        view.setZoom(5);
         
         MapOptions mapOptions = OLFactory.createOptions();
         mapOptions.setTarget(mapId);
