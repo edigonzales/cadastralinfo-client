@@ -13,8 +13,10 @@ body, div {
 }
 
 #map-av-column {
-    min-height: 600px;
-    max-height: calc(100vh - 280px);
+    /*height: 600px;*/
+    /*min-height: 600px;*/
+    /*max-height: calc(100vh - 280px);*/
+    
 }
 
 #map-av {
