@@ -30,6 +30,7 @@ import com.google.gwt.user.client.Window;
 
 import elemental2.core.Global;
 import elemental2.core.JsArray;
+import elemental2.dom.CSSProperties;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLDivElement;
@@ -48,7 +49,7 @@ public class AvElement implements IsElement<HTMLElement> {
     private Card buildingCard;
     private Card buildingAddressCard;
     private Card landCoverLocalNameCard;
-    private Card officeCard;
+    private Card contactCard;
     
     public AvElement() {
         root = div().id("av-element").element();
@@ -59,6 +60,7 @@ public class AvElement implements IsElement<HTMLElement> {
             container.remove();
         }
         container = div().element();
+        container.style.padding = CSSProperties.PaddingUnionType.of("10px"); 
         root.appendChild(container);
         
         loader = Loader.create(root, LoaderEffect.ROTATION).setLoadingText("");
@@ -107,11 +109,11 @@ public class AvElement implements IsElement<HTMLElement> {
                 .elevate(Elevation.LEVEL_0);
         container.appendChild(landCoverLocalNameCard.element());
 
-        officeCard = Card.create("Adressen")
+        contactCard = Card.create("Kontakt")
                 .setCollapsible()
                 .collapse()
                 .elevate(Elevation.LEVEL_0);
-        container.appendChild(officeCard.element());
+        container.appendChild(contactCard.element());
                 
         DomGlobal.fetch("/av?egrid="+egrid)
         .then(response -> {
@@ -503,7 +505,7 @@ public class AvElement implements IsElement<HTMLElement> {
          * Adressen: Geometer und Aufsicht
          */
         Row addressesRow = Row.create();
-        officeCard
+        contactCard
         .appendChild(Row.create().css("empty-row"))
         .appendChild(addressesRow);
 
