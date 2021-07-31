@@ -18,6 +18,8 @@ import org.dominokit.domino.ui.cards.Card;
 import org.dominokit.domino.ui.grid.Column;
 import org.dominokit.domino.ui.grid.Row;
 import org.dominokit.domino.ui.icons.Icons;
+import org.dominokit.domino.ui.loaders.Loader;
+import org.dominokit.domino.ui.loaders.LoaderEffect;
 import org.dominokit.domino.ui.style.Color;
 import org.dominokit.domino.ui.style.Elevation;
 import org.gwtproject.i18n.client.NumberFormat;
@@ -30,25 +32,38 @@ import elemental2.core.Global;
 import elemental2.core.JsArray;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLDivElement;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import ol.Map;
 
 public class AvElement implements IsElement<HTMLElement> {
     private NumberFormat fmtDefault = NumberFormat.getDecimalFormat();
     private NumberFormat fmtPercent = NumberFormat.getFormat("#0.0");
     private NumberFormat fmtInteger = NumberFormat.getFormat("#,##0");
 
+    private Loader loader;
     private final HTMLElement root;
+    private HTMLDivElement container;
     private Card generalCard;
     private Card buildingCard;
     private Card buildingAddressCard;
     private Card landCoverLocalNameCard;
     private Card officeCard;
     
-    public AvElement(Map map, String egrid) {
+    public AvElement() {
         root = div().id("av-element").element();
+    }
+
+    public void update(String egrid, String avServiceBaseUrl) {
+        if (container != null) {
+            container.remove();
+        }
+        container = div().element();
+        root.appendChild(container);
         
+        loader = Loader.create(root, LoaderEffect.ROTATION).setLoadingText("");
+        loader.start();
+       
         Button pdfBtn = Button.create(Icons.ALL.file_pdf_box_outline_mdi())
                 .setSize(ButtonSize.SMALL)
                 .setContent("PDF")
@@ -59,46 +74,45 @@ public class AvElement implements IsElement<HTMLElement> {
                 .setBorder("1px #e53935 solid")
                 .setPadding("5px 5px 5px 0px;")
                 .setMinWidth(px.of(100)).get();
-        
+                
         pdfBtn.addClickListener(evt -> {
-            Window.open("https://agi.so.ch", "_blank", null);
+            Window.open(avServiceBaseUrl+"/extract/pdf/geometry/"+egrid, "_blank", null);
         });
 
-        root.appendChild(pdfBtn.element());
-        root.appendChild(Row.create().css("empty-row-20").element());
+        container.appendChild(pdfBtn.element());
+        container.appendChild(Row.create().css("empty-row-20").element());
         
         generalCard = Card.create("Allgemeine Informationen")
                 .setCollapsible()
-                .elevate(Elevation.LEVEL_1);
-        root.appendChild(generalCard.element());
+                .elevate(Elevation.LEVEL_0);
+        
+        container.appendChild(generalCard.element());
         
         buildingCard = Card.create("Gebäude")
                 .setCollapsible()
                 .collapse()
-                .elevate(Elevation.LEVEL_1);
-        root.appendChild(buildingCard.element());
+                .elevate(Elevation.LEVEL_0);
+        container.appendChild(buildingCard.element());
         
 
         buildingAddressCard = Card.create("Gebäudeadressen")
                 .setCollapsible()
                 .collapse()
-                .elevate(Elevation.LEVEL_1);
-        root.appendChild(buildingAddressCard.element());
+                .elevate(Elevation.LEVEL_0);
+        container.appendChild(buildingAddressCard.element());
 
         landCoverLocalNameCard = Card.create("Bodenbedeckung und Flurnamen")
                 .setCollapsible()
                 .collapse()
-                .elevate(Elevation.LEVEL_1);
-        root.appendChild(landCoverLocalNameCard.element());
+                .elevate(Elevation.LEVEL_0);
+        container.appendChild(landCoverLocalNameCard.element());
 
         officeCard = Card.create("Adressen")
                 .setCollapsible()
                 .collapse()
-                .elevate(Elevation.LEVEL_1);
-        root.appendChild(officeCard.element());
-        
-        // TODO: loader
-        
+                .elevate(Elevation.LEVEL_0);
+        container.appendChild(officeCard.element());
+                
         DomGlobal.fetch("/av?egrid="+egrid)
         .then(response -> {
             if (!response.ok) {
@@ -108,20 +122,16 @@ public class AvElement implements IsElement<HTMLElement> {
         })
         .then(json -> {
             JsPropertyMap<?> parsed = Js.cast(Global.JSON.parse(json));
-            console.log(parsed);
-
             processResponse(parsed);
-            
             return null;
         }).catch_(error -> {
+            loader.stop();
             console.log(error);
             return null;
         });
         
-        //loader.stop();
-
     }
-
+    
     @Override
     public HTMLElement element() {
         return root;
@@ -573,8 +583,8 @@ public class AvElement implements IsElement<HTMLElement> {
         }
         
         addressesRow.appendChild(supervisionAddressColumn);
-
         
+        loader.stop();
     }
     
 }

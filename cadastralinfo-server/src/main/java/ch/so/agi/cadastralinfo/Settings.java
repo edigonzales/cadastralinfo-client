@@ -10,11 +10,21 @@ import org.springframework.stereotype.Component;
 public class Settings {
     private String myVar;
 
+    private String avServiceBaseUrl;
+    
     public String getMyVar() {
         return myVar;
     }
 
     public void setMyVar(String myVar) {
         this.myVar = myVar;
+    }
+
+    public String getAvServiceBaseUrl() {
+        return avServiceBaseUrl;
+    }
+
+    public void setAvServiceBaseUrl(String avServiceBaseUrl) {
+        this.avServiceBaseUrl = avServiceBaseUrl;
     }
 }

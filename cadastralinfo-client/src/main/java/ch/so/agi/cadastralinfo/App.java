@@ -34,10 +34,13 @@ import org.dominokit.domino.ui.themes.Theme;
 import org.dominokit.domino.ui.utils.HasSelectionHandler.SelectionHandler;
 import org.gwtproject.i18n.client.NumberFormat;
 import org.gwtproject.safehtml.shared.SafeHtmlUtils;
+import org.jboss.elemento.HtmlContentBuilder;
 
-import com.gargoylesoftware.htmlunit.javascript.host.Console;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.DivElement;
+import com.google.gwt.xml.client.Document;
+import com.google.gwt.xml.client.XMLParser;
 
 import elemental2.core.Global;
 import elemental2.core.JsArray;
@@ -62,9 +65,13 @@ import ol.Extent;
 import ol.Feature;
 import ol.FeatureOptions;
 import ol.Map;
+import ol.MapBrowserEvent;
 import ol.OLFactory;
+import ol.Overlay;
+import ol.OverlayOptions;
 import ol.View;
 import ol.format.GeoJson;
+import ol.geom.Geometry;
 import ol.layer.Base;
 import ol.layer.VectorLayerOptions;
 import ol.proj.Projection;
@@ -78,10 +85,12 @@ import proj4.Proj4;
 
 public class App implements EntryPoint {
 
-    // Application settings
+    // Application configuration
     private String myVar;
+    private String AV_SERVICE_BASE_URL;
+    private String SEARCH_SERVICE_URL = "https://geo.so.ch/api/search/v2/?filter=ch.so.agi.av.gebaeudeadressen.gebaeudeeingaenge,ch.so.agi.av.grundstuecke.rechtskraeftig&searchtext=";    
+    private String DATA_SERVICE_URL = "https://geo.so.ch/api/data/v1/";
 
-    // TODO: Utils
     // Format settings 
     private NumberFormat fmtDefault = NumberFormat.getDecimalFormat();
     private NumberFormat fmtPercent = NumberFormat.getFormat("#0.0");
@@ -99,19 +108,34 @@ public class App implements EntryPoint {
     private String MAP_DIV_ID = "map";
 
     private Map map;
+    private Overlay realEstatePopup;
 
     private SuggestBox suggestBox;
     //private Feature parcel;
-    private String egrid = null;
+    //private String egrid = null;
     
     private Tab tabAv;
     private AvElement avElement;
-
-    private String SEARCH_SERVICE_URL = "https://geo.so.ch/api/search/v2/?filter=ch.so.agi.av.gebaeudeadressen.gebaeudeeingaenge,ch.so.agi.av.grundstuecke.rechtskraeftig&searchtext=";    
-    private String DATA_SERVICE_URL = "https://geo.so.ch/api/data/v1/";
-
+    private Loader loader;
     
 	public void onModuleLoad() {
+	    
+        DomGlobal.fetch("/settings")
+        .then(response -> {
+            if (!response.ok) {
+                return null;
+            }
+            return response.text();
+        })
+        .then(json -> {
+            JsPropertyMap<?> parsed = Js.cast(Global.JSON.parse(json));            
+            AV_SERVICE_BASE_URL = Js.asString(parsed.get("avServiceBaseUrl"));
+            return null;
+        }).catch_(error -> {
+            loader.stop();
+            console.log(error);
+            return null;
+        });
 	    init();
 	}
 	
@@ -139,13 +163,10 @@ public class App implements EntryPoint {
 
         HTMLElement logoDiv = div().css("logo")
                 .add(div()
-                        .add(img().attr("src", DomGlobal.window.location.href + "Logo.png").attr("alt", "Logo Kanton")).element())
-                .element();
+                        .add(img().attr("src", DomGlobal.window.location.href + "Logo.png").attr("alt", "Logo Kanton")).element()).element();
         container.appendChild(logoDiv);
         
         HTMLElement searchContainerDiv = div().id("search-container").element();
-        //searchContainerDiv.style.backgroundColor = "wheat";
-        //searchContainerDiv.style.height = CSSProperties.HeightUnionType.of("100px");
         container.appendChild(searchContainerDiv);
 
         SuggestBoxStore dynamicStore = new SuggestBoxStore() {
@@ -241,8 +262,6 @@ public class App implements EntryPoint {
                 HTMLInputElement el =(HTMLInputElement) suggestBox.getInputElement().element();
                 el.value = "";
                 suggestBox.unfocus();
-//                ol.source.Vector vectorSource = map.getHighlightLayer().getSource();
-//                vectorSource.clear(false); 
             }
         });
         suggestBox.addRightAddOn(resetIcon);
@@ -269,7 +288,16 @@ public class App implements EntryPoint {
                     String idFieldName = result.getIdFieldName();
                     String featureId = String.valueOf(result.getFeatureId());
                     
-                    DomGlobal.fetch(DATA_SERVICE_URL + dataproductId + "/?filter=[[\""+idFieldName+"\",\"=\","+featureId+"]]", requestInit)
+                    String requestUrl;
+                    if (dataproductId.equalsIgnoreCase("ch.so.agi.av.gebaeudeadressen.gebaeudeeingaenge")) {
+                        List<Double> bbox = result.getBbox();                 
+                        String bboxStr = bbox.get(0).toString()+","+bbox.get(1).toString()+","+bbox.get(2).toString()+","+bbox.get(3).toString();
+                        requestUrl = DATA_SERVICE_URL + "ch.so.agi.av.grundstuecke.rechtskraeftig" + "/?bbox="+bboxStr;
+                    } else {
+                        requestUrl = DATA_SERVICE_URL + dataproductId + "/?filter=[[\""+idFieldName+"\",\"=\","+featureId+"]]";
+                    }
+                    
+                    DomGlobal.fetch(requestUrl, requestInit)
                     .then(response -> {
                         if (!response.ok) {
                             return null;
@@ -277,11 +305,18 @@ public class App implements EntryPoint {
                         return response.text();
                     })
                     .then(json -> {
-                        Feature[] features = (new GeoJson()).readFeatures(json); 
-                        egrid = Js.asString(features[0].getProperties().get("egrid"));                        
+                        // TODO:
+                        // Fall Adresssuche mehrere Resultate liefert. Welches soll automatisch (?) 
+                        // verwendet werden?
+                        // Auswahl? UX?
                         
-                        addFeaturesToHighlightingVectorLayer(features);
-                        addAvElement(egrid);
+                        Feature[] features = (new GeoJson()).readFeatures(json); 
+                        String egrid = Js.asString(features[0].getProperties().get("egrid"));                        
+                        
+                        Feature[] fs = new Feature[] {features[0]};
+                        addFeaturesToHighlightingVectorLayer(fs);
+                        avElement.update(egrid, AV_SERVICE_BASE_URL);
+
                         return null;
                     }).catch_(error -> {
                         console.log(error);
@@ -312,18 +347,25 @@ public class App implements EntryPoint {
         rootContentRow.appendChild(mapContentCol);
         
         Column textContentCol = Column.span6().setId("text-content-col");
+        //HTMLDivElement fadeoutBottomDiv = div().id("fadeout-bottom").element();
+        //textContentCol.appendChild(fadeoutBottomDiv);
         rootContentRow.appendChild(textContentCol);
         
         // Add the Openlayers map (element) to the body.
-        HTMLElement mapElement = div().id(MAP_DIV_ID).css("elevation-1").element();
+        HTMLElement mapElement = div().id(MAP_DIV_ID).element();
         mapContentCol.appendChild(mapElement);
         map = MapPresets.getColorMap(MAP_DIV_ID);
+        map.addSingleClickListener(new MapSingleClickListener());
 
         TabsPanel tabsPanel = TabsPanel.create()
                 .setId("tabs-panel")
                 .setColor(Color.RED);
         
         tabAv = Tab.create("AMTLICHE VERMESSUNG");
+        avElement = new AvElement();
+        tabAv.appendChild(avElement);
+        
+        
         Tab tabGrundbuch = Tab.create("GRUNDBUCH");
         Tab tabOereb = Tab.create("ÖREB");
                 
@@ -333,32 +375,10 @@ public class App implements EntryPoint {
         tabsPanel.appendChild(Tab.create("ÖREB-KATASTER")
                 .appendChild(b().textContent("Home Content")));
         textContentCol.appendChild(tabsPanel.element());
-       
-        //tabAv.appendChild(new AvElement(map, egrid).element());
-
-        
-        /*
-        
-        
-        //this.processAv(tabAv);
-        
-        AvTabContent avTabContent = new AvTabContent(tabAv);
-        //tabAv.appendChild(avTabContent.element());
-*/
-                
+             
         console.log("fubar");
 	}
-	
-	// TODO: Es darf nur ein AvElement geben, das upgedated wird.
-	// Es braucht eine update-Methode.
-	private void addAvElement(String egrid) {
-	    if (avElement != null) {
-	        tabAv.removeChild(avElement);
-	    }
-	    avElement = new AvElement(map, egrid);
-	    tabAv.appendChild(avElement.element());
-	}
-	
+		
 	private void addFeaturesToHighlightingVectorLayer(Feature[] features) {
 	    ol.layer.Vector vectorLayer = (ol.layer.Vector) getMapLayerById(HIGHLIGHT_VECTOR_LAYER_ID);
 	    if (vectorLayer == null) {
@@ -376,18 +396,8 @@ public class App implements EntryPoint {
         //stroke.setColor(new ol.color.Color(249, 128, 0, 1.0));
         stroke.setColor(new ol.color.Color(230, 0, 0, 0.6));
         style.setStroke(stroke);
-        //Fill fill = new Fill();
-        //fill.setColor(new ol.color.Color(255, 255, 80, 0.6));
-        //style.setFill(fill);
-
-//        ol.Collection<Feature> featureCollection = new ol.Collection<Feature>();
-//        for (Feature feature : features) {
-//            feature.setStyle(style);
-//            featureCollection.push(feature);
-//        }
 
         VectorOptions vectorSourceOptions = OLFactory.createOptions();
-        //vectorSourceOptions.setFeatures(features);
         Vector vectorSource = new Vector(vectorSourceOptions);
         
         VectorLayerOptions vectorLayerOptions = OLFactory.createOptions();
@@ -423,4 +433,117 @@ public class App implements EntryPoint {
         }
         return null;
     }	
+    
+    public final class MapSingleClickListener implements ol.event.EventListener<MapBrowserEvent> {
+        @Override
+        public void onEvent(MapBrowserEvent event) {
+            Coordinate coordinate = event.getCoordinate();
+            
+            RequestInit requestInit = RequestInit.create();
+            Headers headers = new Headers();
+            headers.append("Content-Type", "application/x-www-form-urlencoded");
+            requestInit.setHeaders(headers);
+            
+            DomGlobal.fetch(DATA_SERVICE_URL + "ch.so.agi.av.grundstuecke.rechtskraeftig/?bbox="+coordinate.getX()+","+coordinate.getY()+","+coordinate.getX()+","+coordinate.getY(), requestInit)
+            .then(response -> {
+                if (!response.ok) {
+                    return null;
+                }
+                return response.text();
+            })
+            .then(json -> {
+                Feature[] features = (new GeoJson()).readFeatures(json); 
+                
+                Geometry geometry;
+                if (features.length > 1 && event != null) {
+                    HTMLElement closeButton = span().add(Icons.ALL.close()).element(); 
+                    closeButton.style.cursor = "pointer";
+                    
+                    HtmlContentBuilder<HTMLDivElement> popupBuilder = div().id("realestate-popup");
+                    popupBuilder.add(
+                            div().id("realestate-popup-header")
+                            .add(span().textContent("Grundstücke"))
+                            .add(span().id("realestate-popup-close").add(closeButton))
+                            ); 
+
+                    HashMap<String, String> egridMap = new HashMap<String, String>();
+                    HashMap<String, Feature> featureMap = new HashMap<String, Feature>();
+                    for (Feature feature : features) {
+                        //console.log(feature);
+                        String egrid = Js.asString(feature.getProperties().get("egrid"));
+                        String number = Js.asString(feature.getProperties().get("nummer"));
+                        String type = Js.asString(feature.getProperties().get("art_txt"));
+                        egridMap.put(egrid, egrid);
+                        featureMap.put(egrid, feature);
+
+                        String label = new String("GB-Nr.: " + number + " ("+type+")");
+                        HTMLDivElement row = div().id(egrid).css("realestate-popup-row")
+                                .add(span().textContent(label)).element();
+                        
+                        bind(row, mouseover, evt -> {
+                            row.style.backgroundColor = "#efefef";
+                            row.style.cursor = "pointer";
+                            Feature[] fs = new Feature[] {feature};
+                            addFeaturesToHighlightingVectorLayer(fs);
+                        });
+
+                        bind(row, mouseout, evt -> {
+                            row.style.backgroundColor = "white";
+                        });
+                        
+                        bind(row, click, evt -> {
+                            //console.log("Get extract from a map click (multiple click result): " + row.getAttribute("id"));                            
+                            map.removeOverlay(realEstatePopup);
+                            
+                            Feature f = featureMap.get(row.getAttribute("id"));
+                            Feature[] fs = new Feature[] {f};
+                            addFeaturesToHighlightingVectorLayer(fs);
+                            
+                            Extent extent = f.getGeometry().getExtent();
+                            View view = map.getView();
+                            double resolution = view.getResolutionForExtent(extent);
+                            view.setZoom(Math.floor(view.getZoomForResolution(resolution)) - 1);
+                            double x = extent.getLowerLeftX() + extent.getWidth() / 2;
+                            double y = extent.getLowerLeftY() + extent.getHeight() / 2;
+                            view.setCenter(new Coordinate(x,y));
+
+                            avElement.update(egridMap.get(row.getAttribute("id")), AV_SERVICE_BASE_URL);
+                        });                        
+                        popupBuilder.add(row);
+                    }
+                    
+                    HTMLElement popupElement = popupBuilder.element();     
+                    bind(closeButton, click, evt -> {
+                        map.removeOverlay(realEstatePopup);
+                    });
+                    
+                    DivElement overlay = Js.cast(popupElement);
+                    OverlayOptions overlayOptions = OLFactory.createOptions();
+                    overlayOptions.setElement(overlay);
+                    overlayOptions.setPosition(event.getCoordinate());
+                    overlayOptions.setOffset(OLFactory.createPixel(0, 0));
+                    realEstatePopup = new Overlay(overlayOptions);
+                    map.addOverlay(realEstatePopup);
+                } else {
+                    String egrid = Js.asString(features[0].getProperties().get("egrid"));
+                    
+                    Extent extent = features[0].getGeometry().getExtent();
+                    View view = map.getView();
+                    double resolution = view.getResolutionForExtent(extent);
+                    view.setZoom(Math.floor(view.getZoomForResolution(resolution)) - 1);
+                    double x = extent.getLowerLeftX() + extent.getWidth() / 2;
+                    double y = extent.getLowerLeftY() + extent.getHeight() / 2;
+                    view.setCenter(new Coordinate(x,y));
+
+                    addFeaturesToHighlightingVectorLayer(features);
+                    avElement.update(egrid, AV_SERVICE_BASE_URL);
+                }
+                return null;
+            }).catch_(error -> {
+                console.log(error);
+                return null;
+            });            
+        }
+    }
+
 }

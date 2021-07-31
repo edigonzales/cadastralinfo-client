@@ -72,10 +72,12 @@ public class MapPresets {
         viewOptions.setProjection(projection);
         viewOptions.setResolutions(new double[] { 4000.0, 2000.0, 1000.0, 500.0, 250.0, 100.0, 50.0, 20.0, 10.0, 5.0, 2.5, 1.0, 0.5, 0.25, 0.1 });
         View view = new View(viewOptions);
-        Coordinate centerCoordinate = new Coordinate(2616491, 1240287);
+        //Coordinate centerCoordinate = new Coordinate(2616491, 1240287); // Kanton Solothurn
+        Coordinate centerCoordinate = new Coordinate(2600459, 1215464); // Messen
 
         view.setCenter(centerCoordinate);
-        view.setZoom(5);
+        //view.setZoom(6); // Kanton Solothurn 
+        view.setZoom(13); // Messen
         
         MapOptions mapOptions = OLFactory.createOptions();
         mapOptions.setTarget(mapId);

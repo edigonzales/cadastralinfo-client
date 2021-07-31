@@ -38,7 +38,7 @@ import com.github.underscore.lodash.U;
 public class AvService {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    @Value("${app.server.av.serviceBaseUrl}")
+    @Value("${app.avServiceBaseUrl}")
     private String serviceBaseUrl;
 
     @Autowired
@@ -51,7 +51,7 @@ public class AvService {
                 .build();
 
         Builder requestBuilder = HttpRequest.newBuilder();
-        requestBuilder.GET().uri(URI.create(serviceBaseUrl + egrid));   
+        requestBuilder.GET().uri(URI.create(serviceBaseUrl + "/extract/xml/geometry/" + egrid));   
         requestBuilder.setHeader("Accept", "application/xml");
         HttpRequest request = requestBuilder.build();
         log.info(request.uri().toString());
