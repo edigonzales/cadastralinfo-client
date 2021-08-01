@@ -40,6 +40,7 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.xml.client.Document;
+import com.google.gwt.xml.client.Element;
 import com.google.gwt.xml.client.XMLParser;
 
 import elemental2.core.Global;
@@ -119,6 +120,16 @@ public class App implements EntryPoint {
     private Loader loader;
     
 	public void onModuleLoad() {
+	    // TODO: just for tests
+	    /*
+	    String xml = "<parcel>\n"
+	            + "      <ns10:number>234</ns10:number>\n"
+	            + " </parcel>";
+	    
+	    Document doc = XMLParser.parse(xml);
+	    com.google.gwt.xml.client.Node foundNode = doc.getElementsByTagName("number").item(0);
+	    console.log(foundNode);
+	    */
 	    
         DomGlobal.fetch("/settings")
         .then(response -> {
@@ -128,7 +139,8 @@ public class App implements EntryPoint {
             return response.text();
         })
         .then(json -> {
-            JsPropertyMap<?> parsed = Js.cast(Global.JSON.parse(json));            
+            //console.log(json);
+            JsPropertyMap<?> parsed = Js.cast(Global.JSON.parse(json));      
             AV_SERVICE_BASE_URL = Js.asString(parsed.get("avServiceBaseUrl"));
             return null;
         }).catch_(error -> {
