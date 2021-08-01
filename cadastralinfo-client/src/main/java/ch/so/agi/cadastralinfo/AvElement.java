@@ -49,6 +49,7 @@ public class AvElement implements IsElement<HTMLElement> {
     private Card buildingCard;
     private Card buildingAddressCard;
     private Card landCoverLocalNameCard;
+    private Card controlPointCard;
     private Card contactCard;
     
     public AvElement() {
@@ -96,7 +97,6 @@ public class AvElement implements IsElement<HTMLElement> {
                 .elevate(Elevation.LEVEL_0);
         container.appendChild(buildingCard.element());
         
-
         buildingAddressCard = Card.create("Gebäudeadressen")
                 .setCollapsible()
                 .collapse()
@@ -109,6 +109,12 @@ public class AvElement implements IsElement<HTMLElement> {
                 .elevate(Elevation.LEVEL_0);
         container.appendChild(landCoverLocalNameCard.element());
 
+        controlPointCard = Card.create("Fixpunkte")
+                .setCollapsible()
+                .collapse()
+                .elevate(Elevation.LEVEL_0);
+        container.appendChild(controlPointCard.element());
+        
         contactCard = Card.create("Kontakt")
                 .setCollapsible()
                 .collapse()
