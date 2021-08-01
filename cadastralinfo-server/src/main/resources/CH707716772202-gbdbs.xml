@@ -1,0 +1,608 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <soap:Header/>
+  <soap:Body>
+    <ns31:GetParcelsByIdResponse xmlns:ns34="http://schemas.terravis.ch/TerravisContact/1.1" xmlns:ns33="http://www.ech.ch/xmlns/eCH-0058/5" xmlns:ns32="http://schemas.geo.admin.ch/BJ/TGBV/GBDBS-eGVT/2.1" xmlns:ns31="http://schemas.geo.admin.ch/BJ/TGBV/GBDBS/2.1" xmlns:ns30="http://schemas.geo.admin.ch/BJ/TGBV/GBBasisTypen/2.1/ext1" xmlns:ns29="http://www.ech.ch/xmlns/eCH-0010/6" xmlns:ns28="http://www.ech.ch/xmlns/eCH-0046/3" xmlns:ns27="http://www.ech.ch/xmlns/eCH-0098/3" xmlns:ns26="http://www.ech.ch/xmlns/eCH-0097/2" xmlns:ns25="http://www.ech.ch/xmlns/eCH-0010/5" xmlns:ns24="http://www.ech.ch/xmlns/eCH-0008/3" xmlns:ns23="http://www.ech.ch/xmlns/eCH-0011/8" xmlns:ns22="http://www.ech.ch/xmlns/eCH-0044/4" xmlns:ns21="http://www.ech.ch/xmlns/eCH-0007/6" xmlns:ns20="http://schemas.geo.admin.ch/BJ/TGBV/GBBasisTypen/2.1" xmlns:ns19="http://schemas.geo.admin.ch/BJ/TGBV/GBBasisId/2.1" xmlns:ns18="http://www.w3.org/2000/09/xmldsig#" xmlns:ns17="http://schemas.terravis.ch/TerravisContact/1.0" xmlns:ns16="http://www.ech.ch/xmlns/eCH-0058/4" xmlns:ns15="http://schemas.terravis.ch/GBDBS-eGVT/2.0" xmlns:ns14="http://schemas.terravis.ch/GBDBS/2.0" xmlns:ns13="http://schemas.terravis.ch/GBBasisTypen/2.0/ext2" xmlns:ns12="http://schemas.terravis.ch/GBBasisTypen/2.0/ext1" xmlns:ns11="http://www.ech.ch/xmlns/eCH-0046/1" xmlns:ns10="http://www.ech.ch/xmlns/eCH-0098/1" xmlns:ns9="http://www.ech.ch/xmlns/eCH-0097/1" xmlns:ns8="http://www.ech.ch/xmlns/eCH-0010/3" xmlns:ns7="http://www.ech.ch/xmlns/eCH-0008/2" xmlns:ns6="http://www.ech.ch/xmlns/eCH-0007/4" xmlns:ns5="http://www.ech.ch/xmlns/eCH-0011/4" xmlns:ns4="http://www.ech.ch/xmlns/eCH-0044/1" xmlns:ns3="http://www.ech.ch/xmlns/eCH-0007/5" xmlns:ns2="http://schemas.terravis.ch/GBBasisTypen/2.0" xmlns="http://schemas.terravis.ch/GBBasisId/2.0">
+      <ns31:Grundstueck>
+        <ns20:Liegenschaft>
+          <ns20:Nummer>CH707716772202:3:a:test:b</ns20:Nummer>
+          <ns20:istKopie>false</ns20:istKopie>
+          <ns20:InhaltLiegenschaft>
+            <ns20:Fuehrungsart>kantonal</ns20:Fuehrungsart>
+            <ns20:Flaechenmass>999</ns20:Flaechenmass>
+          </ns20:InhaltLiegenschaft>
+          <ns20:Flurname>
+            <ns20:Name>Testzone</ns20:Name>
+          </ns20:Flurname>
+          <ns20:Flurname>
+            <ns20:Name>Sonderzeichen &lt;½&gt;</ns20:Name>
+          </ns20:Flurname>
+          <ns20:Flurname>
+            <ns20:Name>read-only</ns20:Name>
+          </ns20:Flurname>
+          <ns20:GBPlan>
+            <ns20:Nummer>26</ns20:Nummer>
+            <ns20:NBIdent>CH22</ns20:NBIdent>
+          </ns20:GBPlan>
+          <ns20:Gemeinde>
+            <ns21:municipalityId>9901</ns21:municipalityId>
+            <ns21:municipalityName>Testdorf</ns21:municipalityName>
+          </ns20:Gemeinde>
+          <ns20:alt>
+            <ns20:ref>CH787722167710:1::test:</ns20:ref>
+          </ns20:alt>
+          <ns20:neu>
+            <ns20:ref>CH787722167710:1::test:</ns20:ref>
+          </ns20:neu>
+          <ns20:AVBemerkung>
+            <ns20:Art>andere</ns20:Art>
+            <ns20:AndereArt>Rutschgebiet</ns20:AndereArt>
+            <ns20:Bemerkung>starke Rutschung</ns20:Bemerkung>
+          </ns20:AVBemerkung>
+          <ns20:GBAmt>
+            <ns20:Name>Arosa</ns20:Name>
+          </ns20:GBAmt>
+          <ns20:Gebaeude>
+            <ns20:GWR_EGID>142</ns20:GWR_EGID>
+            <ns20:istProjektiert>false</ns20:istProjektiert>
+            <ns20:istUnterirdisch>false</ns20:istUnterirdisch>
+            <ns20:Nummer>981</ns20:Nummer>
+            <ns20:GebaeudeartStichwort>
+              <ns20:Stichwort>Hotel</ns20:Stichwort>
+              <ns20:uuid>15B6BCCE-8772-4595-BF82-F727A665FBF3</ns20:uuid>
+            </ns20:GebaeudeartStichwort>
+            <ns20:GebaeudeartZusatz>mit Schwimmbad</ns20:GebaeudeartZusatz>
+            <ns20:GebaeudeartCode>22</ns20:GebaeudeartCode>
+            <ns20:Flaechenmass>50</ns20:Flaechenmass>
+            <ns20:FlaechenmassAnteil>50</ns20:FlaechenmassAnteil>
+            <ns20:GebaeudeeingangAdresse>
+              <ns20:Strasse>Teststrasse</ns20:Strasse>
+              <ns20:Hausnummer>20</ns20:Hausnummer>
+              <ns20:GebaeudeBezeichnung>Hotel Krone</ns20:GebaeudeBezeichnung>
+              <ns20:PLZ>3400</ns20:PLZ>
+              <ns20:PlzZusatzziffern>1</ns20:PlzZusatzziffern>
+              <ns20:Ortschaft>Testort</ns20:Ortschaft>
+              <ns20:GWR_EGID>145</ns20:GWR_EGID>
+              <ns20:GWR_EDID>2</ns20:GWR_EDID>
+            </ns20:GebaeudeeingangAdresse>
+          </ns20:Gebaeude>
+          <ns20:HaengigesGeschaeft>
+            <ns20:EGBTBID>CH4955T63859</ns20:EGBTBID>
+            <ns20:TagebuchNummer>294</ns20:TagebuchNummer>
+            <ns20:TagebuchDatumZeit>2010-06-28T09:00:00</ns20:TagebuchDatumZeit>
+            <ns20:GeschaeftsfallbeschreibungStichwort>Gläubigerwechsel</ns20:GeschaeftsfallbeschreibungStichwort>
+            <ns20:GeschaeftsfallbeschreibungZusatz>mit Pfandsummenerhöhung</ns20:GeschaeftsfallbeschreibungZusatz>
+          </ns20:HaengigesGeschaeft>
+          <ns20:KantonaleUnterartStichwort>
+            <ns20:Stichwort>Allmend</ns20:Stichwort>
+            <ns20:uuid>25DAC5A2-6C26-4055-8497-07A7D44E4B36</ns20:uuid>
+          </ns20:KantonaleUnterartStichwort>
+          <ns20:KantonaleUnterartZusatz>mit Rutschung</ns20:KantonaleUnterartZusatz>
+          <ns20:Bodenbedeckung>
+            <ns20:ArtBezeichnung>Gartenanlage</ns20:ArtBezeichnung>
+          </ns20:Bodenbedeckung>
+          <ns20:Zugang>
+            <ns20:Flaechenmass>10.0</ns20:Flaechenmass>
+            <ns20:Datum>2010-06-28</ns20:Datum>
+            <ns20:TagebuchNummer>294</ns20:TagebuchNummer>
+            <ns20:von>CH787722167710:1::test:</ns20:von>
+          </ns20:Zugang>
+          <ns20:letzteVollzogeneMutation>
+            <ns20:Nummer>10012</ns20:Nummer>
+            <ns20:AmtlVermKreis>CH22</ns20:AmtlVermKreis>
+          </ns20:letzteVollzogeneMutation>
+        </ns20:Liegenschaft>
+      </ns31:Grundstueck>
+      <ns31:Grundstueck>
+        <ns20:Liegenschaft>
+          <ns20:Nummer>CH787722167710:1::test:</ns20:Nummer>
+          <ns20:istKopie>false</ns20:istKopie>
+          <ns20:InhaltLiegenschaft>
+            <ns20:Flaechenmass>999</ns20:Flaechenmass>
+          </ns20:InhaltLiegenschaft>
+          <ns20:Flurname>
+            <ns20:Name>Testzone</ns20:Name>
+          </ns20:Flurname>
+          <ns20:Flurname>
+            <ns20:Name>read-only</ns20:Name>
+          </ns20:Flurname>
+          <ns20:Gemeinde>
+            <ns21:municipalityId>9901</ns21:municipalityId>
+            <ns21:municipalityName>Testdorf</ns21:municipalityName>
+          </ns20:Gemeinde>
+          <ns20:GBAmt>
+            <ns20:Name>Test GB-Amt</ns20:Name>
+          </ns20:GBAmt>
+          <ns20:Gebaeude>
+            <ns20:Nummer>981</ns20:Nummer>
+          </ns20:Gebaeude>
+          <ns20:Bodenbedeckung>
+            <ns20:ArtBezeichnung>Gartenanlage</ns20:ArtBezeichnung>
+          </ns20:Bodenbedeckung>
+        </ns20:Liegenschaft>
+      </ns31:Grundstueck>
+      <ns31:Person>
+        <ns20:NatuerlichePersonGB>
+          <ns20:Nummer>CH792277771621::::</ns20:Nummer>
+          <ns20:InhaltNatuerlichePersonGB>
+            <ns20:Name>Müller</ns20:Name>
+            <ns20:Vornamen>Ulrich Walter</ns20:Vornamen>
+            <ns20:Geburtsjahr>1949</ns20:Geburtsjahr>
+            <ns20:Geburtsmonat>12</ns20:Geburtsmonat>
+            <ns20:Geburtstag>13</ns20:Geburtstag>
+            <ns20:Geschlecht>maennlich</ns20:Geschlecht>
+            <ns20:Heimatort>Trubschachen</ns20:Heimatort>
+            <ns20:Staatsangehoerigkeit>Testland</ns20:Staatsangehoerigkeit>
+          </ns20:InhaltNatuerlichePersonGB>
+          <ns20:NatuerlichePerson>
+            <ns20:Name>Müller</ns20:Name>
+            <ns20:Adresse>
+              <ns20:Strasse>Bahnhofsplatz</ns20:Strasse>
+              <ns20:Hausnummer>1</ns20:Hausnummer>
+              <ns20:PLZ>8000</ns20:PLZ>
+              <ns20:Ort>Zürich</ns20:Ort>
+              <ns20:Land>Testland</ns20:Land>
+              <ns20:GWR_EGID>1</ns20:GWR_EGID>
+              <ns20:GWR_EDID>1</ns20:GWR_EDID>
+              <ns20:Rolle>Wohnadresse</ns20:Rolle>
+            </ns20:Adresse>
+            <ns20:Vornamen>Ulrich Walter</ns20:Vornamen>
+            <ns20:Geburtsjahr>1949</ns20:Geburtsjahr>
+            <ns20:Geburtsmonat>12</ns20:Geburtsmonat>
+            <ns20:Geburtstag>13</ns20:Geburtstag>
+            <ns20:Zivilstand>ledig</ns20:Zivilstand>
+            <ns20:LedigerName>Obertester</ns20:LedigerName>
+            <ns20:Rufname>Ueli</ns20:Rufname>
+            <ns20:Buergerort>Trubschachen</ns20:Buergerort>
+            <ns20:NameDerEltern>Meier</ns20:NameDerEltern>
+            <ns20:Geschlecht>maennlich</ns20:Geschlecht>
+            <ns20:EPID>756.1234.5678.97</ns20:EPID>
+          </ns20:NatuerlichePerson>
+        </ns20:NatuerlichePersonGB>
+      </ns31:Person>
+      <ns31:Person>
+        <ns20:JuristischePersonGB>
+          <ns20:Nummer>CH727777221644::::</ns20:Nummer>
+          <ns20:InhaltJuristischePersonGB>
+            <ns20:Name_Firma>Bank Test AG</ns20:Name_Firma>
+            <ns20:Sitz>Zürich</ns20:Sitz>
+            <ns20:AuszugOhneSitz>false</ns20:AuszugOhneSitz>
+            <ns20:RechtsformStichwort>
+              <ns20:Stichwort>AG</ns20:Stichwort>
+              <ns20:uuid>842FCD8B-2543-4d2f-837F-EAF813E125B2</ns20:uuid>
+            </ns20:RechtsformStichwort>
+            <ns20:RechtsformZusatz>Spezialform</ns20:RechtsformZusatz>
+            <ns20:AuszugOhneRechtsform>false</ns20:AuszugOhneRechtsform>
+            <ns20:Firmennummer>CH-057.4.016.674</ns20:Firmennummer>
+            <ns20:UID>CHE123456789</ns20:UID>
+          </ns20:InhaltJuristischePersonGB>
+          <ns20:SchweizerischeJuristischePerson>
+            <ns20:Name>Bank Test AG</ns20:Name>
+            <ns20:Adresse>
+              <ns20:Strasse>Bahnhofsplatz</ns20:Strasse>
+              <ns20:Hausnummer>1</ns20:Hausnummer>
+              <ns20:PLZ>8000</ns20:PLZ>
+              <ns20:Ort>Zürich</ns20:Ort>
+              <ns20:Land>Testland</ns20:Land>
+              <ns20:Rolle>Rechtsdomizil</ns20:Rolle>
+            </ns20:Adresse>
+            <ns20:Sitz>Zürich</ns20:Sitz>
+            <ns20:NameUebersetzung>
+              <ns20:Sprache>fr</ns20:Sprache>
+              <ns20:Begriff>Banque Nouvelle SA</ns20:Begriff>
+            </ns20:NameUebersetzung>
+            <ns20:Gesellschaftsform>Aktiengesellschaft</ns20:Gesellschaftsform>
+            <ns20:UID>CHE123456789</ns20:UID>
+          </ns20:SchweizerischeJuristischePerson>
+        </ns20:JuristischePersonGB>
+      </ns31:Person>
+      <ns31:Recht>
+        <ns20:EigentumAnteil>
+          <ns20:InhaltEigentumAnteil>
+            <ns20:alteNummer>Lit a</ns20:alteNummer>
+            <ns20:istKopie>false</ns20:istKopie>
+            <ns20:AnteilZaehler>1</ns20:AnteilZaehler>
+            <ns20:AnteilNenner>1</ns20:AnteilNenner>
+            <ns20:SubjektivDinglich>false</ns20:SubjektivDinglich>
+            <ns20:Eigentumsform>AlleinEigentum</ns20:Eigentumsform>
+            <ns20:AnteilInProsa>1 Eintel</ns20:AnteilInProsa>
+          </ns20:InhaltEigentumAnteil>
+          <ns20:Rangverschiebung vonEGBTBID="CH4955T61414" vonTagebuchNummer="296" vonTagebuchDatumZeit="1989-07-31T00:00:01" vonIdx="1">
+            <ns20:RangNachfolge>
+              <ns20:Grundstueck>CH787722167710:1::test:</ns20:Grundstueck>
+              <ns20:RechtId>CH4955E39901900:E399019.0:</ns20:RechtId>
+            </ns20:RangNachfolge>
+          </ns20:Rangverschiebung>
+          <ns20:Rangverschiebung vonEGBTBID="CH4955T61414" vonTagebuchNummer="296" vonTagebuchDatumZeit="1989-07-31T00:00:01" vonIdx="1">
+            <ns20:Vorrang>
+              <ns20:Grundstueck>CH787722167710:1::test:</ns20:Grundstueck>
+              <ns20:RechtId>CH4955E39901900:E399019.0:</ns20:RechtId>
+            </ns20:Vorrang>
+          </ns20:Rangverschiebung>
+          <ns20:GestuetzAufGehoertZu vonEGBTBID="CH4955T61414" vonTagebuchNummer="296" vonTagebuchDatumZeit="1989-07-31T00:00:01" vonIdx="1">
+            <ns20:GestuetzAuf>
+              <ns20:Grundstueck>CH787722167710:1::test:</ns20:Grundstueck>
+              <ns20:RechtId>CH4955E39901900:E399019.0:</ns20:RechtId>
+            </ns20:GestuetzAuf>
+          </ns20:GestuetzAufGehoertZu>
+          <ns20:GestuetzAufGehoertZu vonEGBTBID="CH4955T61414" vonTagebuchNummer="296" vonTagebuchDatumZeit="1989-07-31T00:00:01" vonIdx="1">
+            <ns20:GehoertZu>
+              <ns20:Grundstueck>CH787722167710:1::test:</ns20:Grundstueck>
+              <ns20:RechtId>CH4955E39901900:E399019.0:</ns20:RechtId>
+            </ns20:GehoertZu>
+          </ns20:GestuetzAufGehoertZu>
+          <ns20:Fortsetzung>
+            <ns20:ref>CH4955E39901900:E399019.0:</ns20:ref>
+          </ns20:Fortsetzung>
+          <ns20:Nummer>CH4955E39902089::</ns20:Nummer>
+          <ns20:Ursprung>
+            <ns20:ref>CH4955E39901900:E399019.0:</ns20:ref>
+          </ns20:Ursprung>
+          <ns20:Berechtigte>CH792277771621::::</ns20:Berechtigte>
+          <ns20:belastetesGrundstueck>CH707716772202:3:a:test:b</ns20:belastetesGrundstueck>
+          <ns20:Erwerbsgrund>
+            <ns20:ErwerbsartStichwort>
+              <ns20:Stichwort>Erbgang</ns20:Stichwort>
+              <ns20:uuid>1946A358-37B0-4640-B458-C0CAD7F25C2D</ns20:uuid>
+            </ns20:ErwerbsartStichwort>
+            <ns20:ErwerbsartZusatz>mit Zusatz</ns20:ErwerbsartZusatz>
+            <ns20:Datum>2010-06-28</ns20:Datum>
+            <ns20:TagebuchNummer>294</ns20:TagebuchNummer>
+            <ns20:EGBTBID>CH4955T63859</ns20:EGBTBID>
+            <ns20:Idx>2</ns20:Idx>
+          </ns20:Erwerbsgrund>
+          <ns20:Erwerbsgrund>
+            <ns20:ErwerbsartZusatz>nur Zusatz</ns20:ErwerbsartZusatz>
+            <ns20:Datum>2010-06-29</ns20:Datum>
+            <ns20:TagebuchNummer>294</ns20:TagebuchNummer>
+            <ns20:EGBTBID>CH4955T63859</ns20:EGBTBID>
+          </ns20:Erwerbsgrund>
+          <ns20:Erwerbsgrund>
+            <ns20:ErwerbsartStichwort>
+              <ns20:Stichwort>Erbgang ohne Zusatz</ns20:Stichwort>
+              <ns20:uuid>1946A358-37B0-4640-B458-C0CAD7F25C2D</ns20:uuid>
+            </ns20:ErwerbsartStichwort>
+            <ns20:Datum>2010-06-30</ns20:Datum>
+            <ns20:TagebuchNummer>294</ns20:TagebuchNummer>
+            <ns20:EGBTBID>CH4955T63859</ns20:EGBTBID>
+            <ns20:Idx>2</ns20:Idx>
+          </ns20:Erwerbsgrund>
+        </ns20:EigentumAnteil>
+      </ns31:Recht>
+      <ns31:Recht>
+        <ns20:Dienstbarkeit>
+          <ns20:InhaltDienstbarkeit>
+            <ns20:alteNummer>19140720.0</ns20:alteNummer>
+            <ns20:istKopie>false</ns20:istKopie>
+            <ns20:ArtStichwort>
+              <ns20:Stichwort>Baubeschränkung</ns20:Stichwort>
+              <ns20:uuid>9C3F6DE6-774B-460d-8640-1260BB234A6E</ns20:uuid>
+            </ns20:ArtStichwort>
+            <ns20:ArtZusatz>mit Zusatz</ns20:ArtZusatz>
+            <ns20:Ablaufdatum>2020-10-19</ns20:Ablaufdatum>
+            <ns20:istVerselbstaendigt>true</ns20:istVerselbstaendigt>
+          </ns20:InhaltDienstbarkeit>
+          <ns20:Rangverschiebung vonEGBTBID="CH4955T61414" vonTagebuchNummer="296" vonTagebuchDatumZeit="1989-07-31T00:00:01" vonIdx="1">
+            <ns20:RangNachfolge>
+              <ns20:Grundstueck>CH787722167710:1::test:</ns20:Grundstueck>
+              <ns20:RechtId>CH4955E39901900:E399019.0:</ns20:RechtId>
+            </ns20:RangNachfolge>
+          </ns20:Rangverschiebung>
+          <ns20:Rangverschiebung vonEGBTBID="CH4955T61414" vonTagebuchNummer="296" vonTagebuchDatumZeit="1989-07-31T00:00:01" vonIdx="1">
+            <ns20:Vorrang>
+              <ns20:Grundstueck>CH787722167710:1::test:</ns20:Grundstueck>
+              <ns20:RechtId>CH4955E39901900:E399019.0:</ns20:RechtId>
+            </ns20:Vorrang>
+          </ns20:Rangverschiebung>
+          <ns20:GestuetzAufGehoertZu vonEGBTBID="CH4955T61414" vonTagebuchNummer="296" vonTagebuchDatumZeit="1989-07-31T00:00:01" vonIdx="1">
+            <ns20:GestuetzAuf>
+              <ns20:Grundstueck>CH787722167710:1::test:</ns20:Grundstueck>
+              <ns20:RechtId>CH4955E39901900:E399019.0:</ns20:RechtId>
+            </ns20:GestuetzAuf>
+          </ns20:GestuetzAufGehoertZu>
+          <ns20:GestuetzAufGehoertZu vonEGBTBID="CH4955T61414" vonTagebuchNummer="296" vonTagebuchDatumZeit="1989-07-31T00:00:01" vonIdx="1">
+            <ns20:GehoertZu>
+              <ns20:Grundstueck>CH787722167710:1::test:</ns20:Grundstueck>
+              <ns20:RechtId>CH4955E39901900:E399019.0:</ns20:RechtId>
+            </ns20:GehoertZu>
+          </ns20:GestuetzAufGehoertZu>
+          <ns20:Fortsetzung>
+            <ns20:ref>CH4955E39901900:E399019.0:</ns20:ref>
+          </ns20:Fortsetzung>
+          <ns20:Nummer>CH4955D0x1914072051:19140720.0:</ns20:Nummer>
+          <ns20:Ursprung>
+            <ns20:ref>CH4955E39901900:E399019.0:</ns20:ref>
+          </ns20:Ursprung>
+          <ns20:beteiligtesGrundstueck vonEGBTBID="CH4955T54254" vonTagebuchNummer="3/25" vonTagebuchDatumZeit="1914-07-20T00:00:01" vonIdx="1">
+            <ns20:ref>CH787722167710:1::test:</ns20:ref>
+          </ns20:beteiligtesGrundstueck>
+          <ns20:beteiligtesGrundstueck vonEGBTBID="CH4955T54254" vonTagebuchNummer="3/25" vonTagebuchDatumZeit="1914-07-20T00:00:01" vonIdx="1">
+            <ns20:ref>CH707716772202:3:a:test:b</ns20:ref>
+          </ns20:beteiligtesGrundstueck>
+          <ns20:LastRechtDienstbarkeit>
+            <ns20:Berechtigte>
+              <ns20:ref>CH707716772202:3:a:test:b</ns20:ref>
+            </ns20:Berechtigte>
+            <ns20:belastetesGrundstueck>
+              <ns20:ref>CH787722167710:1::test:</ns20:ref>
+            </ns20:belastetesGrundstueck>
+          </ns20:LastRechtDienstbarkeit>
+        </ns20:Dienstbarkeit>
+      </ns31:Recht>
+      <ns31:Recht>
+        <ns20:Grundlast>
+          <ns20:InhaltGrundlast>
+            <ns20:alteNummer>19360824.0</ns20:alteNummer>
+            <ns20:istKopie>false</ns20:istKopie>
+            <ns20:ArtStichwort>
+              <ns20:Stichwort>Unterhaltspflicht</ns20:Stichwort>
+              <ns20:uuid>FB86BCAD-67D6-474d-A8D0-754E89174092</ns20:uuid>
+            </ns20:ArtStichwort>
+            <ns20:ArtZusatz>für Stützmauer</ns20:ArtZusatz>
+            <ns20:Gesamtwert>3000</ns20:Gesamtwert>
+            <ns20:Ablaufdatum>2020-10-19</ns20:Ablaufdatum>
+          </ns20:InhaltGrundlast>
+          <ns20:Rangverschiebung vonEGBTBID="CH4955T61414" vonTagebuchNummer="296" vonTagebuchDatumZeit="1989-07-31T00:00:01" vonIdx="1">
+            <ns20:RangNachfolge>
+              <ns20:Grundstueck>CH787722167710:1::test:</ns20:Grundstueck>
+              <ns20:RechtId>CH4955E39901900:E399019.0:</ns20:RechtId>
+            </ns20:RangNachfolge>
+          </ns20:Rangverschiebung>
+          <ns20:Rangverschiebung vonEGBTBID="CH4955T61414" vonTagebuchNummer="296" vonTagebuchDatumZeit="1989-07-31T00:00:01" vonIdx="1">
+            <ns20:Vorrang>
+              <ns20:Grundstueck>CH787722167710:1::test:</ns20:Grundstueck>
+              <ns20:RechtId>CH4955E39901900:E399019.0:</ns20:RechtId>
+            </ns20:Vorrang>
+          </ns20:Rangverschiebung>
+          <ns20:GestuetzAufGehoertZu vonEGBTBID="CH4955T61414" vonTagebuchNummer="296" vonTagebuchDatumZeit="1989-07-31T00:00:01" vonIdx="1">
+            <ns20:GestuetzAuf>
+              <ns20:Grundstueck>CH787722167710:1::test:</ns20:Grundstueck>
+              <ns20:RechtId>CH4955E39901900:E399019.0:</ns20:RechtId>
+            </ns20:GestuetzAuf>
+          </ns20:GestuetzAufGehoertZu>
+          <ns20:GestuetzAufGehoertZu vonEGBTBID="CH4955T61414" vonTagebuchNummer="296" vonTagebuchDatumZeit="1989-07-31T00:00:01" vonIdx="1">
+            <ns20:GehoertZu>
+              <ns20:Grundstueck>CH787722167710:1::test:</ns20:Grundstueck>
+              <ns20:RechtId>CH4955E39901900:E399019.0:</ns20:RechtId>
+            </ns20:GehoertZu>
+          </ns20:GestuetzAufGehoertZu>
+          <ns20:Fortsetzung>
+            <ns20:ref>CH4955E39901900:E399019.0:</ns20:ref>
+          </ns20:Fortsetzung>
+          <ns20:Nummer>CH4955D0x1936082460:19360824.0:</ns20:Nummer>
+          <ns20:Ursprung>
+            <ns20:ref>CH4955E39901900:E399019.0:</ns20:ref>
+          </ns20:Ursprung>
+          <ns20:beteiligtesGrundstueck vonEGBTBID="CH4955T54254" vonTagebuchNummer="3/25" vonTagebuchDatumZeit="1914-07-20T00:00:01" vonIdx="1">
+            <ns20:ref>CH787722167710:1::test:</ns20:ref>
+          </ns20:beteiligtesGrundstueck>
+          <ns20:beteiligtesGrundstueck vonEGBTBID="CH4955T54254" vonTagebuchNummer="3/25" vonTagebuchDatumZeit="1914-07-20T00:00:01" vonIdx="1">
+            <ns20:ref>CH707716772202:3:a:test:b</ns20:ref>
+          </ns20:beteiligtesGrundstueck>
+          <ns20:LastRechtGrundlast>
+            <ns20:Berechtigte>
+              <ns20:ref>CH707716772202:3:a:test:b</ns20:ref>
+            </ns20:Berechtigte>
+            <ns20:belastetesGrundstueck>
+              <ns20:ref>CH787722167710:1::test:</ns20:ref>
+            </ns20:belastetesGrundstueck>
+          </ns20:LastRechtGrundlast>
+        </ns20:Grundlast>
+      </ns31:Recht>
+      <ns31:Recht>
+        <ns20:Vormerkung>
+          <ns20:InhaltVormerkung>
+            <ns20:alteNummer>5327.3921</ns20:alteNummer>
+            <ns20:istKopie>false</ns20:istKopie>
+            <ns20:ArtStichwort>
+              <ns20:Stichwort>Kaufsrecht</ns20:Stichwort>
+              <ns20:uuid>AC8C4517-12CE-446f-B94E-4E8D66E9998F</ns20:uuid>
+            </ns20:ArtStichwort>
+            <ns20:ArtZusatz>übertragbar</ns20:ArtZusatz>
+            <ns20:Ablaufdatum>2020-10-19</ns20:Ablaufdatum>
+            <ns20:Preis>3000</ns20:Preis>
+          </ns20:InhaltVormerkung>
+          <ns20:Rangverschiebung vonEGBTBID="CH4955T61414" vonTagebuchNummer="296" vonTagebuchDatumZeit="1989-07-31T00:00:01" vonIdx="1">
+            <ns20:RangNachfolge>
+              <ns20:Grundstueck>CH787722167710:1::test:</ns20:Grundstueck>
+              <ns20:RechtId>CH4955E39901900:E399019.0:</ns20:RechtId>
+            </ns20:RangNachfolge>
+          </ns20:Rangverschiebung>
+          <ns20:Rangverschiebung vonEGBTBID="CH4955T61414" vonTagebuchNummer="296" vonTagebuchDatumZeit="1989-07-31T00:00:01" vonIdx="1">
+            <ns20:Vorrang>
+              <ns20:Grundstueck>CH787722167710:1::test:</ns20:Grundstueck>
+              <ns20:RechtId>CH4955E39901900:E399019.0:</ns20:RechtId>
+            </ns20:Vorrang>
+          </ns20:Rangverschiebung>
+          <ns20:GestuetzAufGehoertZu vonEGBTBID="CH4955T61414" vonTagebuchNummer="296" vonTagebuchDatumZeit="1989-07-31T00:00:01" vonIdx="1">
+            <ns20:GestuetzAuf>
+              <ns20:Grundstueck>CH787722167710:1::test:</ns20:Grundstueck>
+              <ns20:RechtId>CH4955E39901900:E399019.0:</ns20:RechtId>
+            </ns20:GestuetzAuf>
+          </ns20:GestuetzAufGehoertZu>
+          <ns20:GestuetzAufGehoertZu vonEGBTBID="CH4955T61414" vonTagebuchNummer="296" vonTagebuchDatumZeit="1989-07-31T00:00:01" vonIdx="1">
+            <ns20:GehoertZu>
+              <ns20:Grundstueck>CH787722167710:1::test:</ns20:Grundstueck>
+              <ns20:RechtId>CH4955E39901900:E399019.0:</ns20:RechtId>
+            </ns20:GehoertZu>
+          </ns20:GestuetzAufGehoertZu>
+          <ns20:Fortsetzung>
+            <ns20:ref>CH4955E39901900:E399019.0:</ns20:ref>
+          </ns20:Fortsetzung>
+          <ns20:Nummer>CH4955V3921x532777:5327.3921:</ns20:Nummer>
+          <ns20:Ursprung>
+            <ns20:ref>CH4955E39901900:E399019.0:</ns20:ref>
+          </ns20:Ursprung>
+          <ns20:beteiligtesGrundstueck vonEGBTBID="CH4955T54254" vonTagebuchNummer="3/25" vonTagebuchDatumZeit="1914-07-20T00:00:01" vonIdx="1">
+            <ns20:ref>CH787722167710:1::test:</ns20:ref>
+          </ns20:beteiligtesGrundstueck>
+          <ns20:beteiligtesGrundstueck vonEGBTBID="CH4955T54254" vonTagebuchNummer="3/25" vonTagebuchDatumZeit="1914-07-20T00:00:01" vonIdx="1">
+            <ns20:ref>CH707716772202:3:a:test:b</ns20:ref>
+          </ns20:beteiligtesGrundstueck>
+          <ns20:LastRechtVormerkung>
+            <ns20:Berechtigte>
+              <ns20:ref>CH707716772202:3:a:test:b</ns20:ref>
+            </ns20:Berechtigte>
+            <ns20:belastetesGrundstueck>
+              <ns20:ref>CH787722167710:1::test:</ns20:ref>
+            </ns20:belastetesGrundstueck>
+          </ns20:LastRechtVormerkung>
+        </ns20:Vormerkung>
+      </ns31:Recht>
+      <ns31:Recht>
+        <ns20:Anmerkung>
+          <ns20:InhaltAnmerkung>
+            <ns20:alteNummer>9163.3921</ns20:alteNummer>
+            <ns20:istKopie>false</ns20:istKopie>
+            <ns20:ArtStichwort>
+              <ns20:Stichwort>Baulinie</ns20:Stichwort>
+              <ns20:uuid>4DA5B243-4DAE-4ea8-AE9B-E17DF9284139</ns20:uuid>
+            </ns20:ArtStichwort>
+            <ns20:ArtZusatz>gemäss Baulinienplan vom 20.01.1930 für die Poststrasse</ns20:ArtZusatz>
+            <ns20:Ablaufdatum>2020-10-19</ns20:Ablaufdatum>
+            <ns20:Wert>3000</ns20:Wert>
+          </ns20:InhaltAnmerkung>
+          <ns20:Rangverschiebung vonEGBTBID="CH4955T61414" vonTagebuchNummer="296" vonTagebuchDatumZeit="1989-07-31T00:00:01" vonIdx="1">
+            <ns20:RangNachfolge>
+              <ns20:Grundstueck>CH787722167710:1::test:</ns20:Grundstueck>
+              <ns20:RechtId>CH4955E39901900:E399019.0:</ns20:RechtId>
+            </ns20:RangNachfolge>
+          </ns20:Rangverschiebung>
+          <ns20:Rangverschiebung vonEGBTBID="CH4955T61414" vonTagebuchNummer="296" vonTagebuchDatumZeit="1989-07-31T00:00:01" vonIdx="1">
+            <ns20:Vorrang>
+              <ns20:Grundstueck>CH787722167710:1::test:</ns20:Grundstueck>
+              <ns20:RechtId>CH4955E39901900:E399019.0:</ns20:RechtId>
+            </ns20:Vorrang>
+          </ns20:Rangverschiebung>
+          <ns20:GestuetzAufGehoertZu vonEGBTBID="CH4955T61414" vonTagebuchNummer="296" vonTagebuchDatumZeit="1989-07-31T00:00:01" vonIdx="1">
+            <ns20:GestuetzAuf>
+              <ns20:Grundstueck>CH787722167710:1::test:</ns20:Grundstueck>
+              <ns20:RechtId>CH4955E39901900:E399019.0:</ns20:RechtId>
+            </ns20:GestuetzAuf>
+          </ns20:GestuetzAufGehoertZu>
+          <ns20:GestuetzAufGehoertZu vonEGBTBID="CH4955T61414" vonTagebuchNummer="296" vonTagebuchDatumZeit="1989-07-31T00:00:01" vonIdx="1">
+            <ns20:GehoertZu>
+              <ns20:Grundstueck>CH787722167710:1::test:</ns20:Grundstueck>
+              <ns20:RechtId>CH4955E39901900:E399019.0:</ns20:RechtId>
+            </ns20:GehoertZu>
+          </ns20:GestuetzAufGehoertZu>
+          <ns20:Fortsetzung>
+            <ns20:ref>CH4955E39901900:E399019.0:</ns20:ref>
+          </ns20:Fortsetzung>
+          <ns20:Nummer>CH4955A3921x916358:9163.3921:</ns20:Nummer>
+          <ns20:Ursprung>
+            <ns20:ref>CH4955E39901900:E399019.0:</ns20:ref>
+          </ns20:Ursprung>
+          <ns20:beteiligtesGrundstueck vonEGBTBID="CH4955T54254" vonTagebuchNummer="3/25" vonTagebuchDatumZeit="1914-07-20T00:00:01" vonIdx="1">
+            <ns20:ref>CH787722167710:1::test:</ns20:ref>
+          </ns20:beteiligtesGrundstueck>
+          <ns20:beteiligtesGrundstueck vonEGBTBID="CH4955T54254" vonTagebuchNummer="3/25" vonTagebuchDatumZeit="1914-07-20T00:00:01" vonIdx="1">
+            <ns20:ref>CH707716772202:3:a:test:b</ns20:ref>
+          </ns20:beteiligtesGrundstueck>
+          <ns20:LastRechtAnmerkung>
+            <ns20:Berechtigte>
+              <ns20:ref>CH707716772202:3:a:test:b</ns20:ref>
+            </ns20:Berechtigte>
+            <ns20:belastetesGrundstueck>
+              <ns20:ref>CH787722167710:1::test:</ns20:ref>
+            </ns20:belastetesGrundstueck>
+          </ns20:LastRechtAnmerkung>
+        </ns20:Anmerkung>
+      </ns31:Recht>
+      <ns31:Recht>
+        <ns20:Anmerkung>
+          <ns20:InhaltAnmerkung>
+            <ns20:alteNummer>9163.3922</ns20:alteNummer>
+            <ns20:istKopie>false</ns20:istKopie>
+            <ns20:ArtStichwort>
+              <ns20:Stichwort>Baulinie</ns20:Stichwort>
+              <ns20:uuid>4DA5B243-4DAE-4ea8-AE9B-E17DF9284139</ns20:uuid>
+            </ns20:ArtStichwort>
+            <ns20:ArtZusatz>ohne Wert</ns20:ArtZusatz>
+            <ns20:Ablaufdatum>2020-10-19</ns20:Ablaufdatum>
+          </ns20:InhaltAnmerkung>
+          <ns20:Nummer>CH49559163.392252:9163.3922:</ns20:Nummer>
+          <ns20:beteiligtesGrundstueck vonEGBTBID="CH4955T54254" vonTagebuchNummer="3/25" vonTagebuchDatumZeit="1914-07-20T00:00:01" vonIdx="1">
+            <ns20:ref>CH787722167710:1::test:</ns20:ref>
+          </ns20:beteiligtesGrundstueck>
+          <ns20:beteiligtesGrundstueck vonEGBTBID="CH4955T54254" vonTagebuchNummer="3/25" vonTagebuchDatumZeit="1914-07-20T00:00:01" vonIdx="1">
+            <ns20:ref>CH707716772202:3:a:test:b</ns20:ref>
+          </ns20:beteiligtesGrundstueck>
+          <ns20:LastRechtAnmerkung>
+            <ns20:Berechtigte>
+              <ns20:ref>CH707716772202:3:a:test:b</ns20:ref>
+            </ns20:Berechtigte>
+            <ns20:belastetesGrundstueck>
+              <ns20:ref>CH787722167710:1::test:</ns20:ref>
+            </ns20:belastetesGrundstueck>
+          </ns20:LastRechtAnmerkung>
+        </ns20:Anmerkung>
+      </ns31:Recht>
+      <ns31:Recht>
+        <ns20:Grundpfandrecht ErrichtungsDatum="1967-11-26">
+          <ns20:InhaltGrundpfandrecht>
+            <ns20:alteNummer>2.3921</ns20:alteNummer>
+            <ns20:istKopie>false</ns20:istKopie>
+            <ns20:Bemerkungen>eine Bemerkung</ns20:Bemerkungen>
+            <ns20:Art>NamenSchuldbrief</ns20:Art>
+            <ns20:Pfandsumme>2400000</ns20:Pfandsumme>
+            <ns20:maxZinsfuss>10</ns20:maxZinsfuss>
+            <ns20:altRechtlichKantonaleArtStichwort>
+              <ns20:Stichwort>alt-kantonales Grundpfand</ns20:Stichwort>
+              <ns20:uuid>A9058DF6-A10B-4883-BD5D-043FB4056866</ns20:uuid>
+            </ns20:altRechtlichKantonaleArtStichwort>
+            <ns20:altRechtlichKantonaleArtZusatz>mit Zusatz</ns20:altRechtlichKantonaleArtZusatz>
+          </ns20:InhaltGrundpfandrecht>
+          <ns20:Rangverschiebung vonEGBTBID="CH4955T61414" vonTagebuchNummer="296" vonTagebuchDatumZeit="1989-07-31T00:00:01" vonIdx="1">
+            <ns20:RangNachfolge>
+              <ns20:Grundstueck>CH787722167710:1::test:</ns20:Grundstueck>
+              <ns20:RechtId>CH4955E39901900:E399019.0:</ns20:RechtId>
+            </ns20:RangNachfolge>
+          </ns20:Rangverschiebung>
+          <ns20:Rangverschiebung vonEGBTBID="CH4955T61414" vonTagebuchNummer="296" vonTagebuchDatumZeit="1989-07-31T00:00:01" vonIdx="1">
+            <ns20:Vorrang>
+              <ns20:Grundstueck>CH787722167710:1::test:</ns20:Grundstueck>
+              <ns20:RechtId>CH4955E39901900:E399019.0:</ns20:RechtId>
+            </ns20:Vorrang>
+          </ns20:Rangverschiebung>
+          <ns20:GestuetzAufGehoertZu vonEGBTBID="CH4955T61414" vonTagebuchNummer="296" vonTagebuchDatumZeit="1989-07-31T00:00:01" vonIdx="1">
+            <ns20:GestuetzAuf>
+              <ns20:Grundstueck>CH787722167710:1::test:</ns20:Grundstueck>
+              <ns20:RechtId>CH4955E39901900:E399019.0:</ns20:RechtId>
+            </ns20:GestuetzAuf>
+          </ns20:GestuetzAufGehoertZu>
+          <ns20:GestuetzAufGehoertZu vonEGBTBID="CH4955T61414" vonTagebuchNummer="296" vonTagebuchDatumZeit="1989-07-31T00:00:01" vonIdx="1">
+            <ns20:GehoertZu>
+              <ns20:Grundstueck>CH787722167710:1::test:</ns20:Grundstueck>
+              <ns20:RechtId>CH4955E39901900:E399019.0:</ns20:RechtId>
+            </ns20:GehoertZu>
+          </ns20:GestuetzAufGehoertZu>
+          <ns20:Fortsetzung>
+            <ns20:ref>CH4955E39901900:E399019.0:</ns20:ref>
+          </ns20:Fortsetzung>
+          <ns20:Nummer>CH4955G3921x247:2.3921:</ns20:Nummer>
+          <ns20:Ursprung>
+            <ns20:ref>CH4955E39901900:E399019.0:</ns20:ref>
+          </ns20:Ursprung>
+          <ns20:Glaeubiger vonEGBTBID="CH4955T61414" vonTagebuchNummer="296" vonTagebuchDatumZeit="1989-07-31T00:00:01">
+            <ns20:Rolle>Grundpfand</ns20:Rolle>
+            <ns20:Person>CH727777221644::::</ns20:Person>
+          </ns20:Glaeubiger>
+          <ns20:Schuldner>
+            <ns20:Rolle>Einfach</ns20:Rolle>
+            <ns20:Person>CH792277771621::::</ns20:Person>
+          </ns20:Schuldner>
+          <ns20:VerpfaendetesGrundstueckGrundpfandrecht vonEGBTBID="CH4955T53768" vonTagebuchNummer="210" vonTagebuchDatumZeit="1972-07-27T00:00:01" vonIdx="1">
+            <ns20:InhaltVerpfaendetesGrundstueckGrundpfandrecht>
+              <ns20:Teilpfandsumme>2400000</ns20:Teilpfandsumme>
+              <ns20:Pfandstelle>1</ns20:Pfandstelle>
+              <ns20:Nachrueckungsrecht>schiebend</ns20:Nachrueckungsrecht>
+              <ns20:Bemerkung>eine Bemerkung</ns20:Bemerkung>
+            </ns20:InhaltVerpfaendetesGrundstueckGrundpfandrecht>
+            <ns20:VerpfaendetesGrundstueck>CH707716772202:3:a:test:b</ns20:VerpfaendetesGrundstueck>
+          </ns20:VerpfaendetesGrundstueckGrundpfandrecht>
+        </ns20:Grundpfandrecht>
+      </ns31:Recht>
+    </ns31:GetParcelsByIdResponse>
+  </soap:Body>
+</soap:Envelope>

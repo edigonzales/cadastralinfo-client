@@ -36,6 +36,7 @@ import org.gwtproject.i18n.client.NumberFormat;
 import org.gwtproject.safehtml.shared.SafeHtmlUtils;
 import org.jboss.elemento.HtmlContentBuilder;
 
+import com.gargoylesoftware.htmlunit.javascript.host.svg.SVGFEGaussianBlurElement;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
@@ -117,19 +118,21 @@ public class App implements EntryPoint {
     
     private Tab tabAv;
     private AvElement avElement;
+    private GrundbuchElement grundbuchElement;
     private Loader loader;
     
 	public void onModuleLoad() {
 	    // TODO: just for tests
-	    /*
-	    String xml = "<parcel>\n"
-	            + "      <ns10:number>234</ns10:number>\n"
-	            + " </parcel>";
 	    
-	    Document doc = XMLParser.parse(xml);
-	    com.google.gwt.xml.client.Node foundNode = doc.getElementsByTagName("number").item(0);
-	    console.log(foundNode);
-	    */
+//	    String xml = "<root xmlns:ns10='_'><parcel>\n"
+//	            + "      <ns10:number>234</ns10:number>\n"
+//	            + " </parcel></root>";
+//	    
+//	    com.google.gwt.xml.client.Document doc = com.google.gwt.xml.client.XMLParser.parse(xml);
+//	    com.google.gwt.xml.client.Node foundNode = doc.getElementsByTagName("number").item(0);
+//        console.log(foundNode);
+//        console.log(foundNode.getFirstChild().getNodeValue());
+	    
 	    
         DomGlobal.fetch("/settings")
         .then(response -> {
@@ -328,6 +331,8 @@ public class App implements EntryPoint {
                         Feature[] fs = new Feature[] {features[0]};
                         addFeaturesToHighlightingVectorLayer(fs);
                         avElement.update(egrid, AV_SERVICE_BASE_URL);
+                        grundbuchElement.update(egrid, AV_SERVICE_BASE_URL);
+                        
 
                         return null;
                     }).catch_(error -> {
@@ -371,14 +376,20 @@ public class App implements EntryPoint {
 
         TabsPanel tabsPanel = TabsPanel.create()
                 .setId("tabs-panel")
-                .setColor(Color.RED);
+        //        .setColor(Color.RED);
+        .setBackgroundColor(Color.RED_LIGHTEN_1)
+        .setColor(Color.WHITE);
+
         
         tabAv = Tab.create("AMTLICHE VERMESSUNG");
         avElement = new AvElement();
         tabAv.appendChild(avElement);
         
-        
         Tab tabGrundbuch = Tab.create("GRUNDBUCH");
+        grundbuchElement = new GrundbuchElement();
+        tabGrundbuch.appendChild(grundbuchElement);
+        
+        
         Tab tabOereb = Tab.create("ÖREB");
                 
         
@@ -520,6 +531,7 @@ public class App implements EntryPoint {
                             view.setCenter(new Coordinate(x,y));
 
                             avElement.update(egridMap.get(row.getAttribute("id")), AV_SERVICE_BASE_URL);
+                            grundbuchElement.update(egridMap.get(row.getAttribute("id")), AV_SERVICE_BASE_URL);
                         });                        
                         popupBuilder.add(row);
                     }
@@ -549,6 +561,7 @@ public class App implements EntryPoint {
 
                     addFeaturesToHighlightingVectorLayer(features);
                     avElement.update(egrid, AV_SERVICE_BASE_URL);
+                    grundbuchElement.update(egrid, AV_SERVICE_BASE_URL);
                 }
                 return null;
             }).catch_(error -> {

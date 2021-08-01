@@ -88,7 +88,6 @@ public class AvElement implements IsElement<HTMLElement> {
         generalCard = Card.create("Allgemeine Informationen")
                 .setCollapsible()
                 .elevate(Elevation.LEVEL_0);
-        
         container.appendChild(generalCard.element());
         
         buildingCard = Card.create("Gebäude")
