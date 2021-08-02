@@ -55,8 +55,10 @@ public class GrundbuchService {
         log.info(xmlFile.getAbsolutePath());
         
         String content = Files.readString(Paths.get(xmlFile.getAbsolutePath()));
-        String contentJson = U.xmlToJson((String) content);
+//        String contentJson = U.xmlToJson((String) content);
+//        
+//        return contentJson;
         
-        return contentJson;
+        return content;
     } 
 }

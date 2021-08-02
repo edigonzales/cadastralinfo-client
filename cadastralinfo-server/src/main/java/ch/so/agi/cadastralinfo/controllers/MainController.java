@@ -50,7 +50,7 @@ public class MainController {
         //return ResponseEntity.ok().body("av");
     }
     
-    @RequestMapping(value = "/grundbuch", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/grundbuch", method = RequestMethod.GET, produces = MediaType.APPLICATION_XML_VALUE)
     public String getGrundbuch(@RequestParam(value = "egrid", required = true) String egrid) {
         try {
             return grundbuchService.getParcel(egrid);
