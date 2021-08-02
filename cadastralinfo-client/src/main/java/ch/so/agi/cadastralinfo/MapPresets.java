@@ -51,7 +51,7 @@ public class MapPresets {
 
         WmtsOptions wmtsOptions = OLFactory.createOptions();
         wmtsOptions.setUrl("https://geo.so.ch/api/wmts/1.0.0/{Layer}/default/2056/{TileMatrix}/{TileRow}/{TileCol}");
-        wmtsOptions.setLayer("ch.so.agi.hintergrundkarte_sw");
+        wmtsOptions.setLayer("ch.so.agi.hintergrundkarte_farbig");
         wmtsOptions.setRequestEncoding("REST");
         wmtsOptions.setFormat("image/png");
         wmtsOptions.setMatrixSet("EPSG:2056");
