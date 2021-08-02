@@ -3,8 +3,9 @@
   <inherits name="com.google.gwt.user.User" />
   <inherits name="com.google.gwt.json.JSON" />
   <inherits name="com.google.gwt.i18n.I18N" />
-  <inherits name="com.google.gwt.xml.XML" />
-  
+  <!--<inherits name="com.google.gwt.xml.XML" /> -->
+  <inherits name="org.gwtproject.xml.XML" />
+
   <extend-property name="locale" values="de_CH" />
   <set-property name="locale" value="de_CH" />
     
@@ -23,9 +24,10 @@
   <inherits name="com.google.gwt.core.Core" />
   <add-linker name="direct_install" />  
   
+  <!-- 
   <replace-with class="com.google.gwt.xml.client.impl.XMLParserImplStandard">
     <when-type-is class="com.google.gwt.xml.client.impl.XMLParserImpl"/>
     <when-property-is name="user.agent" value="safari"/>
   </replace-with>
-  
+   -->
 </module>

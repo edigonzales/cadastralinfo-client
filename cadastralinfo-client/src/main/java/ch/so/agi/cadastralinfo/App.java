@@ -36,13 +36,15 @@ import org.gwtproject.i18n.client.NumberFormat;
 import org.gwtproject.safehtml.shared.SafeHtmlUtils;
 import org.jboss.elemento.HtmlContentBuilder;
 
-import com.gargoylesoftware.htmlunit.javascript.host.svg.SVGFEGaussianBlurElement;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
-import com.google.gwt.xml.client.Document;
-import com.google.gwt.xml.client.Element;
-import com.google.gwt.xml.client.XMLParser;
+//import com.google.gwt.xml.client.Document;
+//import com.google.gwt.xml.client.Element;
+//import com.google.gwt.xml.client.XMLParser;
+import org.gwtproject.xml.client.Document;
+import org.gwtproject.xml.client.Element;
+import org.gwtproject.xml.client.XMLParser;
 
 import elemental2.core.Global;
 import elemental2.core.JsArray;
@@ -124,14 +126,15 @@ public class App implements EntryPoint {
 	public void onModuleLoad() {
 	    // TODO: just for tests
 	    
-//	    String xml = "<root xmlns:ns10='_'><parcel>\n"
-//	            + "      <ns10:number>234</ns10:number>\n"
-//	            + " </parcel></root>";
-//	    
-//	    com.google.gwt.xml.client.Document doc = com.google.gwt.xml.client.XMLParser.parse(xml);
-//	    com.google.gwt.xml.client.Node foundNode = doc.getElementsByTagName("number").item(0);
-//        console.log(foundNode);
-//        console.log(foundNode.getFirstChild().getNodeValue());
+	    String xml = "<root xmlns:ns10='_'><parcel>\n"
+	            + "      <ns10:number>234</ns10:number>\n"
+	            + " </parcel></root>";
+	    
+	    console.log(org.gwtproject.xml.client.XMLParser.class);
+	    org.gwtproject.xml.client.Document doc = org.gwtproject.xml.client.XMLParser.parse(xml);
+	    org.gwtproject.xml.client.Node foundNode = doc.getElementsByTagName("number").item(0);
+	    console.log(foundNode);
+	    console.log(foundNode.getFirstChild().getNodeValue());
 	    
 	    
         DomGlobal.fetch("/settings")

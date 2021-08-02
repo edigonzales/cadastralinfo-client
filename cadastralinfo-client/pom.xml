@@ -52,6 +52,11 @@
       <artifactId>gwt-jackson</artifactId>
       <version>0.15.4</version>
     </dependency>
+<dependency>
+    <groupId>org.gwtproject.xml</groupId>
+    <artifactId>gwt-xml</artifactId>
+    <version>1.0.0-RC1</version>
+</dependency>
 
     
   </dependencies>
