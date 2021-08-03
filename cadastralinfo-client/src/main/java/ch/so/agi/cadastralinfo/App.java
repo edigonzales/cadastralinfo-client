@@ -126,15 +126,15 @@ public class App implements EntryPoint {
 	public void onModuleLoad() {
 	    // TODO: just for tests
 	    
-	    String xml = "<root xmlns:ns10='_'><parcel>\n"
-	            + "      <ns10:number>234</ns10:number>\n"
-	            + " </parcel></root>";
-	    
-	    console.log(org.gwtproject.xml.client.XMLParser.class);
-	    org.gwtproject.xml.client.Document doc = org.gwtproject.xml.client.XMLParser.parse(xml);
-	    org.gwtproject.xml.client.Node foundNode = doc.getElementsByTagName("number").item(0);
-	    console.log(foundNode);
-	    console.log(foundNode.getFirstChild().getNodeValue());
+//	    String xml = "<root xmlns:ns10='_'><parcel>\n"
+//	            + "      <ns10:number>234</ns10:number>\n"
+//	            + " </parcel></root>";
+//	    
+//	    console.log(org.gwtproject.xml.client.XMLParser.class);
+//	    org.gwtproject.xml.client.Document doc = org.gwtproject.xml.client.XMLParser.parse(xml);
+//	    org.gwtproject.xml.client.Node foundNode = doc.getElementsByTagName("number").item(0);
+//	    console.log(foundNode);
+//	    console.log(foundNode.getFirstChild().getNodeValue());
 	    
 	    
         DomGlobal.fetch("/settings")
