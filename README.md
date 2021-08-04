@@ -7,3 +7,4 @@
 
 ## Fragen
 - Suche nach allen Grundstücken? Also auch solche, die nicht in AV sind.
+- ...
