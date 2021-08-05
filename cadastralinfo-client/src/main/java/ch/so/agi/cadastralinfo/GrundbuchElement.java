@@ -177,7 +177,7 @@ public class GrundbuchElement implements IsElement<HTMLElement> {
             //console.log(grundstuecke.item(i).getParentNode().getNodeName());
            
             
-            // TODO: getNestedElementsByTagName (prüfen, ob parent).
+            // TODO: getNestedElementsByTagName (prüfen, ob parent). Muss auch gehen, wenn Element nicht root ist.
             
             
             // Nur Grundstücke in der Root-Ebene.
