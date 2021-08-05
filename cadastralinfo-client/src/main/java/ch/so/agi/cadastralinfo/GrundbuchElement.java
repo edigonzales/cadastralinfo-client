@@ -76,7 +76,9 @@ public class GrundbuchElement implements IsElement<HTMLElement> {
                 .setBorder("1px #e53935 solid")
                 .setPadding("5px 5px 5px 0px;")
                 .setMinWidth(px.of(100)).get();
-                
+               
+        pdfBtn.disable();
+        
         pdfBtn.addClickListener(evt -> {
             Window.open(grundbuchServiceBaseUrl+"/extract/pdf/geometry/"+egrid, "_blank", null);
         });
@@ -174,6 +176,7 @@ public class GrundbuchElement implements IsElement<HTMLElement> {
         for (int i=0; i<grundstuecke.getLength(); i++) {
             console.log(grundstuecke.item(i).getParentNode().getNodeName());
             
+            // Nur Grundstücke in der Root-Ebene
             if (grundstuecke.item(i).getParentNode().getNodeName().contains("GetParcelsByIdResponse")) {
                 Element grundstueckElement = (Element) grundstuecke.item(i);
                 Node nummerNode = ((Element)grundstueckElement).getElementsByTagName("Nummer").item(0);
