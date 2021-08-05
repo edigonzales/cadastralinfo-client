@@ -270,7 +270,7 @@ public class App implements EntryPoint {
         suggestBox = SuggestBox.create("Suche: Grundstücke und Adressen", dynamicStore);
         suggestBox.addLeftAddOn(Icons.ALL.search());
         suggestBox.setAutoSelect(false);
-        suggestBox.setFocusColor(Color.RED);
+        suggestBox.setFocusColor(Color.RED_DARKEN_3);
         suggestBox.setFocusOnClose(false);
         
         HTMLElement resetIcon = Icons.ALL.close().setId("SearchResetIcon").element();
@@ -380,7 +380,7 @@ public class App implements EntryPoint {
         TabsPanel tabsPanel = TabsPanel.create()
                 .setId("tabs-panel")
         //        .setColor(Color.RED);
-        .setBackgroundColor(Color.RED_LIGHTEN_1)
+        .setBackgroundColor(Color.RED_DARKEN_3)
         .setColor(Color.WHITE);
 
         

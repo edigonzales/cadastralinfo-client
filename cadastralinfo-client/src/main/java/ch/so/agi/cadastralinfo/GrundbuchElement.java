@@ -72,8 +72,8 @@ public class GrundbuchElement implements IsElement<HTMLElement> {
                 .setBackground(Color.WHITE)
                 .elevate(0)
                 .style()
-                .setColor("#e53935")
-                .setBorder("1px #e53935 solid")
+                .setColor("#c62828")
+                .setBorder("1px #c62828 solid")
                 .setPadding("5px 5px 5px 0px;")
                 .setMinWidth(px.of(100)).get();
                

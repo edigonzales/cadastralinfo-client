@@ -69,12 +69,12 @@ public class AvElement implements IsElement<HTMLElement> {
        
         Button pdfBtn = Button.create(Icons.ALL.file_pdf_box_outline_mdi())
                 .setSize(ButtonSize.SMALL)
-                .setContent("PDF")
+                .setContent("Beschrieb")
                 .setBackground(Color.WHITE)
                 .elevate(0)
                 .style()
-                .setColor("#e53935")
-                .setBorder("1px #e53935 solid")
+                .setColor("#c62828")
+                .setBorder("1px #c62828 solid")
                 .setPadding("5px 5px 5px 0px;")
                 .setMinWidth(px.of(100)).get();
                 
@@ -310,7 +310,7 @@ public class AvElement implements IsElement<HTMLElement> {
                             .appendChild(span().css("content-value").textContent(undergroundStructure)));
             
             bind(buildingRow.element(), mouseover, event -> {
-                buildingRow.element().style.backgroundColor = "rgba(255,0,0,0.2)";
+                buildingRow.element().style.backgroundColor = "rgba(198,40,40,0.2)";
             });
             
             bind(buildingRow.element(), mouseout, event -> {
@@ -402,7 +402,7 @@ public class AvElement implements IsElement<HTMLElement> {
                   .appendChild(span().css("content-value").textContent(city)));
           
           bind(addressRow.element(), mouseover, event -> {
-              addressRow.element().style.backgroundColor = "rgba(255,0,0,0.2)";
+              addressRow.element().style.backgroundColor = "rgba(198,40,40,0.2)";
           });
           
           bind(addressRow.element(), mouseout, event -> {
@@ -463,7 +463,7 @@ public class AvElement implements IsElement<HTMLElement> {
                             .appendChild(span().css("content-value right-align").textContent(area + " m").add(span().css("sup").textContent("2"))));
             
             bind(landCoverShareRow.element(), mouseover, event -> {
-                landCoverShareRow.element().style.backgroundColor = "rgba(255,0,0,0.2)";
+                landCoverShareRow.element().style.backgroundColor = "rgba(198,40,40,0.2)";
             });
             
             bind(landCoverShareRow.element(), mouseout, event -> {
