@@ -153,17 +153,17 @@ public class GrundbuchElement implements IsElement<HTMLElement> {
     }
     
     private void processResponse(String xml) {
-        String gemeinde = "";
-        String bfsnr = "";
-        String nummerLang = "";
-        String nummerKurz = "";
-        String grundstuecksart = "";
-        String fuehrungsart = "";
-        String kantonaleUnterartStichwort = "";
-        String kantonaleUnterartStichwortZusatz = "";
-        String flaeche = "";
-        String plannr = "";
-        String anmerkungAv = "";
+//        String gemeinde = "";
+//        String bfsnr = "";
+//        String nummerLang = "";
+//        String nummerKurz = "";
+//        String grundstuecksart = "";
+//        String fuehrungsart = "";
+//        String kantonaleUnterartStichwort = "";
+//        String kantonaleUnterartStichwortZusatz = "";
+//        String flaeche = "";
+//        String plannr = "";
+//        String anmerkungAv = "";
         
         // Klasse Grundstueck: Map(egrid, Grundstueck)
         // Klasse Recht
@@ -174,13 +174,35 @@ public class GrundbuchElement implements IsElement<HTMLElement> {
         NodeList grundstuecke = doc.getElementsByTagName("Grundstueck");
         console.log(grundstuecke);
         for (int i=0; i<grundstuecke.getLength(); i++) {
-            console.log(grundstuecke.item(i).getParentNode().getNodeName());
+            //console.log(grundstuecke.item(i).getParentNode().getNodeName());
+           
+            
+            // TODO: getNestedElementsByTagName (prüfen, ob parent).
+            
             
             // Nur Grundstücke in der Root-Ebene.
             if (grundstuecke.item(i).getParentNode().getNodeName().contains("GetParcelsByIdResponse")) {
                 Element grundstueckElement = (Element) grundstuecke.item(i);
+                
+                String nummerLang = ((Element) grundstuecke.item(i)).getElementsByTagName("Nummer").item(0).getFirstChild().getNodeValue();
+                String grundstueckEgrid = nummerLang.substring(0,14);
+                String nummerKurz = nummerLang.substring(15).replaceAll(":", " / ").replace("  ", " - ");
+                if (nummerLang.endsWith(":")) {
+                    nummerKurz += "-";
+                } 
+//                for (int j=1; i<nummerLangSplit.length; j++) {
+//                    console.log(nummerLangSplit[j]);
+//                    if (nummerLangSplit[i].length() > 1) {
+//                        nummerKurz += nummerLangSplit[j] + " / ";
+//                    }
+////                    nummerKurz += part.length() > 0 ? " / " + part : " / - ";  
+//                }
+//                nummerKurz = nummerLangSplit[1] " / " +
+                console.log(grundstueckEgrid + " --- " + nummerKurz);
+                
+                
                 Node nummerNode = ((Element)grundstueckElement).getElementsByTagName("Nummer").item(0);
-                console.log(((Element)nummerNode).getFirstChild().getNodeValue());
+                //console.log(((Element)nummerNode).getFirstChild().getNodeValue());
             }
             
         }
