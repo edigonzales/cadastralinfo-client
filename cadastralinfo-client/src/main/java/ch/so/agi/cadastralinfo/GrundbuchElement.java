@@ -176,7 +176,7 @@ public class GrundbuchElement implements IsElement<HTMLElement> {
         for (int i=0; i<grundstuecke.getLength(); i++) {
             console.log(grundstuecke.item(i).getParentNode().getNodeName());
             
-            // Nur Grundstücke in der Root-Ebene
+            // Nur Grundstücke in der Root-Ebene.
             if (grundstuecke.item(i).getParentNode().getNodeName().contains("GetParcelsByIdResponse")) {
                 Element grundstueckElement = (Element) grundstuecke.item(i);
                 Node nummerNode = ((Element)grundstueckElement).getElementsByTagName("Nummer").item(0);
