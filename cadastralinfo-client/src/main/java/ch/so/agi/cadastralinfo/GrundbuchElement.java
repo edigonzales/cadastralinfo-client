@@ -190,14 +190,6 @@ public class GrundbuchElement implements IsElement<HTMLElement> {
                 if (nummerLang.endsWith(":")) {
                     nummerKurz += "-";
                 } 
-//                for (int j=1; i<nummerLangSplit.length; j++) {
-//                    console.log(nummerLangSplit[j]);
-//                    if (nummerLangSplit[i].length() > 1) {
-//                        nummerKurz += nummerLangSplit[j] + " / ";
-//                    }
-////                    nummerKurz += part.length() > 0 ? " / " + part : " / - ";  
-//                }
-//                nummerKurz = nummerLangSplit[1] " / " +
                 console.log(grundstueckEgrid + " --- " + nummerKurz);
                 
                 
