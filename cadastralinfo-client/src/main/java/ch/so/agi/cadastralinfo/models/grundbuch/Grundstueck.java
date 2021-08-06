@@ -3,6 +3,7 @@ package ch.so.agi.cadastralinfo.models.grundbuch;
 public class Grundstueck {
     String gemeinde = "";
     String bfsnr = "";
+    String gbamt = "";
     String nummerLang = "";
     String nummerKurz = "";
     String grundstuecksart = "";
@@ -26,6 +27,13 @@ public class Grundstueck {
     public void setBfsnr(String bfsnr) {
         this.bfsnr = bfsnr;
     }
+    public String getGbamt() {
+        return gbamt;
+    }
+    public void setGbamt(String gbamt) {
+        this.gbamt = gbamt;
+    }
+    
     public String getNummerLang() {
         return nummerLang;
     }
