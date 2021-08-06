@@ -181,7 +181,7 @@ public class GrundbuchElement implements IsElement<HTMLElement> {
         List<Element> gugus = new ArrayList<Element>();
         XMLUtils.getElementsByPathV2(doc.getDocumentElement(), "Body/GetParcelsByIdResponse/Grundstueck", gugus);
         //XMLUtils.getElementsByPathV2(doc.getDocumentElement(), "Body", gugus);
-        console.log(gugus.get(0).getNodeName());
+        //console.log(gugus.get(0).getNodeName());
         
         List<Element> grundstueckeList = new ArrayList<Element>();
         XMLUtils.getElementsByPath(doc.getDocumentElement(), "*/Body/GetParcelsByIdResponse/Grundstueck", grundstueckeList);
@@ -251,6 +251,11 @@ public class GrundbuchElement implements IsElement<HTMLElement> {
                     if (gemeinde != null) {
                         grundstueck.setGemeinde(gemeinde);
                     }
+                    
+                    String foo = XMLUtils.getElementValueByPathV2(childElement, "Gemeinde/municipalityName");
+                    console.log(foo);
+                    
+                    
                 }
                 
                 
