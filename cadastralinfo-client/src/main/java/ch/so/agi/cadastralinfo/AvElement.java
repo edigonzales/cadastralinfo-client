@@ -20,6 +20,8 @@ import org.dominokit.domino.ui.grid.Row;
 import org.dominokit.domino.ui.icons.Icons;
 import org.dominokit.domino.ui.loaders.Loader;
 import org.dominokit.domino.ui.loaders.LoaderEffect;
+import org.dominokit.domino.ui.popover.PopupPosition;
+import org.dominokit.domino.ui.popover.Tooltip;
 import org.dominokit.domino.ui.style.Color;
 import org.dominokit.domino.ui.style.Elevation;
 import org.gwtproject.i18n.client.NumberFormat;
@@ -67,7 +69,7 @@ public class AvElement implements IsElement<HTMLElement> {
         loader = Loader.create(root, LoaderEffect.ROTATION).setLoadingText("");
         loader.start();
        
-        Button pdfBtn = Button.create(Icons.ALL.file_pdf_box_outline_mdi())
+        Button descBtn = Button.create(Icons.ALL.file_pdf_box_outline_mdi())
                 .setSize(ButtonSize.SMALL)
                 .setContent("Beschrieb")
                 .setBackground(Color.WHITE)
@@ -78,11 +80,37 @@ public class AvElement implements IsElement<HTMLElement> {
                 .setPadding("5px 5px 5px 0px;")
                 .setMinWidth(px.of(100)).get();
                 
-        pdfBtn.addClickListener(evt -> {
+        Tooltip.create(descBtn, "Grundstücksbeschrieb der amtlichen Vermessung").position(PopupPosition.TOP);
+
+        descBtn.addClickListener(evt -> {
             Window.open(avServiceBaseUrl+"/extract/pdf/geometry/"+egrid, "_blank", null);
         });
 
-        container.appendChild(pdfBtn.element());
+        Button mapBtn = Button.create(Icons.ALL.file_pdf_box_outline_mdi())
+                .setSize(ButtonSize.SMALL)
+                .setContent("Plan")
+                .setBackground(Color.WHITE)
+                .elevate(0)
+                .style()
+                .setColor("#c62828")
+                .setBorder("1px #c62828 solid")
+                .setPadding("5px 5px 5px 0px;")
+                //.setMargin("20px")
+                .setMinWidth(px.of(100)).get();
+                
+        Tooltip.create(mapBtn, "Auszug Plan für das Grundbuch").position(PopupPosition.TOP);
+        
+        mapBtn.addClickListener(evt -> {
+            //Window.open(avServiceBaseUrl+"/extract/pdf/geometry/"+egrid, "_blank", null);
+            Window.open("http://map.geo.gl.ch/api/v1/plotinfo/landreg/CH867022698167", "_blank", null);
+        });
+        
+        container.appendChild(Row.create().css("content-row")
+                .appendChild(Column.span2()
+                        .appendChild(descBtn))
+                .appendChild(Column.span2()
+                        .appendChild(mapBtn)).element());
+        
         container.appendChild(Row.create().css("empty-row-20").element());
         
         generalCard = Card.create("Allgemeine Informationen")
@@ -263,96 +291,98 @@ public class AvElement implements IsElement<HTMLElement> {
         for (int i=0; i<buildings.length; i++) {
             JsPropertyMap<?> building = Js.asPropertyMap(buildings.getAt(i));
             
-            String egid = "-";
-            if (building.get("Egid") != null) {
-                egid = Js.asString(building.get("Egid"));
-            }
-            
-            String area = "-";
-            if (building.has("AreaShare")) {
-                String rawString = Js.asString(building.get("AreaShare"));
-                area = fmtInteger.format(Double.valueOf(rawString));
-            } else if (building.has("Area")) {
-                String rawString = Js.asString(building.get("Area"));
-                area = fmtInteger.format(Double.valueOf(rawString));
-            }
-
-            String planned = "-";
-            if (building.get("planned") != null) {
-                String rawString = Js.asString(building.get("planned"));
-                if (rawString.equalsIgnoreCase("true")) {
-                    planned = "ja";
-                } else {
-                    planned = "nein";
+            if (building != null) {
+                String egid = "-";
+                if (building.has("Egid")) {
+                    egid = Js.asString(building.get("Egid"));
                 }
-            }
-            
-            String undergroundStructure = "-";
-            if (building.has("undergroundStructure")) {
-                String rawString = Js.asString(building.get("undergroundStructure"));
-                if (rawString.equalsIgnoreCase("true")) {
-                    undergroundStructure = "ja";
-                } else {
-                    undergroundStructure = "nein";
+                
+                String area = "-";
+                if (building.has("AreaShare")) {
+                    String rawString = Js.asString(building.get("AreaShare"));
+                    area = fmtInteger.format(Double.valueOf(rawString));
+                } else if (building.has("Area")) {
+                    String rawString = Js.asString(building.get("Area"));
+                    area = fmtInteger.format(Double.valueOf(rawString));
                 }
-            }
 
-            Row buildingRow = Row.create().css("content-row")
-                    .appendChild(Column.span2()
-                            .appendChild(span().css("content-value").textContent(egid)))
-                    .appendChild(Column.span2()
-                            .appendChild(span().css("content-value right-align").textContent(area + " m").add(span().css("sup").textContent("2"))))
-                    .appendChild(Column.span1()
-                            .appendChild(span().css("content-value").textContent("")))
-                    .appendChild(Column.span1()
-                            .appendChild(span().css("content-value").textContent(planned)))
-                    .appendChild(Column.span1()
-                            .appendChild(span().css("content-value").textContent(undergroundStructure)));
-            
-            bind(buildingRow.element(), mouseover, event -> {
-                buildingRow.element().style.backgroundColor = "rgba(198,40,40,0.2)";
-            });
-            
-            bind(buildingRow.element(), mouseout, event -> {
-                buildingRow.element().style.backgroundColor = "white";
-            });
-
-            buildingCard
-            .appendChild(buildingRow);
-
-            JsArray<?> buildingEntries;
-            if (JsArray.isArray(building.get("BuildingEntry"))) {
-                buildingEntries = Js.cast(building.get("BuildingEntry"));
-            } else {
-                buildingEntries = JsArray.of(building.get("BuildingEntry"));
-            }
-          
-            if (buildingEntries.length > 0) {
-                String addressString = "";
-                for (int j = 0; j < buildingEntries.length; j++) {
-                    JsPropertyMap<?> entry = Js.asPropertyMap(buildingEntries.getAt(j));
-
-                    if (entry != null && entry.has("PostalAddress")) {
-                        JsPropertyMap<?> address = Js.asPropertyMap(entry.get("PostalAddress"));
-                        
-                        // Damit sortiert werden kann, brauchen wir einen Sortierschlüssel.
-                        // In unserem Fall ist das der Strassenname plus Hausnummer.
-                        String street = "";
-                        if (address.has("Street")) {
-                            street = Js.asString(address.get("Street"));
-                        }
-                        
-                        String number = "";
-                        if (address.has("Number")) {
-                            number = Js.asString(address.get("Number"));
-                        }
-                        
-                        // Hausnummer mit Nullen füllen, damit die Sortierung passt. Z.B. 5 vor 17.
-                        String leadingZeroNumber = ("00000000" + number).substring(number.length());
-                        postalAddresses.put(street+leadingZeroNumber, address);
+                String planned = "-";
+                if (building.get("planned") != null) {
+                    String rawString = Js.asString(building.get("planned"));
+                    if (rawString.equalsIgnoreCase("true")) {
+                        planned = "ja";
+                    } else {
+                        planned = "nein";
                     }
                 }
-            }                
+                
+                String undergroundStructure = "-";
+                if (building.has("undergroundStructure")) {
+                    String rawString = Js.asString(building.get("undergroundStructure"));
+                    if (rawString.equalsIgnoreCase("true")) {
+                        undergroundStructure = "ja";
+                    } else {
+                        undergroundStructure = "nein";
+                    }
+                }
+
+                Row buildingRow = Row.create().css("content-row")
+                        .appendChild(Column.span2()
+                                .appendChild(span().css("content-value").textContent(egid)))
+                        .appendChild(Column.span2()
+                                .appendChild(span().css("content-value right-align").textContent(area + " m").add(span().css("sup").textContent("2"))))
+                        .appendChild(Column.span1()
+                                .appendChild(span().css("content-value").textContent("")))
+                        .appendChild(Column.span1()
+                                .appendChild(span().css("content-value").textContent(planned)))
+                        .appendChild(Column.span1()
+                                .appendChild(span().css("content-value").textContent(undergroundStructure)));
+                
+                bind(buildingRow.element(), mouseover, event -> {
+                    buildingRow.element().style.backgroundColor = "rgba(198,40,40,0.2)";
+                });
+                
+                bind(buildingRow.element(), mouseout, event -> {
+                    buildingRow.element().style.backgroundColor = "white";
+                });
+
+                buildingCard
+                .appendChild(buildingRow);
+
+                JsArray<?> buildingEntries;
+                if (JsArray.isArray(building.get("BuildingEntry"))) {
+                    buildingEntries = Js.cast(building.get("BuildingEntry"));
+                } else {
+                    buildingEntries = JsArray.of(building.get("BuildingEntry"));
+                }
+              
+                if (buildingEntries.length > 0) {
+                    String addressString = "";
+                    for (int j = 0; j < buildingEntries.length; j++) {
+                        JsPropertyMap<?> entry = Js.asPropertyMap(buildingEntries.getAt(j));
+
+                        if (entry != null && entry.has("PostalAddress")) {
+                            JsPropertyMap<?> address = Js.asPropertyMap(entry.get("PostalAddress"));
+                            
+                            // Damit sortiert werden kann, brauchen wir einen Sortierschlüssel.
+                            // In unserem Fall ist das der Strassenname plus Hausnummer.
+                            String street = "";
+                            if (address.has("Street")) {
+                                street = Js.asString(address.get("Street"));
+                            }
+                            
+                            String number = "";
+                            if (address.has("Number")) {
+                                number = Js.asString(address.get("Number"));
+                            }
+                            
+                            // Hausnummer mit Nullen füllen, damit die Sortierung passt. Z.B. 5 vor 17.
+                            String leadingZeroNumber = ("00000000" + number).substring(number.length());
+                            postalAddresses.put(street+leadingZeroNumber, address);
+                        }
+                    }
+                }
+            }
         }
         
         /*

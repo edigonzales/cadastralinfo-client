@@ -3,15 +3,19 @@ package ch.so.agi.cadastralinfo;
 import static elemental2.dom.DomGlobal.console;
 import static org.dominokit.domino.ui.style.Unit.px;
 import static org.jboss.elemento.Elements.div;
+import static org.jboss.elemento.Elements.span;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import org.dominokit.domino.ui.button.Button;
 import org.dominokit.domino.ui.button.ButtonSize;
 import org.dominokit.domino.ui.cards.Card;
+import org.dominokit.domino.ui.grid.Column;
 import org.dominokit.domino.ui.grid.Row;
 import org.dominokit.domino.ui.icons.Icons;
 import org.dominokit.domino.ui.loaders.Loader;
@@ -24,6 +28,7 @@ import org.gwtproject.xml.client.Element;
 import org.gwtproject.xml.client.Node;
 import org.gwtproject.xml.client.NodeList;
 import org.gwtproject.xml.client.XMLParser;
+import org.gwtproject.i18n.shared.DateTimeFormat;
 import org.jboss.elemento.IsElement;
 
 import com.google.gwt.user.client.Window;
@@ -35,7 +40,10 @@ import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
+import ch.so.agi.cadastralinfo.models.grundbuch.AVBemerkung;
 import ch.so.agi.cadastralinfo.models.grundbuch.Grundstueck;
+import ch.so.agi.cadastralinfo.models.grundbuch.HaengigesGeschaeft;
+import ch.so.agi.cadastralinfo.models.grundbuch.MutationsNummer;
 import ch.so.agi.cadastralinfo.xml.XMLUtils;
 
 public class GrundbuchElement implements IsElement<HTMLElement> {
@@ -47,7 +55,6 @@ public class GrundbuchElement implements IsElement<HTMLElement> {
     private final HTMLElement root;
     private HTMLDivElement container;
     private Card generalCard;
-    private Card descriptionCard;
     private Card dominatingCard;
     private Card propertyCard;
     private Card noteCard;
@@ -63,6 +70,17 @@ public class GrundbuchElement implements IsElement<HTMLElement> {
     public void update(String egrid, String grundbuchServiceBaseUrl) {
         this.egrid = egrid;
         
+        // FIXME 
+        // TODO
+        // Fake E-GRID, damit man die statischen Beispiele verwenden kann.
+        // Round-robin-mässig sollen verschiedene statische Auszüge angefordert
+        // werden.
+        List<String> egrids = new ArrayList<String>() {{
+            add("CH707716772202");
+        }};
+        Random rand = new Random();
+        this.egrid = egrids.get(rand.nextInt(egrids.size()));
+        
         if (container != null) {
             container.remove();
         }
@@ -75,7 +93,7 @@ public class GrundbuchElement implements IsElement<HTMLElement> {
 
         Button pdfBtn = Button.create(Icons.ALL.file_pdf_box_outline_mdi())
                 .setSize(ButtonSize.SMALL)
-                .setContent("PDF")
+                .setContent("Grundbuchauszug")
                 .setBackground(Color.WHITE)
                 .elevate(0)
                 .style()
@@ -98,23 +116,17 @@ public class GrundbuchElement implements IsElement<HTMLElement> {
                 .elevate(Elevation.LEVEL_0);        
         container.appendChild(generalCard.element());
 
-        descriptionCard = Card.create("Grundstückbeschreibung")
+        propertyCard = Card.create("Eigentum")
                 .setCollapsible()
-                .collapse()
+                //.collapse()
                 .elevate(Elevation.LEVEL_0);        
-        container.appendChild(descriptionCard.element());
+        container.appendChild(propertyCard.element());
 
         dominatingCard = Card.create("Dominierende Grundstücke")
                 .setCollapsible()
                 .collapse()
                 .elevate(Elevation.LEVEL_0);        
         container.appendChild(dominatingCard.element());
-
-        propertyCard = Card.create("Eigentum")
-                .setCollapsible()
-                .collapse()
-                .elevate(Elevation.LEVEL_0);        
-        container.appendChild(propertyCard.element());
 
         noteCard = Card.create("Anmerkungen")
                 .setCollapsible()
@@ -140,7 +152,7 @@ public class GrundbuchElement implements IsElement<HTMLElement> {
                 .elevate(Elevation.LEVEL_0);        
         container.appendChild(pendingCard.element());
         
-        DomGlobal.fetch("/grundbuch?egrid="+egrid)
+        DomGlobal.fetch("/grundbuch?egrid="+this.egrid)
         .then(response -> {
             if (!response.ok) {
                 return null;
@@ -159,36 +171,15 @@ public class GrundbuchElement implements IsElement<HTMLElement> {
         loader.stop();
     }
     
-    private void processResponse(String xml) {
-//        String gemeinde = "";
-//        String bfsnr = "";
-//        String nummerLang = "";
-//        String nummerKurz = "";
-//        String grundstuecksart = "";
-//        String fuehrungsart = "";
-//        String kantonaleUnterartStichwort = "";
-//        String kantonaleUnterartStichwortZusatz = "";
-//        String flaeche = "";
-//        String plannr = "";
-//        String anmerkungAv = "";
-        
-        // Klasse Grundstueck: Map(egrid, Grundstueck)
-        // Klasse Recht
-        // Klasse Person
-        
+    private void processResponse(String xml) {        
+        // Parsing XML
         Document doc = XMLParser.parse(xml);
-        
-        List<Element> gugus = new ArrayList<Element>();
-        XMLUtils.getElementsByPathV2(doc.getDocumentElement(), "Body/GetParcelsByIdResponse/Grundstueck", gugus);
-        //XMLUtils.getElementsByPathV2(doc.getDocumentElement(), "Body", gugus);
-        //console.log(gugus.get(0).getNodeName());
-        
+                
         List<Element> grundstueckeList = new ArrayList<Element>();
-        XMLUtils.getElementsByPath(doc.getDocumentElement(), "*/Body/GetParcelsByIdResponse/Grundstueck", grundstueckeList);
-
+        XMLUtils.getElementsByPath(doc.getDocumentElement(), "Body/GetParcelsByIdResponse/Grundstueck", grundstueckeList);
+        
         Map<String, Grundstueck> grundstuecke = new HashMap<String, Grundstueck>();
         for (Element grundstueckElement : grundstueckeList) {
-            //console.log(grundstueckElement);
             Grundstueck grundstueck = new Grundstueck();
             NodeList childNodes = grundstueckElement.getChildNodes();
             for (int i=0; i<childNodes.getLength(); i++) {
@@ -202,100 +193,173 @@ public class GrundbuchElement implements IsElement<HTMLElement> {
                         grundstueck.setGrundstuecksart("GewoehnlichesSDR");
                     } 
                     
-//                    String nummerLang = XMLUtils.getElementValueByPath((Element)childNodes.item(i), "*/Nummer");
-//                    if (nummerLang != null) {
-//                        grundstueck.setNummerLang(nummerLang);
-//
-//                        String grundstueckEgrid = nummerLang.substring(0, 14);
-//                        if (grundstueckEgrid.equalsIgnoreCase(egrid)) {
-//                            grundstueck.setHauptGrundstueck(true);
-//                        } else {
-//                            grundstueck.setHauptGrundstueck(false);
-//                        }
-//                        
-//                        String nummerKurz = nummerLang.substring(15).replaceAll(":", " / ").replace("  ", " - ");
-//                        if (nummerLang.endsWith(":")) {
-//                            nummerKurz += "-";
-//                        }
-//                        grundstueck.setNummerKurz(nummerKurz);
-//                    }
-//                    //console.log("nummerLang: " + nummerLang);
-//                    
-//                    String gbPlanNummer = XMLUtils.getElementValueByPath((Element)childNodes.item(i), "*/GBPlan/Nummer");
-//                    if (gbPlanNummer != null) {
-//                        grundstueck.setPlannr(gbPlanNummer);
-//                    }
-//                   //console.log("gbPlanNummer: " + gbPlanNummer);
-//                    
-//                    String fuehrungsart = XMLUtils.getElementValueByPath((Element)childNodes.item(i), "*/Inhalt*/Fuehrungsart");
-//                    if (fuehrungsart != null) {
-//                        grundstueck.setFuehrungsart(fuehrungsart);
-//                    }
-//                    
-//                    String flaechenmass = XMLUtils.getElementValueByPath((Element)childNodes.item(i), "*/Inhalt*/Flaechenmass");
-//                    if (flaechenmass != null) {
-//                        grundstueck.setFlaeche(flaechenmass);
-//                    }
+                    String nummerLang = XMLUtils.getElementValueByPath((Element)childNodes.item(i), "Nummer");
+                    if (nummerLang != null) {
+                        String grundstueckEgrid = nummerLang.substring(0, 14);
+                        if (grundstueckEgrid.equalsIgnoreCase(egrid)) {
+                            grundstueck.setHauptGrundstueck(true);
+                        } else {
+                            grundstueck.setHauptGrundstueck(false);
+                        }
+                        
+                        String nummerKurz = nummerLang.substring(15).replaceAll(":", " / ").replace("  ", " - ");
+                        if (nummerLang.endsWith(":")) {
+                            nummerKurz += "-";
+                        }
+                        grundstueck.setNummerKurz(nummerKurz);
+                        
+                        nummerLang = this.egrid + " / " + nummerKurz;
+                        grundstueck.setNummerLang(nummerLang);
+                                                
+                        grundstueck.setEgrid(grundstueckEgrid);
+                    }
+                    
+                    String gbPlanNummer = XMLUtils.getElementValueByPath((Element)childNodes.item(i), "GBPlan/Nummer");
+                    if (gbPlanNummer != null) {
+                        grundstueck.setPlannr(gbPlanNummer);
+                    }
+                    
+                    String fuehrungsart = XMLUtils.getElementValueByPath((Element)childNodes.item(i), "Inhalt*/Fuehrungsart");
+                    if (fuehrungsart != null) {
+                        grundstueck.setFuehrungsart(fuehrungsart);
+                    }
+                    
+                    String flaechenmass = XMLUtils.getElementValueByPath((Element)childNodes.item(i), "Inhalt*/Flaechenmass");
+                    if (flaechenmass != null) {
+                        grundstueck.setFlaeche(flaechenmass);
+                    }
 
-                    String gbamt = XMLUtils.getElementValueByPath(childElement, "*/GBAmt/Name");
+                    String gbamt = XMLUtils.getElementValueByPath(childElement, "GBAmt/Name");
                     if (gbamt != null) {
                         grundstueck.setGbamt(gbamt);
                     }
                     
-                    String bfsnr = XMLUtils.getElementValueByPath(childElement, "*/Gemeinde/municipalityId");
+                    String bfsnr = XMLUtils.getElementValueByPath(childElement, "Gemeinde/municipalityId");
                     if (bfsnr != null) {
                         grundstueck.setBfsnr(bfsnr);
                     }
                     
-                    String gemeinde = XMLUtils.getElementValueByPath(childElement, "*/Gemeinde/municipalityName");
+                    String gemeinde = XMLUtils.getElementValueByPath(childElement, "Gemeinde/municipalityName");
                     if (gemeinde != null) {
                         grundstueck.setGemeinde(gemeinde);
                     }
                     
-                    String foo = XMLUtils.getElementValueByPathV2(childElement, "Gemeinde/municipalityName");
-                    console.log(foo);
+                    String kantonaleUnterartStichwort = XMLUtils.getElementValueByPath(childElement, "KantonaleUnterartStichwort/Stichwort");
+                    if (kantonaleUnterartStichwort != null) {
+                        grundstueck.setKantonaleUnterartStichwort(kantonaleUnterartStichwort);
+                    }
                     
+                    String kantonaleUnterartZusatz = XMLUtils.getElementValueByPath(childElement, "KantonaleUnterartZusatz");
+                    if (kantonaleUnterartZusatz != null) {
+                        grundstueck.setKantonaleUnterartZusatz(kantonaleUnterartZusatz);
+                    }
                     
-                }
-                
-                
- 
-            }
-            //console.log(grundstueck);   
+                    // Hängige Geschäfte
+                    List<Element> haengigeGeschaefteList = new ArrayList<Element>();
+                    XMLUtils.getElementsByPath(childElement, "HaengigesGeschaeft", haengigeGeschaefteList);
+                    List<HaengigesGeschaeft> haengigeGeschaefte = new ArrayList<HaengigesGeschaeft>();
+                    for (int l=0; l<haengigeGeschaefteList.size(); l++) {
+                        HaengigesGeschaeft haengigesGeschaeft = new HaengigesGeschaeft();
+                        Element haengigesGeschaeftElement = haengigeGeschaefteList.get(l);
+                        
+                        haengigesGeschaeft.setEgbtbid(XMLUtils.getElementValueByPath(haengigesGeschaeftElement, "EGBTBID", "-"));
+                        haengigesGeschaeft.setTagebuchNummer(XMLUtils.getElementValueByPath(haengigesGeschaeftElement, "TagebuchNummer", "-"));
+                        String tagebuchDatumZeit = XMLUtils.getElementValueByPath(haengigesGeschaeftElement, "TagebuchDatumZeit", "-");
+                        if (tagebuchDatumZeit.length() > 1) {
+                            // TODO Utils, falls mehrfach.
+                            DateTimeFormat dateFormatRead = DateTimeFormat.getFormat("yyyy-MM-ddTHH:mm:ss");
+                            Date date = dateFormatRead.parse(tagebuchDatumZeit);
+                            
+                            DateTimeFormat dateFormatWrite = DateTimeFormat.getFormat("dd. MMMM yyyy HH:mm:ss");
+                            tagebuchDatumZeit = dateFormatWrite.format(date);
+                        }
+                        haengigesGeschaeft.setTagebuchDatumZeit(XMLUtils.getElementValueByPath(haengigesGeschaeftElement, "TagebuchDatumZeit", "-"));
+                        haengigesGeschaeft.setGeschaeftsfallbeschreibungStichwort(XMLUtils.getElementValueByPath(haengigesGeschaeftElement, "GeschaeftsfallbeschreibungStichwort", "-"));
+                        haengigesGeschaeft.setGeschaeftsfallbeschreibungZusatz(XMLUtils.getElementValueByPath(haengigesGeschaeftElement, "GeschaeftsfallbeschreibungZusatz", "-"));
 
-            
-            
+                        haengigeGeschaefte.add(haengigesGeschaeft);
+                    }
+                    grundstueck.setHaengigeGeschaefte(haengigeGeschaefte);
+                    
+                    // Letzte vollzogene Mutation
+                    List<Element> letzteVollzogeneMutationList = new ArrayList<Element>();
+                    XMLUtils.getElementsByPath(childElement, "letzteVollzogeneMutation", letzteVollzogeneMutationList);
+                    if (letzteVollzogeneMutationList.size() > 0) {
+                        Element element = letzteVollzogeneMutationList.get(0);
+                        MutationsNummer mutationsNummer = new MutationsNummer();
+                        mutationsNummer.setNummer(XMLUtils.getElementValueByPath(element, "Nummer"));
+                        mutationsNummer.setAmtlVermKreis(XMLUtils.getElementValueByPath(element, "AmtlVermKreis"));
+                        grundstueck.setLetzteVollzogeneMutation(mutationsNummer);
+                    }
+                    
+                    // AV-Bemerkung
+                    List<Element> avBemerkungList = new ArrayList<Element>();
+                    XMLUtils.getElementsByPath(childElement, "AVBemerkung", avBemerkungList);
+                    List<AVBemerkung> avBemerkungen = new ArrayList<AVBemerkung>();
+                    for (Element element : avBemerkungList) {
+                        AVBemerkung avBemerkung = new AVBemerkung();
+                        avBemerkung.setArt(XMLUtils.getElementValueByPath(element, "Art"));
+                        avBemerkung.setAndereArt(XMLUtils.getElementValueByPath(element, "AndereArt", "-"));
+                        avBemerkung.setBemerkung(XMLUtils.getElementValueByPath(element, "Bemerkung", "-"));
+                        avBemerkungen.add(avBemerkung);
+                    }
+                    grundstueck.setAvBemerkungen(avBemerkungen);
+                }
+            }
+            grundstuecke.put(grundstueck.getEgrid(), grundstueck);    
         }
         
+        // Rendering output
+        Grundstueck hauptGrundstueck = grundstuecke.get(egrid);
         
-//        NodeList grundstuecke = doc.getElementsByTagName("Grundstueck");
-//        console.log(grundstuecke);
-//        for (int i=0; i<grundstuecke.getLength(); i++) {
-            //console.log(grundstuecke.item(i).getParentNode().getNodeName());
-           
-            
-            // TODO: getNestedElementsByTagName (prüfen, ob parent). Muss auch gehen, wenn Element nicht root ist.
-                        
-            
-            // Nur Grundstücke in der Root-Ebene.
-//            if (grundstuecke.item(i).getParentNode().getNodeName().contains("GetParcelsByIdResponse")) {
-//                Element grundstueckElement = (Element) grundstuecke.item(i);
-//                
-//                String nummerLang = ((Element) grundstuecke.item(i)).getElementsByTagName("Nummer").item(0).getFirstChild().getNodeValue();
-//                String grundstueckEgrid = nummerLang.substring(0,14);
-//                String nummerKurz = nummerLang.substring(15).replaceAll(":", " / ").replace("  ", " - ");
-//                if (nummerLang.endsWith(":")) {
-//                    nummerKurz += "-";
-//                } 
-//                console.log(grundstueckEgrid + " --- " + nummerKurz);
-//                
-//                
-//                Node nummerNode = ((Element)grundstueckElement).getElementsByTagName("Nummer").item(0);
-//                //console.log(((Element)nummerNode).getFirstChild().getNodeValue());
-//            }
-//            
-//        }
-
+        generalCard
+        .appendChild(Row.create().css("content-row")
+                .appendChild(Column.span3()
+                        .appendChild(span().css("content-key").textContent("Grundstücksnummer:")))
+                .appendChild(Column.span3()
+                        .appendChild(span().css("content-value").textContent(hauptGrundstueck.getNummerKurz())))
+                .appendChild(Column.span3()
+                        .appendChild(span().css("content-key").textContent("E-GRID:")))
+                .appendChild(Column.span3()
+                        .appendChild(span().css("content-value").textContent(hauptGrundstueck.getEgrid()))))
+        .appendChild(Row.create().css("content-row")
+                .appendChild(Column.span3()
+                        .appendChild(span().css("content-key").textContent("Gemeinde:")))
+                .appendChild(Column.span3()
+                        .appendChild(span().css("content-value").textContent(hauptGrundstueck.getGemeinde())))
+                .appendChild(Column.span3()
+                        .appendChild(span().css("content-key").textContent("BfS-Nr.:")))
+                .appendChild(Column.span3()
+                        .appendChild(span().css("content-value").textContent(hauptGrundstueck.getBfsnr()))))
+        .appendChild(Row.create().css("content-row")
+                .appendChild(Column.span3()
+                        .appendChild(span().css("content-key").textContent("Grundstücksart:")))
+                .appendChild(Column.span3()
+                        .appendChild(span().css("content-value").textContent(hauptGrundstueck.getGrundstuecksart())))
+                .appendChild(Column.span3()
+                        .appendChild(span().css("content-key").textContent("Kantonale Unterart:")))
+                .appendChild(Column.span3()
+                        .appendChild(span().css("content-value").textContent(hauptGrundstueck.getKantonaleUnterartStichwort() + " " + hauptGrundstueck.getKantonaleUnterartZusatz()))))
+        .appendChild(Row.create().css("content-row")
+                .appendChild(Column.span3()
+                        .appendChild(span().css("content-key").textContent("Führungsart:")))
+                .appendChild(Column.span3()
+                        .appendChild(span().css("content-value").textContent(hauptGrundstueck.getFuehrungsart())))
+                .appendChild(Column.span3()
+                        .appendChild(span().css("content-key").textContent("Grundbuch:")))
+                .appendChild(Column.span3()
+                        .appendChild(span().css("content-value").textContent(hauptGrundstueck.getGbamt()))))
+        .appendChild(Row.create().css("content-row")
+                .appendChild(Column.span3()
+                        .appendChild(span().css("content-key").textContent("Grundstücksfläche:")))
+                .appendChild(Column.span3()
+                        .appendChild(span().css("content-value").textContent(hauptGrundstueck.getFlaeche() + " m").add(span().css("sup").textContent("2"))))
+                .appendChild(Column.span3()
+                        .appendChild(span().css("content-key").textContent("Plan-Nr.:")))
+                .appendChild(Column.span3()
+                        .appendChild(span().css("content-value").textContent(hauptGrundstueck.getPlannr()))));
+        
+        
     }
    
     

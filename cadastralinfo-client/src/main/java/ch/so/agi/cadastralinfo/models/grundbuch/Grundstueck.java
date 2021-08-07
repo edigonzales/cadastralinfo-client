@@ -1,19 +1,25 @@
 package ch.so.agi.cadastralinfo.models.grundbuch;
 
+import java.util.List;
+
 public class Grundstueck {
-    String gemeinde = "";
-    String bfsnr = "";
-    String gbamt = "";
-    String nummerLang = "";
-    String nummerKurz = "";
-    String grundstuecksart = "";
-    String fuehrungsart = "";
-    String kantonaleUnterartStichwort = "";
-    String kantonaleUnterartStichwortZusatz = "";
-    String flaeche = "";
-    String plannr = "";
-    String anmerkungAv = "";
+    String gemeinde = "-";
+    String bfsnr = "-";
+    String gbamt = "-";
+    String nummerLang = "-";
+    String nummerKurz = "-";
+    String egrid;
+    String grundstuecksart = "-";
+    String fuehrungsart = "-";
+    String kantonaleUnterartStichwort = "-";
+    String kantonaleUnterartZusatz = "-";
+    String flaeche = "-";
+    String plannr = "-";
+    String anmerkungAv = "-";
     boolean isHauptGrundstueck;
+    List<HaengigesGeschaeft> haengigeGeschaefte;
+    List<AVBemerkung> avBemerkungen;
+    MutationsNummer letzteVollzogeneMutation;
     
     public String getGemeinde() {
         return gemeinde;
@@ -64,11 +70,11 @@ public class Grundstueck {
     public void setKantonaleUnterartStichwort(String kantonaleUnterartStichwort) {
         this.kantonaleUnterartStichwort = kantonaleUnterartStichwort;
     }
-    public String getKantonaleUnterartStichwortZusatz() {
-        return kantonaleUnterartStichwortZusatz;
+    public String getKantonaleUnterartZusatz() {
+        return kantonaleUnterartZusatz;
     }
-    public void setKantonaleUnterartStichwortZusatz(String kantonaleUnterartStichwortZusatz) {
-        this.kantonaleUnterartStichwortZusatz = kantonaleUnterartStichwortZusatz;
+    public void setKantonaleUnterartZusatz(String kantonaleUnterartZusatz) {
+        this.kantonaleUnterartZusatz = kantonaleUnterartZusatz;
     }
     public String getFlaeche() {
         return flaeche;
@@ -93,6 +99,30 @@ public class Grundstueck {
     }
     public void setHauptGrundstueck(boolean isHauptGrundstueck) {
         this.isHauptGrundstueck = isHauptGrundstueck;
+    }
+    public String getEgrid() {
+        return egrid;
+    }
+    public void setEgrid(String egrid) {
+        this.egrid = egrid;
+    }
+    public List<HaengigesGeschaeft> getHaengigeGeschaefte() {
+        return haengigeGeschaefte;
+    }
+    public void setHaengigeGeschaefte(List<HaengigesGeschaeft> haengigeGeschaefte) {
+        this.haengigeGeschaefte = haengigeGeschaefte;
+    }
+    public MutationsNummer getLetzteVollzogeneMutation() {
+        return letzteVollzogeneMutation;
+    }
+    public void setLetzteVollzogeneMutation(MutationsNummer letzteVollzogeneMutation) {
+        this.letzteVollzogeneMutation = letzteVollzogeneMutation;
+    }
+    public List<AVBemerkung> getAvBemerkungen() {
+        return avBemerkungen;
+    }
+    public void setAvBemerkungen(List<AVBemerkung> avBemerkungen) {
+        this.avBemerkungen = avBemerkungen;
     }
 
 }
