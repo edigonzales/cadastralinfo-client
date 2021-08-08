@@ -16,6 +16,7 @@ import org.dominokit.domino.ui.button.Button;
 import org.dominokit.domino.ui.button.ButtonSize;
 import org.dominokit.domino.ui.cards.Card;
 import org.dominokit.domino.ui.grid.Column;
+import org.dominokit.domino.ui.grid.Column.Span;
 import org.dominokit.domino.ui.grid.Row;
 import org.dominokit.domino.ui.icons.Icons;
 import org.dominokit.domino.ui.loaders.Loader;
@@ -85,7 +86,7 @@ public class AvElement implements IsElement<HTMLElement> {
         descBtn.addClickListener(evt -> {
             Window.open(avServiceBaseUrl+"/extract/pdf/geometry/"+egrid, "_blank", null);
         });
-
+                
         Button mapBtn = Button.create(Icons.ALL.file_pdf_box_outline_mdi())
                 .setSize(ButtonSize.SMALL)
                 .setContent("Plan")
@@ -106,10 +107,8 @@ public class AvElement implements IsElement<HTMLElement> {
         });
         
         container.appendChild(Row.create().css("content-row")
-                .appendChild(Column.span2()
-                        .appendChild(descBtn))
-                .appendChild(Column.span2()
-                        .appendChild(mapBtn)).element());
+                .appendChild(span().add(descBtn))
+                .appendChild(span().add(mapBtn)).element());
         
         container.appendChild(Row.create().css("empty-row-20").element());
         

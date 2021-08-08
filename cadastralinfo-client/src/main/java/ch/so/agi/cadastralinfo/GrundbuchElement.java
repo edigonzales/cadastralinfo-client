@@ -6,6 +6,7 @@ import static org.jboss.elemento.Elements.div;
 import static org.jboss.elemento.Elements.span;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -29,6 +30,7 @@ import org.gwtproject.xml.client.Node;
 import org.gwtproject.xml.client.NodeList;
 import org.gwtproject.xml.client.XMLParser;
 import org.gwtproject.i18n.shared.DateTimeFormat;
+import org.gwtproject.safehtml.shared.SafeHtmlUtils;
 import org.jboss.elemento.IsElement;
 
 import com.google.gwt.user.client.Window;
@@ -41,6 +43,9 @@ import elemental2.dom.HTMLElement;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import ch.so.agi.cadastralinfo.models.grundbuch.AVBemerkung;
+import ch.so.agi.cadastralinfo.models.grundbuch.Anmerkung;
+import ch.so.agi.cadastralinfo.models.grundbuch.BeteiligtesGrundstueck;
+import ch.so.agi.cadastralinfo.models.grundbuch.Dienstbarkeit;
 import ch.so.agi.cadastralinfo.models.grundbuch.Grundstueck;
 import ch.so.agi.cadastralinfo.models.grundbuch.HaengigesGeschaeft;
 import ch.so.agi.cadastralinfo.models.grundbuch.MutationsNummer;
@@ -174,7 +179,8 @@ public class GrundbuchElement implements IsElement<HTMLElement> {
     private void processResponse(String xml) {        
         // Parsing XML
         Document doc = XMLParser.parse(xml);
-                
+         
+        // Grundstücke
         List<Element> grundstueckeList = new ArrayList<Element>();
         XMLUtils.getElementsByPath(doc.getDocumentElement(), "Body/GetParcelsByIdResponse/Grundstueck", grundstueckeList);
         
@@ -309,13 +315,155 @@ public class GrundbuchElement implements IsElement<HTMLElement> {
             grundstuecke.put(grundstueck.getEgrid(), grundstueck);    
         }
         
-        // Rendering output
+        // Personen
+        
+        
+        //List<Element> rechteList = new ArrayList<Element>();
+        
+        // Rechte: Anmerkungen
+        List<Element> anmerkungenList = new ArrayList<Element>();
+        XMLUtils.getElementsByPath(doc.getDocumentElement(), "Body/GetParcelsByIdResponse/Recht/Anmerkung", anmerkungenList);
+
+        List<Anmerkung> anmerkungen = new ArrayList<Anmerkung>();
+        for(Element element : anmerkungenList) {
+            Anmerkung anmerkung = new Anmerkung();
+            anmerkung.setAlteNummer(XMLUtils.getElementValueByPath(element, "InhaltAnmerkung/alteNummer", "-"));
+            anmerkung.setArtStichwort(XMLUtils.getElementValueByPath(element, "InhaltAnmerkung/ArtStichwort/Stichwort", "-"));
+            anmerkung.setArtZusatz(XMLUtils.getElementValueByPath(element, "InhaltAnmerkung/ArtZusatz", "-"));
+            
+            String ablaufdatum = XMLUtils.getElementValueByPath(element, "InhaltAnmerkung/Ablaufdatum");
+            if (ablaufdatum != null) {
+                DateTimeFormat dateFormat = DateTimeFormat.getFormat("yyyy-MM-dd");
+                Date date = dateFormat.parse(ablaufdatum);
+                anmerkung.setAblaufdatum(date);
+            }
+            
+            List<Element> beteiligteList = new ArrayList<Element>();
+            XMLUtils.getElementsByPath(element, "beteiligtesGrundstueck", beteiligteList);
+            List<BeteiligtesGrundstueck> beteiligte = new ArrayList<BeteiligtesGrundstueck>();
+            for (Element beteiligteElement : beteiligteList) {
+                BeteiligtesGrundstueck beteiligtes = new BeteiligtesGrundstueck();
+                String egbtbid = beteiligteElement.getAttribute("vonEGBTBID");
+                if (egbtbid != null) {
+                    beteiligtes.setEgbtbid(egbtbid);
+                }
+                String tagebuchNummer = beteiligteElement.getAttribute("vonTagebuchNummer");
+                if (tagebuchNummer != null) {
+                    beteiligtes.setTagebuchNummer(tagebuchNummer);
+                    anmerkung.setTagebuchNummer(tagebuchNummer);
+                }
+                String tagebuchDatumZeit = beteiligteElement.getAttribute("vonTagebuchDatumZeit");
+                if (tagebuchDatumZeit != null) {
+                    beteiligtes.setTagebuchDatumZeit(tagebuchDatumZeit);
+                    
+                    DateTimeFormat dateFormat = DateTimeFormat.getFormat("yyyy-MM-ddTHH:mm:ss");
+                    Date date = dateFormat.parse(tagebuchDatumZeit);
+                    anmerkung.setTagebuchDatumZeit(date);
+                }
+                String ref = XMLUtils.getElementValueByPath(beteiligteElement, "ref", "-");
+                beteiligtes.setRef(ref);
+                
+                beteiligte.add(beteiligtes);
+            }
+            anmerkung.setBeteiligte(beteiligte);
+            
+            List<Element> lastRechtAnmerkungList = new ArrayList<Element>();
+            XMLUtils.getElementsByPath(element, "LastRechtAnmerkung", lastRechtAnmerkungList);
+            for (Element lastRechtAnmerkungElement : lastRechtAnmerkungList) {
+                List<Element> belasteteList = new ArrayList<Element>();
+                XMLUtils.getElementsByPath(lastRechtAnmerkungElement, "belastetesGrundstueck", belasteteList);
+                List<String> belastete = new ArrayList<String>();
+                for (Element belasteteElement: belasteteList) {
+                    String ref = XMLUtils.getElementValueByPath(belasteteElement, "ref", "-");
+                    belastete.add(ref);
+                }
+                anmerkung.setBelastete(belastete);
+            }
+            //console.log(anmerkung);            
+            anmerkungen.add(anmerkung);
+        }
+
+        // Rechte: Dienstbarkeiten
+        List<Element> dienstbarkeitenList = new ArrayList<Element>();
+        XMLUtils.getElementsByPath(doc.getDocumentElement(), "Body/GetParcelsByIdResponse/Recht/Dienstbarkeit", dienstbarkeitenList);
+
+        List<Dienstbarkeit> dienstbarkeiten = new ArrayList<Dienstbarkeit>();
+        for (Element element : dienstbarkeitenList) {
+            Dienstbarkeit dienstbarkeit = new Dienstbarkeit();
+            dienstbarkeit.setAlteNummer(XMLUtils.getElementValueByPath(element, "InhaltDienstbarkeit/alteNummer", "-"));
+            dienstbarkeit.setArtStichwort(XMLUtils.getElementValueByPath(element, "InhaltDienstbarkeit/ArtStichwort/Stichwort", "-"));
+            dienstbarkeit.setArtZusatz(XMLUtils.getElementValueByPath(element, "InhaltDienstbarkeit/ArtZusatz", "-"));
+            
+            String ablaufdatum = XMLUtils.getElementValueByPath(element, "InhaltDienstbarkeit/Ablaufdatum");
+            if (ablaufdatum != null) {
+                DateTimeFormat dateFormat = DateTimeFormat.getFormat("yyyy-MM-dd");
+                Date date = dateFormat.parse(ablaufdatum);
+                dienstbarkeit.setAblaufdatum(date);
+            }
+            String istVerselbstaendigt = XMLUtils.getElementValueByPath(element, "InhaltDienstbarkeit/istVerselbstaendigt");
+            if (istVerselbstaendigt != null && istVerselbstaendigt.equalsIgnoreCase("true")) {
+                dienstbarkeit.setIstVerselbstaendigt(true);
+            }
+            
+            List<Element> beteiligteList = new ArrayList<Element>();
+            XMLUtils.getElementsByPath(element, "beteiligtesGrundstueck", beteiligteList);
+            List<BeteiligtesGrundstueck> beteiligte = new ArrayList<BeteiligtesGrundstueck>();
+            for (Element beteiligteElement : beteiligteList) {
+                BeteiligtesGrundstueck beteiligtes = new BeteiligtesGrundstueck();
+                String egbtbid = beteiligteElement.getAttribute("vonEGBTBID");
+                if (egbtbid != null) {
+                    beteiligtes.setEgbtbid(egbtbid);
+                }
+                String tagebuchNummer = beteiligteElement.getAttribute("vonTagebuchNummer");
+                if (tagebuchNummer != null) {
+                    beteiligtes.setTagebuchNummer(tagebuchNummer);
+                    dienstbarkeit.setTagebuchNummer(tagebuchNummer);
+                }
+                String tagebuchDatumZeit = beteiligteElement.getAttribute("vonTagebuchDatumZeit");
+                if (tagebuchDatumZeit != null) {
+                    beteiligtes.setTagebuchDatumZeit(tagebuchDatumZeit);
+                    
+                    DateTimeFormat dateFormat = DateTimeFormat.getFormat("yyyy-MM-ddTHH:mm:ss");
+                    Date date = dateFormat.parse(tagebuchDatumZeit);
+                    dienstbarkeit.setTagebuchDatumZeit(date);
+                }
+                String ref = XMLUtils.getElementValueByPath(beteiligteElement, "ref", "-");
+                beteiligtes.setRef(ref);
+                
+                beteiligte.add(beteiligtes);
+            }
+            dienstbarkeit.setBeteiligte(beteiligte);
+
+            List<Element> lastRechtAnmerkungList = new ArrayList<Element>();
+            XMLUtils.getElementsByPath(element, "LastRechtDienstbarkeit", lastRechtAnmerkungList);
+            console.log(lastRechtAnmerkungList.size());
+            for (Element lastRechtAnmerkungElement : lastRechtAnmerkungList) {
+                List<Element> belasteteList = new ArrayList<Element>();
+                XMLUtils.getElementsByPath(lastRechtAnmerkungElement, "belastetesGrundstueck", belasteteList);
+                List<String> belastete = new ArrayList<String>();
+                for (Element belasteteElement: belasteteList) {
+                    String ref = XMLUtils.getElementValueByPath(belasteteElement, "ref", "-");
+                    belastete.add(ref);
+                }
+                dienstbarkeit.setBelastete(belastete);
+            }
+            console.log(dienstbarkeit);
+            dienstbarkeiten.add(dienstbarkeit);
+        }
+
+       
+        
+        /*
+         *  Rendering output
+         */
+        
+        // Allgemeine Informationen
         Grundstueck hauptGrundstueck = grundstuecke.get(egrid);
         
         generalCard
         .appendChild(Row.create().css("content-row")
                 .appendChild(Column.span3()
-                        .appendChild(span().css("content-key").textContent("Grundstücksnummer:")))
+                        .appendChild(span().css("content-key").textContent("GB-Nr.:")))
                 .appendChild(Column.span3()
                         .appendChild(span().css("content-value").textContent(hauptGrundstueck.getNummerKurz())))
                 .appendChild(Column.span3()
@@ -359,7 +507,76 @@ public class GrundbuchElement implements IsElement<HTMLElement> {
                 .appendChild(Column.span3()
                         .appendChild(span().css("content-value").textContent(hauptGrundstueck.getPlannr()))));
         
+        // Anmerkungen
+        noteCard
+        .appendChild(Row.create().css("content-row-slim")
+                .appendChild(Column.span2()
+                        .appendChild(span().css("content-table-header-sm").textContent("Tagebucheintrag")))
+                .appendChild(Column.span2()
+                        .appendChild(span().css("content-table-header-sm").textContent("Nummer")))
+                .appendChild(Column.span7()
+                        .appendChild(span().css("content-table-header-sm").textContent("Beschreibung"))));
         
+        anmerkungen.sort((o1,o2) -> o1.getTagebuchDatumZeit().compareTo(o2.getTagebuchDatumZeit()));
+        for (Anmerkung anmerkung : anmerkungen) {            
+            DateTimeFormat dateFormat = DateTimeFormat.getFormat("dd.MM.yyyy");
+            String datum = dateFormat.format(anmerkung.getTagebuchDatumZeit());
+
+            String nummer = anmerkung.getTagebuchNummer() + "<br>" + anmerkung.getAlteNummer();
+            String beschreibung = anmerkung.getArtStichwort() + " " + anmerkung.getArtZusatz();
+            beschreibung += "<br>" + "Frist bis: " + dateFormat.format(anmerkung.getAblaufdatum()); 
+            
+            for (String belastete : anmerkung.getBelastete()) {
+                beschreibung += "<br>" + "Zulasten: <a class=\"default-link\" href=\""+ belastete.substring(0, 14) + "\">" + belastete.substring(0, 14) + "</a>";
+            }
+
+            noteCard
+            .appendChild(Row.create().css("content-row")
+                    .appendChild(Column.span2()
+                            .appendChild(span().css("content-value").textContent(datum)))
+                    .appendChild(Column.span2()
+                            .appendChild(span().css("content-value").innerHtml(SafeHtmlUtils.fromTrustedString(nummer))))
+                    .appendChild(Column.span7()
+                            .appendChild(span().css("content-value").innerHtml(SafeHtmlUtils.fromTrustedString(beschreibung)))));
+        }        
+        
+        // Dienstbarkeiten
+        servitudeCard
+        .appendChild(Row.create().css("content-row-slim")
+                .appendChild(Column.span2()
+                        .appendChild(span().css("content-table-header-sm").textContent("Tagebucheintrag")))
+                .appendChild(Column.span2()
+                        .appendChild(span().css("content-table-header-sm").textContent("Nummer")))
+                .appendChild(Column.span7()
+                        .appendChild(span().css("content-table-header-sm").textContent("Beschreibung"))));
+
+        dienstbarkeiten.sort((o1,o2) -> o1.getTagebuchDatumZeit().compareTo(o2.getTagebuchDatumZeit()));
+        for (Dienstbarkeit dienstbarkeit : dienstbarkeiten) {            
+            DateTimeFormat dateFormat = DateTimeFormat.getFormat("dd.MM.yyyy");
+            String datum = dateFormat.format(dienstbarkeit.getTagebuchDatumZeit());
+
+            String nummer = dienstbarkeit.getTagebuchNummer() + "<br>" + dienstbarkeit.getAlteNummer();
+            String beschreibung = "";
+            if (dienstbarkeit.isIstVerselbstaendigt()) {
+                beschreibung = "Verselbständigt<br>";
+            }
+            beschreibung += dienstbarkeit.getArtStichwort() + " " + dienstbarkeit.getArtZusatz();
+            beschreibung += "<br>" + "Frist bis: " + dateFormat.format(dienstbarkeit.getAblaufdatum()); 
+            
+            for (String belastete : dienstbarkeit.getBelastete()) {
+                beschreibung += "<br>" + "Zulasten: <a class=\"default-link\" href=\""+ belastete.substring(0, 14) + "\">" + belastete.substring(0, 14) + "</a>";
+            }
+
+            servitudeCard
+            .appendChild(Row.create().css("content-row")
+                    .appendChild(Column.span2()
+                            .appendChild(span().css("content-value").textContent(datum)))
+                    .appendChild(Column.span2()
+                            .appendChild(span().css("content-value").innerHtml(SafeHtmlUtils.fromTrustedString(nummer))))
+                    .appendChild(Column.span7()
+                            .appendChild(span().css("content-value").innerHtml(SafeHtmlUtils.fromTrustedString(beschreibung)))));
+        }        
+
     }
    
     
