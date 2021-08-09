@@ -318,13 +318,12 @@ public class GrundbuchElement implements IsElement<HTMLElement> {
         
         // Personen
         List<Element> personenList = new ArrayList<Element>();
-        XMLUtils.getElementsByPath(doc.getDocumentElement(), "Body/GetParcelsByIdResponse/Person", personenList);
-
+        XMLUtils.getElementsByPath(doc.getDocumentElement(), "Body/GetParcelsByIdResponse/Person/*", personenList);
+        
         List<Person> personen = new ArrayList<Person>(); 
         for (Element element : personenList) {
             console.log(element.getNodeName());
             
-            // TODO: nein, nicht inhalt. Das ist parent von Inhalt -> Oben testen, ob ich nicht alle diese Elemente bekommen mit ../Person/*
             NodeList inhaltList = element.getChildNodes();
             for (int i=0; i<inhaltList.getLength(); i++) {
                 if (inhaltList.item(i) instanceof Element) {
@@ -332,7 +331,8 @@ public class GrundbuchElement implements IsElement<HTMLElement> {
                     console.log(inhaltElement.getNodeName());
                     String nummer = XMLUtils.getElementValueByPath(inhaltElement, "Nummer");
                     
-                    
+                    // "Inhalt*": kein "bis"-Attribut ist aktueller Inhalt
+
                     
                     
                     
@@ -342,7 +342,6 @@ public class GrundbuchElement implements IsElement<HTMLElement> {
             
             
             
-            // kein "bis" ist aktueller Inhalt
         }
         
         
@@ -465,7 +464,6 @@ public class GrundbuchElement implements IsElement<HTMLElement> {
 
             List<Element> lastRechtAnmerkungList = new ArrayList<Element>();
             XMLUtils.getElementsByPath(element, "LastRechtDienstbarkeit", lastRechtAnmerkungList);
-            console.log(lastRechtAnmerkungList.size());
             for (Element lastRechtAnmerkungElement : lastRechtAnmerkungList) {
                 List<Element> belasteteList = new ArrayList<Element>();
                 XMLUtils.getElementsByPath(lastRechtAnmerkungElement, "belastetesGrundstueck", belasteteList);
@@ -476,7 +474,7 @@ public class GrundbuchElement implements IsElement<HTMLElement> {
                 }
                 dienstbarkeit.setBelastete(belastete);
             }
-            console.log(dienstbarkeit);
+            //console.log(dienstbarkeit);
             dienstbarkeiten.add(dienstbarkeit);
         }
 

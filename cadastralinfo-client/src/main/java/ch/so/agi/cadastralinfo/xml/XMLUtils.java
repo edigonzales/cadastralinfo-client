@@ -22,6 +22,7 @@ public class XMLUtils {
         String[] pathElements = path.split("/");
         int pathElementsLength = pathElements.length;
 
+        // TODO: "*" && length() == 1
         String pathElement = pathElements[0];
         if (pathElement.endsWith("*") && pathElement.length() > 1) {
             pathElement = pathElement.substring(0,pathElement.length()-1);
@@ -100,13 +101,15 @@ public class XMLUtils {
         int pathElementsLength = pathElements.length;
         //console.log(pathElementsLength);
 
+        // TODO: "*" && length() > 1
+        
         NodeList childNodes = root.getChildNodes();
         for (int i=0; i<childNodes.getLength(); i++) {
             if (childNodes.item(i) instanceof Element) {
                 Element childElement = (Element) childNodes.item(i);
                 //console.log(childElement.getNodeName());
                 String nodeName = childElement.getNodeName();
-                if (nodeName.contains(":"+pathElements[0])) {
+                if (nodeName.contains(":"+pathElements[0]) || pathElements[0].equals("*")) {
                     //console.log("children found");
                     if (pathElementsLength == 1) {
                         //console.log("abbruch");
