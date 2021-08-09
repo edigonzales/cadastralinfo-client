@@ -49,6 +49,7 @@ import ch.so.agi.cadastralinfo.models.grundbuch.Dienstbarkeit;
 import ch.so.agi.cadastralinfo.models.grundbuch.Grundstueck;
 import ch.so.agi.cadastralinfo.models.grundbuch.HaengigesGeschaeft;
 import ch.so.agi.cadastralinfo.models.grundbuch.MutationsNummer;
+import ch.so.agi.cadastralinfo.models.grundbuch.Person;
 import ch.so.agi.cadastralinfo.xml.XMLUtils;
 
 public class GrundbuchElement implements IsElement<HTMLElement> {
@@ -316,9 +317,37 @@ public class GrundbuchElement implements IsElement<HTMLElement> {
         }
         
         // Personen
+        List<Element> personenList = new ArrayList<Element>();
+        XMLUtils.getElementsByPath(doc.getDocumentElement(), "Body/GetParcelsByIdResponse/Person", personenList);
+
+        List<Person> personen = new ArrayList<Person>(); 
+        for (Element element : personenList) {
+            console.log(element.getNodeName());
+            
+            // TODO: nein, nicht inhalt. Das ist parent von Inhalt -> Oben testen, ob ich nicht alle diese Elemente bekommen mit ../Person/*
+            NodeList inhaltList = element.getChildNodes();
+            for (int i=0; i<inhaltList.getLength(); i++) {
+                if (inhaltList.item(i) instanceof Element) {
+                    Element inhaltElement = (Element) inhaltList.item(i);
+                    console.log(inhaltElement.getNodeName());
+                    String nummer = XMLUtils.getElementValueByPath(inhaltElement, "Nummer");
+                    
+                    
+                    
+                    
+                    
+                }
+            }
+            
+            
+            
+            
+            // kein "bis" ist aktueller Inhalt
+        }
         
         
-        //List<Element> rechteList = new ArrayList<Element>();
+        
+        // Rechte: Eigentum TODO
         
         // Rechte: Anmerkungen
         List<Element> anmerkungenList = new ArrayList<Element>();
