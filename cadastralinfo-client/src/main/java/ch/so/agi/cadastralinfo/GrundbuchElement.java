@@ -394,16 +394,13 @@ public class GrundbuchElement implements IsElement<HTMLElement> {
                 if (bis != null) continue;
 
                 eigentumAnteil.setAnteilZaehler(XMLUtils.getElementValueByPath(inhaltElement, "AnteilZaehler"));
-                eigentumAnteil.setAnteilZaehler(XMLUtils.getElementValueByPath(inhaltElement, "AnteilNenner"));
-                eigentumAnteil.setAnteilZaehler(XMLUtils.getElementValueByPath(inhaltElement, "SubjektivDinglich"));
-                eigentumAnteil.setAnteilZaehler(XMLUtils.getElementValueByPath(inhaltElement, "Eigentumsform"));
-                eigentumAnteil.setAnteilZaehler(XMLUtils.getElementValueByPath(inhaltElement, "AnteilInProsa"));
-                
+                eigentumAnteil.setAnteilNenner(XMLUtils.getElementValueByPath(inhaltElement, "AnteilNenner"));
+                eigentumAnteil.setSubjektivDinglich(XMLUtils.getElementValueByPath(inhaltElement, "SubjektivDinglich"));
+                eigentumAnteil.setEigentumsform(XMLUtils.getElementValueByPath(inhaltElement, "Eigentumsform"));
+                eigentumAnteil.setAnteilInProsa(XMLUtils.getElementValueByPath(inhaltElement, "AnteilInProsa"));
             }
-
-            
+            eigentumAnteile.add(eigentumAnteil);            
         }
-        
         
         // Rechte: Anmerkungen
         List<Element> anmerkungenList = new ArrayList<Element>();
@@ -590,6 +587,12 @@ public class GrundbuchElement implements IsElement<HTMLElement> {
                         .appendChild(span().css("content-key").textContent("Plan-Nr.:")))
                 .appendChild(Column.span3()
                         .appendChild(span().css("content-value").textContent(hauptGrundstueck.getPlannr()))));
+        
+        // Eigentum
+        // TODO: Grundstücke key mit Originalnummer
+        // Einzelnes Grundstück als Hauptgrundstück? Kann man aber auch loopen beim Rendern (wo egrid gefunden wird).
+        
+        
         
         // Anmerkungen
         noteCard
