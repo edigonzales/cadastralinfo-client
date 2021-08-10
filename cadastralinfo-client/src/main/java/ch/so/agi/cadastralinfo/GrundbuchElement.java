@@ -323,9 +323,8 @@ public class GrundbuchElement implements IsElement<HTMLElement> {
         List<Element> personenList = new ArrayList<Element>();
         XMLUtils.getElementsByPath(doc.getDocumentElement(), "Body/GetParcelsByIdResponse/Person/*", personenList);
         
-        List<Person> personen = new ArrayList<Person>(); 
+        Map<String,Person> personen = new HashMap<String,Person>(); 
         for (Element element : personenList) {
-            console.log(element.getNodeName());
             
             Person person = null;
             if (element.getNodeName().contains("NatuerlichePersonGB")) {
@@ -376,8 +375,7 @@ public class GrundbuchElement implements IsElement<HTMLElement> {
                 person.setAdressen(adressen);
                 
             }
-            console.log(person);
-            personen.add(person);
+            personen.put(person.getNummer(),person);
         }
         
         
