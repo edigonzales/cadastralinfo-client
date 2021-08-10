@@ -589,7 +589,7 @@ public class GrundbuchElement implements IsElement<HTMLElement> {
                         .appendChild(span().css("content-value").textContent(hauptGrundstueck.getPlannr()))));
         
         // Eigentum
-        // TODO: Grundstücke key mit Originalnummer
+        // TODO: Grundstücke key mit Originalnummer -> berechtigte in Personen und Grundstücke suchen.
         // Einzelnes Grundstück als Hauptgrundstück? Kann man aber auch loopen beim Rendern (wo egrid gefunden wird).
         
         
