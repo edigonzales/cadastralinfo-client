@@ -43,12 +43,15 @@ import elemental2.dom.HTMLElement;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import ch.so.agi.cadastralinfo.models.grundbuch.AVBemerkung;
+import ch.so.agi.cadastralinfo.models.grundbuch.Adresse;
 import ch.so.agi.cadastralinfo.models.grundbuch.Anmerkung;
 import ch.so.agi.cadastralinfo.models.grundbuch.BeteiligtesGrundstueck;
 import ch.so.agi.cadastralinfo.models.grundbuch.Dienstbarkeit;
 import ch.so.agi.cadastralinfo.models.grundbuch.Grundstueck;
 import ch.so.agi.cadastralinfo.models.grundbuch.HaengigesGeschaeft;
+import ch.so.agi.cadastralinfo.models.grundbuch.JuristischePerson;
 import ch.so.agi.cadastralinfo.models.grundbuch.MutationsNummer;
+import ch.so.agi.cadastralinfo.models.grundbuch.NatuerlichePerson;
 import ch.so.agi.cadastralinfo.models.grundbuch.Person;
 import ch.so.agi.cadastralinfo.xml.XMLUtils;
 
@@ -324,24 +327,57 @@ public class GrundbuchElement implements IsElement<HTMLElement> {
         for (Element element : personenList) {
             console.log(element.getNodeName());
             
-            NodeList inhaltList = element.getChildNodes();
-            for (int i=0; i<inhaltList.getLength(); i++) {
-                if (inhaltList.item(i) instanceof Element) {
-                    Element inhaltElement = (Element) inhaltList.item(i);
-                    console.log(inhaltElement.getNodeName());
-                    String nummer = XMLUtils.getElementValueByPath(inhaltElement, "Nummer");
-                    
-                    // "Inhalt*": kein "bis"-Attribut ist aktueller Inhalt
-
-                    
-                    
-                    
-                }
+            Person person = null;
+            if (element.getNodeName().contains("NatuerlichePersonGB")) {
+                person = new NatuerlichePerson();
+            } else if (element.getNodeName().contains("JuristischePersonGB")) {
+                person = new JuristischePerson();
             }
             
+            if (person == null) continue;
             
+            person.setNummer(XMLUtils.getElementValueByPath(element, "Nummer"));
             
-            
+            List<Element> inhaltList = new ArrayList<Element>();
+            XMLUtils.getElementsByPath(element, "Inhalt*", inhaltList);
+            for (Element inhaltElement : inhaltList) {
+                // Falls kein "bisTagebuchDatumZeit"-Attribut (oder anderes "bis...") vorhanden
+                // ist, handelt es sich um die aktuellste Information zur Person. (?)
+                String bis = inhaltElement.getAttribute("bisTagebuchDatumZeit");
+                if (bis != null) continue;
+                
+                if (inhaltElement.getNodeName().contains("InhaltNatuerlichePersonGB")) {
+                    ((NatuerlichePerson)person).setName(XMLUtils.getElementValueByPath(inhaltElement, "Name"));
+                    ((NatuerlichePerson)person).setVorname(XMLUtils.getElementValueByPath(inhaltElement, "Vorname"));
+                    ((NatuerlichePerson)person).setGeburtsjahr(XMLUtils.getElementValueByPath(inhaltElement, "Geburtsjahr"));
+                    ((NatuerlichePerson)person).setGeburtsmonat(XMLUtils.getElementValueByPath(inhaltElement, "Geburtstag"));
+                    ((NatuerlichePerson)person).setGeschlecht(XMLUtils.getElementValueByPath(inhaltElement, "Geschlecht"));
+                    ((NatuerlichePerson)person).setHeimatort(XMLUtils.getElementValueByPath(inhaltElement, "Heimatort"));
+                } else if (inhaltElement.getNodeName().contains("InhaltJuristischePersonGB")) {
+                    ((JuristischePerson)person).setNameFirma(XMLUtils.getElementValueByPath(inhaltElement, "Name_Firma"));
+                    ((JuristischePerson)person).setSitz(XMLUtils.getElementValueByPath(inhaltElement, "Sitz"));
+                    ((JuristischePerson)person).setFirmennummer(XMLUtils.getElementValueByPath(inhaltElement, "Firmennummer"));
+                    ((JuristischePerson)person).setUid(XMLUtils.getElementValueByPath(inhaltElement, "UID"));
+                }
+
+                List<Element> adresseList = new ArrayList<Element>();
+                XMLUtils.getElementsByPath(element, "*/Adresse", adresseList);
+                List<Adresse> adressen = new ArrayList<Adresse>();
+                for (Element adresseElement : adresseList) {
+                    Adresse adresse = new Adresse();
+                    adresse.setStrasse(XMLUtils.getElementValueByPath(adresseElement, "Strasse"));
+                    adresse.setHausnummer(XMLUtils.getElementValueByPath(adresseElement, "Hausnummer"));
+                    adresse.setPlz(XMLUtils.getElementValueByPath(adresseElement, "PLZ"));
+                    adresse.setOrt(XMLUtils.getElementValueByPath(adresseElement, "Ort"));
+                    adresse.setLand(XMLUtils.getElementValueByPath(adresseElement, "Land"));
+                    adresse.setRolle(XMLUtils.getElementValueByPath(adresseElement, "Rolle"));
+                    adressen.add(adresse);
+                }
+                person.setAdressen(adressen);
+                
+            }
+            console.log(person);
+            personen.add(person);
         }
         
         

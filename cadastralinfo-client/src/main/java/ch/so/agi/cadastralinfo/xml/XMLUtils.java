@@ -49,41 +49,6 @@ public class XMLUtils {
     // TODO: https://www.geeksforgeeks.org/wildcard-character-matching/
     public static String getElementValueByPath(Element root, String path) {
         return getElementValueByPath(root, path, null);
-//        if (root == null || path == null) return null;
-//        
-//        //console.log("root:"+root.getNodeName());
-//        //console.log("path:"+path);
-//
-//        if (path.startsWith("/")) {
-//            path = path.substring(1);
-//        }
-//        
-//        String[] pathElements = path.split("/");
-//        int pathElementsLength = pathElements.length;
-//
-//        String pathElement = pathElements[0];
-//        if (pathElement.endsWith("*") && pathElement.length() > 1) {
-//            pathElement = pathElement.substring(0,pathElement.length()-1);
-//        }
-//        
-//        NodeList childNodes = root.getChildNodes();
-//        for (int i=0; i<childNodes.getLength(); i++) {
-//            if (childNodes.item(i) instanceof Element) {
-//                Element childElement = (Element) childNodes.item(i);
-//                //console.log(childElement.getNodeName());
-//                String nodeName = childElement.getNodeName();
-//                if (nodeName.contains(":"+pathElement)) {
-//                    //console.log("children found");
-//                    if (pathElementsLength == 1) {
-//                        //console.log("abbruch");
-//                        return childElement.getFirstChild().getNodeValue();
-//                    } else {
-//                        return getElementValueByPathV2(childElement, path.substring(path.indexOf("/")+1));
-//                    }
-//                }
-//            }
-//        }
-//        return null;
     }
     
     // Path beginnt mit dem ersten Kindelement.
@@ -101,15 +66,18 @@ public class XMLUtils {
         int pathElementsLength = pathElements.length;
         //console.log(pathElementsLength);
 
-        // TODO: "*" && length() > 1
-        
+        String pathElement = pathElements[0];
+        if (pathElement.endsWith("*") && pathElement.length() > 1) {
+            pathElement = pathElement.substring(0,pathElement.length()-1);
+        }
+
         NodeList childNodes = root.getChildNodes();
         for (int i=0; i<childNodes.getLength(); i++) {
             if (childNodes.item(i) instanceof Element) {
                 Element childElement = (Element) childNodes.item(i);
                 //console.log(childElement.getNodeName());
                 String nodeName = childElement.getNodeName();
-                if (nodeName.contains(":"+pathElements[0]) || pathElements[0].equals("*")) {
+                if (nodeName.contains(":"+pathElement) || pathElement.equals("*")) {
                     //console.log("children found");
                     if (pathElementsLength == 1) {
                         //console.log("abbruch");

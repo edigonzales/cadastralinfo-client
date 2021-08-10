@@ -9,7 +9,6 @@ public class NatuerlichePerson extends Person {
     private String geschlecht;
     private String heimatort;
     private String staatsangehoerigkeit;
-    private Adresse adresse;
     
     public String getName() {
         return name;
@@ -58,11 +57,5 @@ public class NatuerlichePerson extends Person {
     }
     public void setStaatsangehoerigkeit(String staatsangehoerigkeit) {
         this.staatsangehoerigkeit = staatsangehoerigkeit;
-    }
-    public Adresse getAdresse() {
-        return adresse;
-    }
-    public void setAdresse(Adresse adresse) {
-        this.adresse = adresse;
     }
 }
