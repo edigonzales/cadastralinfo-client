@@ -47,6 +47,7 @@ import ch.so.agi.cadastralinfo.models.grundbuch.Adresse;
 import ch.so.agi.cadastralinfo.models.grundbuch.Anmerkung;
 import ch.so.agi.cadastralinfo.models.grundbuch.BeteiligtesGrundstueck;
 import ch.so.agi.cadastralinfo.models.grundbuch.Dienstbarkeit;
+import ch.so.agi.cadastralinfo.models.grundbuch.EigentumAnteil;
 import ch.so.agi.cadastralinfo.models.grundbuch.Grundstueck;
 import ch.so.agi.cadastralinfo.models.grundbuch.HaengigesGeschaeft;
 import ch.so.agi.cadastralinfo.models.grundbuch.JuristischePerson;
@@ -378,9 +379,31 @@ public class GrundbuchElement implements IsElement<HTMLElement> {
             personen.put(person.getNummer(),person);
         }
         
+        // Rechte: Eigentum 
+        List<Element> eigentumAnteilList = new ArrayList<Element>();
+        XMLUtils.getElementsByPath(doc.getDocumentElement(), "Body/GetParcelsByIdResponse/Recht/EigentumAnteil", eigentumAnteilList);
+        List<EigentumAnteil> eigentumAnteile = new ArrayList<EigentumAnteil>();
+        for (Element element : eigentumAnteilList) {
+            EigentumAnteil eigentumAnteil = new EigentumAnteil();
+            eigentumAnteil.setBerechtige(XMLUtils.getElementValueByPath(element, "Berechtigte"));
+            
+            List<Element> inhaltList = new ArrayList<Element>();
+            XMLUtils.getElementsByPath(element, "InhaltEigentumAnteil", inhaltList);
+            for (Element inhaltElement : inhaltList) {
+                String bis = inhaltElement.getAttribute("bisTagebuchDatumZeit");
+                if (bis != null) continue;
+
+                eigentumAnteil.setAnteilZaehler(XMLUtils.getElementValueByPath(inhaltElement, "AnteilZaehler"));
+                eigentumAnteil.setAnteilZaehler(XMLUtils.getElementValueByPath(inhaltElement, "AnteilNenner"));
+                eigentumAnteil.setAnteilZaehler(XMLUtils.getElementValueByPath(inhaltElement, "SubjektivDinglich"));
+                eigentumAnteil.setAnteilZaehler(XMLUtils.getElementValueByPath(inhaltElement, "Eigentumsform"));
+                eigentumAnteil.setAnteilZaehler(XMLUtils.getElementValueByPath(inhaltElement, "AnteilInProsa"));
+                
+            }
+
+            
+        }
         
-        
-        // Rechte: Eigentum TODO
         
         // Rechte: Anmerkungen
         List<Element> anmerkungenList = new ArrayList<Element>();
