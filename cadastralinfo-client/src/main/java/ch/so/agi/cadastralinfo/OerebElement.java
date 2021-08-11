@@ -1,5 +1,6 @@
 package ch.so.agi.cadastralinfo;
 
+import static elemental2.dom.DomGlobal.console;
 import static org.dominokit.domino.ui.style.Unit.px;
 import static org.jboss.elemento.Elements.div;
 
@@ -20,8 +21,11 @@ import org.jboss.elemento.IsElement;
 import com.google.gwt.user.client.Window;
 
 import elemental2.dom.CSSProperties;
+import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
+import elemental2.dom.Headers;
+import elemental2.dom.RequestInit;
 
 public class OerebElement implements IsElement<HTMLElement> {
     private NumberFormat fmtDefault = NumberFormat.getDecimalFormat();
@@ -41,6 +45,38 @@ public class OerebElement implements IsElement<HTMLElement> {
     }
     
     public void update(String egrid, String oerebServiceBaseUrl) {
+        this.egrid = egrid;
+        
+        RequestInit requestInit = RequestInit.create();
+        requestInit.setMode("cors");
+        Headers headers = new Headers();
+        //headers.append("Content-Type", "application/x-www-form-urlencoded");
+        headers.append("Content-Type", "application/xml");
+        headers.append("Accept", "application/xml");
+        //headers.append("Origin","http://localhost:8080");
+        //headers.append("Access-Control-Allow-Origin", "http://localhost:8080");
+        requestInit.setHeaders(headers);
+
+        //DomGlobal.fetch(oerebServiceBaseUrl + "extract/reduced/xml/"+this.egrid, requestInit)
+        DomGlobal.fetch("/oereb?egrid="+this.egrid)
+        .then(response -> {
+            if (!response.ok) {
+                return null;
+            }
+            return response.text();
+        })
+        .then(xml -> {
+            //processResponse(xml);
+            //console.log(xml);
+            return null;
+        }).catch_(error -> {
+            loader.stop();
+            console.log(error);
+            return null;
+        });
+
+        
+        
         this.egrid = egrid;
         
         if (container != null) {
@@ -71,19 +107,17 @@ public class OerebElement implements IsElement<HTMLElement> {
         container.appendChild(pdfBtn.element());
         container.appendChild(Row.create().css("empty-row-20").element());
 
-        generalCard = Card.create("Allgemeine Informationen")
-                .setCollapsible()
-                .elevate(Elevation.LEVEL_0);        
-        container.appendChild(generalCard.element());
+//        generalCard = Card.create("Allgemeine Informationen")
+//                .setCollapsible()
+//                .elevate(Elevation.LEVEL_0);        
+//        container.appendChild(generalCard.element());
 
         TabsPanel tabsPanel = TabsPanel.create()
                 .setId("tabs-panel")
-        //        .setColor(Color.RED);
                 .setBackgroundColor(Color.WHITE)
                 .setColor(Color.RED_DARKEN_3);
-
         
-        Tab tabConcerned = Tab.create("BETROFFENE THEMEN");
+        Tab tabConcerned = Tab.create("Betroffene Themen");
         //tabConcerned.appendChild(avElement);
         
         Tab tabNotConcerned = Tab.create("NICHT BETROFFENE THEMEN");

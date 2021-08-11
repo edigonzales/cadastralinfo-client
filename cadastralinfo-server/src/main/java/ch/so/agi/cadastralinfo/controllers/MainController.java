@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ch.so.agi.cadastralinfo.Settings;
 import ch.so.agi.cadastralinfo.services.AvService;
 import ch.so.agi.cadastralinfo.services.GrundbuchService;
+import ch.so.agi.cadastralinfo.services.OerebService;
 import ch.so.geo.schema.agi.cadastre._0_9.extract.GetExtractByIdResponse;
 
 @RestController
@@ -31,6 +32,9 @@ public class MainController {
 
     @Autowired
     GrundbuchService grundbuchService;
+
+    @Autowired
+    OerebService oerebService;
 
     @GetMapping("/settings")
     public ResponseEntity<?> getSettings() {
@@ -57,7 +61,17 @@ public class MainController {
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
             throw new IllegalArgumentException("could not process: CH...");
-            // TODO: return json
+        }
+        //return ResponseEntity.ok().body("av");
+    }
+    
+    @RequestMapping(value = "/oereb", method = RequestMethod.GET, produces = MediaType.APPLICATION_XML_VALUE)
+    public String getOereb(@RequestParam(value = "egrid", required = true) String egrid) {
+        try {
+            return oerebService.getParcel(egrid);
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+            throw new IllegalArgumentException("could not process: CH...");
         }
         //return ResponseEntity.ok().body("av");
     }

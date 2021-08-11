@@ -1,13 +1,21 @@
 # cadastralinfo-client
 
 ## todo
-- fetch für E-GRID / Grundstück nur einmal (Klick in Karte und Suche). Falls möglich wegen Adresssuche?
-- Fall Adresssuche mehrere Resultate liefert. Wie handhaben? Momentan wird features[0] verwendet.
+- Suche (fetch) im Hauptfenster: Wie oft muss das gemacht werden? Kann copy/past Code verhindert werden?
+- Wie XXXElement strukturieren? Kann man etwas verallgemeinern (vererben)? Ablauf? Daten holen, parsen, rendern? "Cards" im Konstruktor und Hauptdiv erst sichbar machen, wenn alles fertig?
+- ...
+
+- GBDBS
+  * Mehr Testfälle. Anschliessend überlegen wie XML geparsed wird (resp. welche Klassen benötigt werden)
+  * ...
+- AV
+  * JSON über Bord werfen und XML verwenden
 
 - AV-Plänli -> Button mit Auswahl oder zwei Button.
 
 ## Fragen
 - Suche nach allen Grundstücken? Also auch solche, die nicht in AV sind.
+- Fall Adresssuche mehrere Resultate liefert. Wie handhaben? Momentan wird features[0] verwendet.
 - ...
 
 
