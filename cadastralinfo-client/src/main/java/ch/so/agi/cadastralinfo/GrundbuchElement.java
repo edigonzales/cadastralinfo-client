@@ -83,9 +83,6 @@ public class GrundbuchElement implements IsElement<HTMLElement> {
         
         // FIXME 
         // TODO
-        // Fake E-GRID, damit man die statischen Beispiele verwenden kann.
-        // Round-robin-mässig sollen verschiedene statische Auszüge angefordert
-        // werden.
         List<String> egrids = new ArrayList<String>() {{
             add("CH707716772202");
         }};
@@ -644,13 +641,8 @@ public class GrundbuchElement implements IsElement<HTMLElement> {
                     continue;
                 }
                 console.log("should not reach here");
-                
-                    
-                
             }
         }
-
-        
         
         // Anmerkungen
         noteCard
@@ -724,8 +716,6 @@ public class GrundbuchElement implements IsElement<HTMLElement> {
 
     }
    
-    
-    
     @Override
     public HTMLElement element() {
         return root;

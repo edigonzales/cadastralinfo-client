@@ -92,6 +92,8 @@ public class App implements EntryPoint {
     // Application configuration
     private String myVar;
     private String AV_SERVICE_BASE_URL;
+    private String GB_SERVICE_BASE_URL;
+    private String OEREB_SERVICE_BASE_URL = "https://geo.so.ch/api/oereb/"; //extract/reduced/xml/CH857632820629
     private String SEARCH_SERVICE_URL = "https://geo.so.ch/api/search/v2/?filter=ch.so.agi.av.gebaeudeadressen.gebaeudeeingaenge,ch.so.agi.av.grundstuecke.rechtskraeftig&searchtext=";    
     private String DATA_SERVICE_URL = "https://geo.so.ch/api/data/v1/";
 
@@ -121,6 +123,7 @@ public class App implements EntryPoint {
     private Tab tabAv;
     private AvElement avElement;
     private GrundbuchElement grundbuchElement;
+    private OerebElement oerebElement;
     private Loader loader;
     
 	public void onModuleLoad() {
@@ -335,6 +338,7 @@ public class App implements EntryPoint {
                         addFeaturesToHighlightingVectorLayer(fs);
                         //avElement.update(egrid, AV_SERVICE_BASE_URL);
                         grundbuchElement.update(egrid, AV_SERVICE_BASE_URL);
+                        oerebElement.update(egrid, OEREB_SERVICE_BASE_URL);
                         
 
                         return null;
@@ -392,14 +396,13 @@ public class App implements EntryPoint {
         grundbuchElement = new GrundbuchElement();
         tabGrundbuch.appendChild(grundbuchElement);
         
-        
-        Tab tabOereb = Tab.create("ÖREB");
-                
+        Tab tabOereb = Tab.create("ÖREB-KATASTER");
+        oerebElement = new OerebElement();
+        tabOereb.appendChild(oerebElement);
         
         tabsPanel.appendChild(tabAv);
         tabsPanel.appendChild(tabGrundbuch);
-        tabsPanel.appendChild(Tab.create("ÖREB-KATASTER")
-                .appendChild(b().textContent("Home Content")));
+        tabsPanel.appendChild(tabOereb);
         textContentCol.appendChild(tabsPanel.element());
              
         console.log("fubar");
@@ -535,6 +538,7 @@ public class App implements EntryPoint {
 
                             //avElement.update(egridMap.get(row.getAttribute("id")), AV_SERVICE_BASE_URL);
                             grundbuchElement.update(egridMap.get(row.getAttribute("id")), AV_SERVICE_BASE_URL);
+                            oerebElement.update(egridMap.get(row.getAttribute("id")), OEREB_SERVICE_BASE_URL);
                         });                        
                         popupBuilder.add(row);
                     }
@@ -565,6 +569,7 @@ public class App implements EntryPoint {
                     addFeaturesToHighlightingVectorLayer(features);
                     //avElement.update(egrid, AV_SERVICE_BASE_URL);
                     grundbuchElement.update(egrid, AV_SERVICE_BASE_URL);
+                    oerebElement.update(egrid, OEREB_SERVICE_BASE_URL);
                 }
                 return null;
             }).catch_(error -> {

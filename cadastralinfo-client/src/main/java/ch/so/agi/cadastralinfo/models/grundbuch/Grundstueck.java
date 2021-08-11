@@ -38,7 +38,6 @@ public class Grundstueck {
     public void setGbamt(String gbamt) {
         this.gbamt = gbamt;
     }
-    
     public String getNummer() {
         return nummer;
     }
