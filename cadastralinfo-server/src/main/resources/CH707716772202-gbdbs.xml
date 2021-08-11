@@ -95,7 +95,7 @@
       </ns31:Grundstueck>
       <ns31:Grundstueck>
         <ns20:Liegenschaft>
-          <!-- <ns20:Nummer>CH787722167710:1::test:</ns20:Nummer> -->
+          <ns20:Nummer>CH787722167710:1::test:</ns20:Nummer>
           <ns20:istKopie>false</ns20:istKopie>
           <ns20:InhaltLiegenschaft>
             <ns20:Flaechenmass>999</ns20:Flaechenmass>

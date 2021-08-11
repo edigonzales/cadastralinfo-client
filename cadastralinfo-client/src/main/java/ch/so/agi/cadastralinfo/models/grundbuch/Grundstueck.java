@@ -6,8 +6,7 @@ public class Grundstueck {
     String gemeinde = "-";
     String bfsnr = "-";
     String gbamt = "-";
-    String nummerLang = "-";
-    String nummerKurz = "-";
+    String nummer;
     String egrid;
     String grundstuecksart = "-";
     String fuehrungsart = "-";
@@ -40,17 +39,11 @@ public class Grundstueck {
         this.gbamt = gbamt;
     }
     
-    public String getNummerLang() {
-        return nummerLang;
+    public String getNummer() {
+        return nummer;
     }
-    public void setNummerLang(String nummerLang) {
-        this.nummerLang = nummerLang;
-    }
-    public String getNummerKurz() {
-        return nummerKurz;
-    }
-    public void setNummerKurz(String nummerKurz) {
-        this.nummerKurz = nummerKurz;
+    public void setNummer(String nummer) {
+        this.nummer = nummer;
     }
     public String getGrundstuecksart() {
         return grundstuecksart;

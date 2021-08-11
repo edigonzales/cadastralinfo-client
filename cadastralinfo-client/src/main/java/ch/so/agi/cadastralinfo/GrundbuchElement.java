@@ -72,6 +72,7 @@ public class GrundbuchElement implements IsElement<HTMLElement> {
     private Card realBurdenCard;
     private Card pendingCard;
     private String egrid;
+    private String grundstueckNummer;
     
     public GrundbuchElement() {
         root = div().id("gb-element").element();
@@ -181,6 +182,16 @@ public class GrundbuchElement implements IsElement<HTMLElement> {
         loader.stop();
     }
     
+    private String formatGrundstueckNummer(String nummer) {
+        
+        String formattedNummer = nummer.replace(":", " / ").replace("  ", " - ");
+        if (nummer.endsWith(":")) {
+            formattedNummer += "-";
+        }
+        
+        return formattedNummer;
+    }
+    
     private void processResponse(String xml) {        
         // Parsing XML
         Document doc = XMLParser.parse(xml);
@@ -196,7 +207,6 @@ public class GrundbuchElement implements IsElement<HTMLElement> {
             for (int i=0; i<childNodes.getLength(); i++) {
                 if (childNodes.item(i) instanceof Element) {
                     Element childElement = (Element) childNodes.item(i);
-                    
                     String nodeName = childElement.getNodeName();
                     if (nodeName.contains(":Liegenschaft")) {
                         grundstueck.setGrundstuecksart("Liegenschaft");
@@ -204,24 +214,18 @@ public class GrundbuchElement implements IsElement<HTMLElement> {
                         grundstueck.setGrundstuecksart("GewoehnlichesSDR");
                     } 
                     
-                    String nummerLang = XMLUtils.getElementValueByPath((Element)childNodes.item(i), "Nummer");
-                    if (nummerLang != null) {
-                        String grundstueckEgrid = nummerLang.substring(0, 14);
+                    String nummer = XMLUtils.getElementValueByPath((Element)childNodes.item(i), "Nummer");
+                    if (nummer != null) {
+                                                
+                        String grundstueckEgrid = nummer.substring(0, 14);
                         if (grundstueckEgrid.equalsIgnoreCase(egrid)) {
                             grundstueck.setHauptGrundstueck(true);
+                            grundstueckNummer = nummer;
                         } else {
                             grundstueck.setHauptGrundstueck(false);
                         }
                         
-                        String nummerKurz = nummerLang.substring(15).replaceAll(":", " / ").replace("  ", " - ");
-                        if (nummerLang.endsWith(":")) {
-                            nummerKurz += "-";
-                        }
-                        grundstueck.setNummerKurz(nummerKurz);
-                        
-                        nummerLang = this.egrid + " / " + nummerKurz;
-                        grundstueck.setNummerLang(nummerLang);
-                                                
+                        grundstueck.setNummer(nummer);
                         grundstueck.setEgrid(grundstueckEgrid);
                     }
                     
@@ -317,7 +321,7 @@ public class GrundbuchElement implements IsElement<HTMLElement> {
                     grundstueck.setAvBemerkungen(avBemerkungen);
                 }
             }
-            grundstuecke.put(grundstueck.getEgrid(), grundstueck);    
+            grundstuecke.put(grundstueck.getNummer(), grundstueck);    
         }
         
         // Personen
@@ -346,13 +350,15 @@ public class GrundbuchElement implements IsElement<HTMLElement> {
                 String bis = inhaltElement.getAttribute("bisTagebuchDatumZeit");
                 if (bis != null) continue;
                 
-                if (inhaltElement.getNodeName().contains("InhaltNatuerlichePersonGB")) {
+                if (inhaltElement.getNodeName().contains("InhaltNatuerlichePersonGB")) {                    
                     ((NatuerlichePerson)person).setName(XMLUtils.getElementValueByPath(inhaltElement, "Name"));
                     ((NatuerlichePerson)person).setVorname(XMLUtils.getElementValueByPath(inhaltElement, "Vorname"));
                     ((NatuerlichePerson)person).setGeburtsjahr(XMLUtils.getElementValueByPath(inhaltElement, "Geburtsjahr"));
-                    ((NatuerlichePerson)person).setGeburtsmonat(XMLUtils.getElementValueByPath(inhaltElement, "Geburtstag"));
+                    ((NatuerlichePerson)person).setGeburtsmonat(XMLUtils.getElementValueByPath(inhaltElement, "Geburtsmonat"));
+                    ((NatuerlichePerson)person).setGeburtstag(XMLUtils.getElementValueByPath(inhaltElement, "Geburtstag"));
                     ((NatuerlichePerson)person).setGeschlecht(XMLUtils.getElementValueByPath(inhaltElement, "Geschlecht"));
                     ((NatuerlichePerson)person).setHeimatort(XMLUtils.getElementValueByPath(inhaltElement, "Heimatort"));
+                    ((NatuerlichePerson)person).setStaatsangehoerigkeit(XMLUtils.getElementValueByPath(inhaltElement, "Staatsangehoerigkeit"));
                 } else if (inhaltElement.getNodeName().contains("InhaltJuristischePersonGB")) {
                     ((JuristischePerson)person).setNameFirma(XMLUtils.getElementValueByPath(inhaltElement, "Name_Firma"));
                     ((JuristischePerson)person).setSitz(XMLUtils.getElementValueByPath(inhaltElement, "Sitz"));
@@ -539,14 +545,20 @@ public class GrundbuchElement implements IsElement<HTMLElement> {
          */
         
         // Allgemeine Informationen
-        Grundstueck hauptGrundstueck = grundstuecke.get(egrid);
+        Grundstueck hauptGrundstueck = grundstuecke.get(grundstueckNummer);
+        String nummerKurz;
+        if (!hauptGrundstueck.getNummer().substring(0,1).equalsIgnoreCase(":")) {
+            nummerKurz = formatGrundstueckNummer(hauptGrundstueck.getNummer().substring(15));
+        } else {
+            nummerKurz = formatGrundstueckNummer(hauptGrundstueck.getNummer().substring(1));
+        }
         
         generalCard
         .appendChild(Row.create().css("content-row")
                 .appendChild(Column.span3()
                         .appendChild(span().css("content-key").textContent("GB-Nr.:")))
                 .appendChild(Column.span3()
-                        .appendChild(span().css("content-value").textContent(hauptGrundstueck.getNummerKurz())))
+                        .appendChild(span().css("content-value").textContent(nummerKurz)))
                 .appendChild(Column.span3()
                         .appendChild(span().css("content-key").textContent("E-GRID:")))
                 .appendChild(Column.span3()
@@ -591,7 +603,53 @@ public class GrundbuchElement implements IsElement<HTMLElement> {
         // Eigentum
         // TODO: Grundstücke key mit Originalnummer -> berechtigte in Personen und Grundstücke suchen.
         // Einzelnes Grundstück als Hauptgrundstück? Kann man aber auch loopen beim Rendern (wo egrid gefunden wird).
-        
+        for (EigentumAnteil eigentumAnteil : eigentumAnteile) {
+            String berechtigte = eigentumAnteil.getBerechtige();
+            if (berechtigte != null) {
+                Person person = personen.get(berechtigte);
+                if (person != null) {
+
+                    String anteil = eigentumAnteil.getAnteilZaehler() + " / " + eigentumAnteil.getAnteilNenner();
+                    String eigentumsform = eigentumAnteil.getEigentumsform();
+                    
+                    StringBuilder personString = new StringBuilder();
+                    if (person instanceof NatuerlichePerson) {
+                        NatuerlichePerson natPerson = (NatuerlichePerson) person;
+                        personString.append(natPerson.getName());
+                        personString.append(", ");
+                        personString.append(natPerson.getVorname());
+                        personString.append("<br>");
+                        personString.append(natPerson.getHeimatort());
+                        personString.append(", ");
+                        personString.append(natPerson.getStaatsangehoerigkeit());
+                        personString.append("<br>");
+                        personString.append(natPerson.getGeburtstag() + "." + natPerson.getGeburtsmonat() + "." + natPerson.getGeburtsjahr());
+                    }
+                    
+                    // TODO: andere Personen...
+                                        
+                    propertyCard
+                    .appendChild(Row.create().css("content-row")
+                            .appendChild(Column.span6()
+                                    .appendChild(span().css("content-value").innerHtml(SafeHtmlUtils.fromTrustedString(anteil + "<br>" + eigentumsform))))
+                            .appendChild(Column.span6()
+                                    .appendChild(span().css("content-value").innerHtml(SafeHtmlUtils.fromTrustedString(personString.toString())))));
+
+                    continue;
+                }
+                Grundstueck grundstueck = grundstuecke.get(berechtigte);
+                if (grundstueck != null) {
+                    console.log("eigentümer grudnstueck");
+
+                    continue;
+                }
+                console.log("should not reach here");
+                
+                    
+                
+            }
+        }
+
         
         
         // Anmerkungen
