@@ -4,6 +4,9 @@ import static elemental2.dom.DomGlobal.console;
 import static org.dominokit.domino.ui.style.Unit.px;
 import static org.jboss.elemento.Elements.div;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.dominokit.domino.ui.button.Button;
 import org.dominokit.domino.ui.button.ButtonSize;
 import org.dominokit.domino.ui.cards.Card;
@@ -16,10 +19,14 @@ import org.dominokit.domino.ui.style.Elevation;
 import org.dominokit.domino.ui.tabs.Tab;
 import org.dominokit.domino.ui.tabs.TabsPanel;
 import org.gwtproject.i18n.client.NumberFormat;
+import org.gwtproject.xml.client.Document;
+import org.gwtproject.xml.client.Element;
+import org.gwtproject.xml.client.XMLParser;
 import org.jboss.elemento.IsElement;
 
 import com.google.gwt.user.client.Window;
 
+import ch.so.agi.cadastralinfo.xml.XMLUtils;
 import elemental2.dom.CSSProperties;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLDivElement;
@@ -55,8 +62,8 @@ public class OerebElement implements IsElement<HTMLElement> {
             return response.text();
         })
         .then(xml -> {
-            //parseResponse()
-            //renderOutput()
+            parseResponse(xml);
+            //renderOutput();
             
             
             //console.log(xml);
@@ -112,10 +119,10 @@ public class OerebElement implements IsElement<HTMLElement> {
         Tab tabConcerned = Tab.create("Betroffene Themen");
         //tabConcerned.appendChild(avElement);
         
-        Tab tabNotConcerned = Tab.create("NICHT BETROFFENE THEMEN");
+        Tab tabNotConcerned = Tab.create("Nicht betroffene Themen");
         //tabNotConcerned.appendChild(grundbuchElement);
         
-        Tab tabWithout = Tab.create("NICHT VORHANDENE THEMEN");
+        Tab tabWithout = Tab.create("Nicht vorhandene Themen");
         //tabWithout.appendChild(oerebElement);
         
         tabsPanel.appendChild(tabConcerned);
@@ -126,6 +133,20 @@ public class OerebElement implements IsElement<HTMLElement> {
         
         
         loader.stop();
+    }
+    
+    public void parseResponse(String xml) {
+        Document doc = XMLParser.parse(xml);
+        
+        List<Element> notConcernedThemesList = new ArrayList<Element>();
+        XMLUtils.getElementsByPath(doc.getDocumentElement(), "Extract/NotConcernedTheme", notConcernedThemesList);
+        console.log(notConcernedThemesList.size());
+        for (Element element : notConcernedThemesList) {
+            
+            console.log(XMLUtils.getElementValueByPath(element, "Text/Text"));
+        }
+        
+        
     }
     
     
