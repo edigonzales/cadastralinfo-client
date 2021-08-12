@@ -47,17 +47,6 @@ public class OerebElement implements IsElement<HTMLElement> {
     public void update(String egrid, String oerebServiceBaseUrl) {
         this.egrid = egrid;
         
-        RequestInit requestInit = RequestInit.create();
-        requestInit.setMode("cors");
-        Headers headers = new Headers();
-        //headers.append("Content-Type", "application/x-www-form-urlencoded");
-        headers.append("Content-Type", "application/xml");
-        headers.append("Accept", "application/xml");
-        //headers.append("Origin","http://localhost:8080");
-        //headers.append("Access-Control-Allow-Origin", "http://localhost:8080");
-        requestInit.setHeaders(headers);
-
-        //DomGlobal.fetch(oerebServiceBaseUrl + "extract/reduced/xml/"+this.egrid, requestInit)
         DomGlobal.fetch("/oereb?egrid="+this.egrid)
         .then(response -> {
             if (!response.ok) {
@@ -70,7 +59,6 @@ public class OerebElement implements IsElement<HTMLElement> {
             //renderOutput()
             
             
-            //processResponse(xml);
             //console.log(xml);
             return null;
         }).catch_(error -> {
