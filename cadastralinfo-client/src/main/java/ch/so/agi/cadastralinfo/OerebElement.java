@@ -66,6 +66,10 @@ public class OerebElement implements IsElement<HTMLElement> {
             return response.text();
         })
         .then(xml -> {
+            //parseResponse()
+            //renderOutput()
+            
+            
             //processResponse(xml);
             //console.log(xml);
             return null;
