@@ -186,3 +186,8 @@ a.default-link:visited {
 .bg-white.nav-tabs li a, .bg-white.nav-tabs li a:hover {
     color: rgb(32, 32, 32);
 }
+
+.themes-list {    
+    border: 1px solid rgba(204, 204, 204, 0.35);
+    margin: -1px -1px 0px -1px;
+}

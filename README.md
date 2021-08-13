@@ -13,6 +13,9 @@
 
 - AV-Plänli -> Button mit Auswahl oder zwei Button.
 
+- ÖREB:
+  * XMLUtils: Auslesen einer bestimmten Sprache
+
 ## Fragen
 - Suche nach allen Grundstücken? Also auch solche, die nicht in AV sind.
 - Fall Adresssuche mehrere Resultate liefert. Wie handhaben? Momentan wird features[0] verwendet.
