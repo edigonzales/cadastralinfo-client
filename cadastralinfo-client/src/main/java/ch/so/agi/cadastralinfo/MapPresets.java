@@ -74,11 +74,12 @@ public class MapPresets {
         View view = new View(viewOptions);
         //Coordinate centerCoordinate = new Coordinate(2616491, 1240287); // Kanton Solothurn
         //Coordinate centerCoordinate = new Coordinate(2600459, 1215464); // Messen
-        Coordinate centerCoordinate = new Coordinate(2634900, 1244285); // Olten 
+        //Coordinate centerCoordinate = new Coordinate(2634900, 1244285); // Olten (viele Teilflächen)
+        Coordinate centerCoordinate = new Coordinate(2626879, 1241430); // Egerkingen 1293 (Punkt und Fläche mit gleichem Artcode)
         
         view.setCenter(centerCoordinate);
         //view.setZoom(6); // Kanton Solothurn 
-        view.setZoom(13); // Messen
+        view.setZoom(13); // Detail
         
         MapOptions mapOptions = OLFactory.createOptions();
         mapOptions.setTarget(mapId);
