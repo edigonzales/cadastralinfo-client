@@ -172,9 +172,12 @@ public class App implements EntryPoint {
         body().add(container);
 
         Location location = DomGlobal.window.location;
+        if (location.pathname.length() > 1) {
+            location.pathname += "/"; 
+        }
         HTMLElement logoDiv = div().css("logo")
                 .add(div()
-                        .add(img().attr("src", location.protocol + "//" + location.host + "/" + location.pathname + "/Logo.png").attr("alt", "Logo Kanton")).element()).element();
+                        .add(img().attr("src", location.protocol + "//" + location.host + location.pathname + "Logo.png").attr("alt", "Logo Kanton")).element()).element();
         container.appendChild(logoDiv);
         
         HTMLElement searchContainerDiv = div().id("search-container").element();
