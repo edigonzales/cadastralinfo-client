@@ -1,5 +1,9 @@
 package ch.so.agi.cadastralinfo.models.oereb;
 
+import java.util.Objects;
+
+import static elemental2.dom.DomGlobal.console;
+
 public class Document {
     private String title;
     
@@ -50,4 +54,23 @@ public class Document {
     public void setOfficialNumber(String officialNumber) {
         this.officialNumber = officialNumber;
     }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null)
+            return false;
+        if (getClass() != o.getClass())
+            return false;
+        Document document = (Document) o;
+        return Objects.equals(textAtWeb, document.textAtWeb);
+    }
+    
+    @Override
+    public int hashCode() {
+        return textAtWeb.hashCode();
+    }
+
+
 }

@@ -123,9 +123,14 @@ div body {
     padding: 10px 0px 2px 0px;
 }
 
-.empty-row-10 {
+.empty-row-5 {
     padding: 5px 0px 2px 0px;
 }
+
+.stripline {
+    border-bottom: 1px rgba(204, 204, 204, 0.35) solid;
+}
+
 
 .content-table-header-sm {
     font-size: 10px;

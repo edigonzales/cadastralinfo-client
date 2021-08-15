@@ -6,6 +6,7 @@ import static org.jboss.elemento.Elements.div;
 import static org.jboss.elemento.Elements.span;
 import static org.jboss.elemento.Elements.body;
 import static org.jboss.elemento.Elements.img;
+import static org.jboss.elemento.Elements.a;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -34,6 +35,7 @@ import org.dominokit.domino.ui.style.Elevation;
 import org.dominokit.domino.ui.style.Styles;
 import org.dominokit.domino.ui.tabs.Tab;
 import org.dominokit.domino.ui.tabs.TabsPanel;
+import org.dominokit.domino.ui.utils.TextNode;
 import org.gwtproject.i18n.client.NumberFormat;
 import org.gwtproject.safehtml.shared.SafeHtmlUtils;
 import org.gwtproject.xml.client.Element;
@@ -50,6 +52,8 @@ import ch.so.agi.cadastralinfo.models.oereb.Restriction;
 import ch.so.agi.cadastralinfo.xml.XMLUtils;
 import elemental2.dom.CSSProperties;
 import elemental2.dom.DomGlobal;
+import elemental2.dom.Event;
+import elemental2.dom.EventListener;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.Headers;
@@ -299,9 +303,9 @@ public class OerebElement implements IsElement<HTMLElement> {
                         referenceDocument.setTitle(XMLUtils.getElementValueByPath(referenceElement, "Title/LocalisedText/Text"));
 
                         if (documentType.equalsIgnoreCase("Law")) {
-                            theme.getLaws().add(document);
+                            theme.getLaws().add(referenceDocument);
                         } else if (documentType.equalsIgnoreCase("Hint")) {
-                            theme.getHints().add(document);
+                            theme.getHints().add(referenceDocument);
                         } 
                     }                    
                 } 
@@ -369,7 +373,6 @@ public class OerebElement implements IsElement<HTMLElement> {
 
                 for(Map.Entry<TypeTuple, Restriction> entry : theme.getRestrictions().entrySet()) {
                     Restriction restriction = entry.getValue();
-                    console.log(restriction.getInformation());
                     
                     String share = "";
                     String partInPercent = "";
@@ -408,8 +411,91 @@ public class OerebElement implements IsElement<HTMLElement> {
                                      .appendChild(span().css("content-value right-align").textContent(partInPercent)));
 
                     card.appendChild(row);
+                }
+                
+                if (theme.getLegendAtWeb() != null) {
+                    card.appendChild(Row.create().css("empty-row-10", "stripline"));
+                    card.appendChild(Row.create().css("empty-row-10"));
                     
+                    HTMLElement legendLink = a()
+                            .attr("class", "default-link")
+                            .add(TextNode.of("Vollständige Legende anzeigen")).element();
+                    card.appendChild(legendLink);
                     
+                    HTMLElement legendImage = img()
+                            .attr("src", theme.getLegendAtWeb())
+                            .attr("alt", "Legende").element();
+                    legendImage.style.display = "none";
+                    card.appendChild(legendImage);
+
+                    legendLink.addEventListener("click", new EventListener() {
+                        @Override
+                        public void handleEvent(Event evt) {
+                            if (legendImage.style.display == "none") {
+                                legendImage.style.display = "block";
+                                legendLink.innerHTML = "Vollständige Legende verbergen";
+                            } else {
+                                legendImage.style.display = "none";
+                                legendLink.innerHTML = "Vollständige Legende anzeigen";
+                            }
+                        }
+                    });
+                }
+                
+                card.appendChild(Row.create().css("empty-row-10", "stripline"));
+                card.appendChild(Row.create().css("empty-row-10"));
+                card.appendChild(Row.create().css("content-row")
+                        .appendChild(Column.span12()
+                                .appendChild(span().css("content-key").textContent("Rechtsvorschriften:"))));
+
+                for (Document document : theme.getLegalProvisions()) {
+                    String linkName;
+                    if (document.getOfficialTitle() != null) {
+                        linkName = document.getOfficialTitle();
+                    } else {
+                        linkName = document.getTitle();
+                    }
+                    HTMLElement link = a().css("default-link")
+                            .attr("href", document.getTextAtWeb())
+                            .attr("target", "_blank")
+                            .add(TextNode.of(linkName)).element();
+                    card.appendChild(div().add(link).element());
+
+                    String additionalText = document.getTitle();
+                    if (document.getOfficialNumber() != null) {
+                        additionalText += " Nr. " + document.getOfficialNumber();
+                    }
+                    card.appendChild(div().add(TextNode.of(additionalText)).element());
+                    card.appendChild(div().css("empty-row-5").element());
+                }
+                
+                card.appendChild(Row.create().css("empty-row-10"));
+                card.appendChild(Row.create().css("content-row")
+                        .appendChild(Column.span12()
+                                .appendChild(span().css("content-key").textContent("Gesetze:"))));
+
+                for (Document document : theme.getLaws()) {
+                    String linkName;
+                    if (document.getOfficialTitle() != null) {
+                        linkName = document.getOfficialTitle();
+                    } else {
+                        linkName = document.getTitle();
+                    }
+                    
+                    if (document.getAbbreviation() != null) {
+                        linkName += " (" + document.getAbbreviation() + ")";
+                    }
+                    
+                    if (document.getOfficialNumber() != null) {
+                        linkName += ", " + document.getOfficialNumber();
+                    }
+
+                    HTMLElement link = a().css("default-link")
+                            .attr("href", document.getTextAtWeb())
+                            .attr("target", "_blank")
+                            .add(TextNode.of(linkName)).element();
+                    card.appendChild(div().add(link).element());
+                    card.appendChild(div().css("empty-row-5").element());
                 }
                 
                 
