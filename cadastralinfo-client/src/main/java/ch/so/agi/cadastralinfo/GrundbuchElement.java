@@ -176,7 +176,7 @@ public class GrundbuchElement implements IsElement<HTMLElement> {
             return null;
         });
         
-        loader.stop();
+        
     }
     
     private String formatGrundstueckNummer(String nummer) {
@@ -714,6 +714,7 @@ public class GrundbuchElement implements IsElement<HTMLElement> {
                             .appendChild(span().css("content-value").innerHtml(SafeHtmlUtils.fromTrustedString(beschreibung)))));
         }        
 
+        loader.stop();
     }
    
     @Override

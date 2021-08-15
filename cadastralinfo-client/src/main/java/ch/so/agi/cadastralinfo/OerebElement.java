@@ -5,6 +5,7 @@ import static org.dominokit.domino.ui.style.Unit.px;
 import static org.jboss.elemento.Elements.div;
 import static org.jboss.elemento.Elements.span;
 import static org.jboss.elemento.Elements.body;
+import static org.jboss.elemento.Elements.img;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,6 +23,7 @@ import org.dominokit.domino.ui.button.ButtonSize;
 import org.dominokit.domino.ui.cards.Card;
 import org.dominokit.domino.ui.collapsible.Collapsible.HideCompletedHandler;
 import org.dominokit.domino.ui.collapsible.Collapsible.ShowCompletedHandler;
+import org.dominokit.domino.ui.grid.Column;
 import org.dominokit.domino.ui.grid.Row;
 import org.dominokit.domino.ui.icons.Icons;
 import org.dominokit.domino.ui.lists.ListGroup;
@@ -33,6 +35,7 @@ import org.dominokit.domino.ui.style.Styles;
 import org.dominokit.domino.ui.tabs.Tab;
 import org.dominokit.domino.ui.tabs.TabsPanel;
 import org.gwtproject.i18n.client.NumberFormat;
+import org.gwtproject.safehtml.shared.SafeHtmlUtils;
 import org.gwtproject.xml.client.Element;
 import org.gwtproject.xml.client.XMLParser;
 import org.jboss.elemento.IsElement;
@@ -328,35 +331,90 @@ public class OerebElement implements IsElement<HTMLElement> {
     
     private void renderResponse() {
         {
-            HTMLDivElement concernedContainer = div().element();       
+            HTMLDivElement concernedContainer = div().element();
             tabConcerned.appendChild(concernedContainer);
-            
+
             for (ConcernedTheme theme : concernedThemes) {
-              //String cardTitle = theme.getSubtheme()==null ? theme.getName() : theme.getSubtheme(); 
-              Card card = Card.create(theme.getName())
-                      .setCollapsible()
-                      .collapse()
-                      .elevate(Elevation.LEVEL_0);
+                // String cardTitle = theme.getSubtheme()==null ? theme.getName() :
+                // theme.getSubtheme();
+                Card card = Card.create(theme.getName()).setCollapsible().collapse().elevate(Elevation.LEVEL_0);
 
-              concernedContainer.appendChild(card.element());
-              
-              card.getBody().addHideListener(new HideCompletedHandler() {
-                  @Override
-                  public void onHidden() {
-                      console.log("hidden3");
+                concernedContainer.appendChild(card.element());
 
-                  }
-              });
-              
-              card.getBody().addShowListener(new ShowCompletedHandler() {
-                  @Override
-                  public void onShown() {
-                      console.log("show3");
-                  }
-              });
+                card.getBody().addHideListener(new HideCompletedHandler() {
+                    @Override
+                    public void onHidden() {
+                        console.log("hidden3");
 
+                    }
+                });
+
+                card.getBody().addShowListener(new ShowCompletedHandler() {
+                    @Override
+                    public void onShown() {
+                        console.log("show3");
+                    }
+                });
+
+                card
+                .appendChild(Row.create().css("content-row-slim")
+                        .appendChild(Column.span7()
+                                .appendChild(span().css("content-table-header-sm").textContent("Typ")))
+                        .appendChild(Column.span1()
+                                .appendChild(span().css("content-table-header-sm").textContent("")))
+                        .appendChild(Column.span2()
+                                .appendChild(span().css("content-table-header-sm right-align").textContent("Anteil")))
+                        .appendChild(Column.span2()
+                                .appendChild(span().css("content-table-header-sm right-align").textContent("Anteil in %"))));
+
+                for(Map.Entry<TypeTuple, Restriction> entry : theme.getRestrictions().entrySet()) {
+                    Restriction restriction = entry.getValue();
+                    console.log(restriction.getInformation());
+                    
+                    String share = "";
+                    String partInPercent = "";
+                    if (restriction.getAreaShare() != null) {
+                        if (restriction.getAreaShare() < 0.1) {
+                            share = "< 0.1 m<span class=\"sup\">2</span>";
+                            partInPercent = "-";
+                        } else {
+                            share = fmtInteger.format(restriction.getAreaShare()) + " m<span class=\"sup\">2</span>";
+                            partInPercent = fmtPercent.format(restriction.getPartInPercent());
+                        }
+                    } else if (restriction.getLengthShare() != null) {
+                        if (restriction.getLengthShare() < 0.1) {
+                            share = "< 0.1 m";
+                        } else {
+                            share = fmtInteger.format(restriction.getLengthShare()) + " m";
+                        }                        
+                    } else if (restriction.getNrOfPoints() != null) {
+                        share = fmtInteger.format(restriction.getNrOfPoints());
+                    }
+                    
+                    
+                    HTMLElement symbol = img().attr("src", restriction.getSymbolRef())
+                            .attr("alt", "Symbol " + restriction.getInformation())
+                            .attr("width", "30px")
+                            .style("border: 1px solid black").element();
+                    
+                    Row row = Row.create().css("content-row")
+                            .appendChild(Column.span7()
+                                    .appendChild(span().css("content-value").textContent(restriction.getInformation())))
+                            .appendChild(Column.span1()
+                                    .appendChild(span().css("content-value").add(symbol)))
+                            .appendChild(Column.span2()
+                                    .appendChild(span().css("content-value right-align").innerHtml(SafeHtmlUtils.fromTrustedString(share))))
+                            .appendChild(Column.span2()
+                                     .appendChild(span().css("content-value right-align").textContent(partInPercent)));
+
+                    card.appendChild(row);
+                    
+                    
+                }
+                
+                
             }
-            
+
         }
         
         

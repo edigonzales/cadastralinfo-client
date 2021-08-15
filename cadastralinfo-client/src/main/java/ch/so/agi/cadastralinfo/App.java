@@ -336,7 +336,7 @@ public class App implements EntryPoint {
                         
                         Feature[] fs = new Feature[] {features[0]};
                         addFeaturesToHighlightingVectorLayer(fs);
-                        //avElement.update(egrid, AV_SERVICE_BASE_URL);
+                        avElement.update(egrid, AV_SERVICE_BASE_URL);
                         grundbuchElement.update(egrid, AV_SERVICE_BASE_URL);
                         oerebElement.update(egrid, OEREB_SERVICE_BASE_URL);
                         
@@ -536,7 +536,7 @@ public class App implements EntryPoint {
                             double y = extent.getLowerLeftY() + extent.getHeight() / 2;
                             view.setCenter(new Coordinate(x,y));
 
-                            //avElement.update(egridMap.get(row.getAttribute("id")), AV_SERVICE_BASE_URL);
+                            avElement.update(egridMap.get(row.getAttribute("id")), AV_SERVICE_BASE_URL);
                             grundbuchElement.update(egridMap.get(row.getAttribute("id")), AV_SERVICE_BASE_URL);
                             oerebElement.update(egridMap.get(row.getAttribute("id")), OEREB_SERVICE_BASE_URL);
                         });                        
@@ -567,7 +567,7 @@ public class App implements EntryPoint {
                     view.setCenter(new Coordinate(x,y));
 
                     addFeaturesToHighlightingVectorLayer(features);
-                    //avElement.update(egrid, AV_SERVICE_BASE_URL);
+                    avElement.update(egrid, AV_SERVICE_BASE_URL);
                     grundbuchElement.update(egrid, AV_SERVICE_BASE_URL);
                     oerebElement.update(egrid, OEREB_SERVICE_BASE_URL);
                 }
