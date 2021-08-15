@@ -455,6 +455,7 @@ public class App implements EntryPoint {
         vectorLayerOptions.setStyle(style);
         ol.layer.Vector vectorLayer = new ol.layer.Vector(vectorLayerOptions);
         vectorLayer.set(ID_ATTR_NAME, HIGHLIGHT_VECTOR_LAYER_ID);
+        vectorLayer.setZIndex(10000);
         map.addLayer(vectorLayer);
         return vectorLayer;
     }
