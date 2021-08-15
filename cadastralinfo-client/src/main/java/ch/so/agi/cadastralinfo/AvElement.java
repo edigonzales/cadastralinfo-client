@@ -25,6 +25,7 @@ import org.dominokit.domino.ui.popover.PopupPosition;
 import org.dominokit.domino.ui.popover.Tooltip;
 import org.dominokit.domino.ui.style.Color;
 import org.dominokit.domino.ui.style.Elevation;
+import org.dominokit.domino.ui.utils.TextNode;
 import org.gwtproject.i18n.client.NumberFormat;
 import org.gwtproject.safehtml.shared.SafeHtmlUtils;
 import org.jboss.elemento.IsElement;
@@ -59,6 +60,12 @@ public class AvElement implements IsElement<HTMLElement> {
         root = div().id("av-element").element();
     }
 
+    public void reset() {
+        if (container != null) {
+            container.remove();
+        }
+    }
+    
     public void update(String egrid, String avServiceBaseUrl) {
         if (container != null) {
             container.remove();
@@ -96,7 +103,6 @@ public class AvElement implements IsElement<HTMLElement> {
                 .setColor("#c62828")
                 .setBorder("1px #c62828 solid")
                 .setPadding("5px 5px 5px 0px;")
-                //.setMargin("20px")
                 .setMinWidth(px.of(100)).get();
                 
         Tooltip.create(mapBtn, "Auszug Plan für das Grundbuch").position(PopupPosition.TOP);
@@ -106,9 +112,23 @@ public class AvElement implements IsElement<HTMLElement> {
             Window.open("http://map.geo.gl.ch/api/v1/plotinfo/landreg/CH867022698167", "_blank", null);
         });
         
+        Button resetBtn = Button.create(Icons.ALL.window_close_mdi())
+                .setSize(ButtonSize.SMALL)
+                .setBackground(Color.WHITE)
+                .elevate(0)
+                .style()
+                .setColor("#c62828")
+                .setBorder("1px #c62828 solid")
+                .setPadding("5px 5px 5px 0px;").get();
+                //.setMinWidth(px.of(100)).get();
+                
+        Tooltip.create(resetBtn, "Reset").position(PopupPosition.TOP);
+
         container.appendChild(Row.create().css("content-row")
                 .appendChild(span().add(descBtn))
-                .appendChild(span().add(mapBtn)).element());
+                .appendChild(span().add(mapBtn))
+                .appendChild(Column.span9())
+                .appendChild(span().add(resetBtn)).element());
         
         container.appendChild(Row.create().css("empty-row-20").element());
         

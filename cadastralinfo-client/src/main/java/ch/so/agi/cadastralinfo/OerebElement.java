@@ -60,15 +60,25 @@ import elemental2.dom.Headers;
 import elemental2.dom.RequestInit;
 import elemental2.dom.URL;
 import elemental2.dom.URLSearchParams;
+import ol.OLFactory;
+import ol.layer.Base;
+import ol.layer.Image;
+import ol.layer.LayerOptions;
+import ol.source.ImageWms;
+import ol.source.ImageWmsOptions;
+import ol.source.ImageWmsParams;
 
 public class OerebElement implements IsElement<HTMLElement> {
+    private String ID_ATTR_NAME = "id";
+
     private NumberFormat fmtDefault = NumberFormat.getDecimalFormat();
     private NumberFormat fmtPercent = NumberFormat.getFormat("#0.0");
     private NumberFormat fmtInteger = NumberFormat.getFormat("#,##0");
 
-    private Loader loader;
     private final HTMLElement root;
+    private ol.Map map;
     private HTMLDivElement container;
+    private Loader loader;
     private Tab tabConcerned;
     private Tab tabNotConcerned;
     private Tab tabWithout;
@@ -77,6 +87,7 @@ public class OerebElement implements IsElement<HTMLElement> {
     private List<ConcernedTheme> concernedThemes;
     private List<String> notConcernedThemes;
     private List<String> withoutThemes;
+    private ArrayList<String> oerebWmsLayers = new ArrayList<String>();
 
     private List<String> themesOrderingList = Stream.of(
             "ch.SO.NutzungsplanungGrundnutzung", "ch.SO.NutzungsplanungUeberlagernd",
@@ -88,11 +99,20 @@ public class OerebElement implements IsElement<HTMLElement> {
             "ForestDistanceLines", "ch.SO.Einzelschutz")
             .collect(Collectors.toList());
 
-    public OerebElement() {
+    public OerebElement(ol.Map map) {
         root = div().id("oereb-element").element();
+        this.map = map;
+    }
+    
+    public void reset() {
+        if (container != null) {
+            container.remove();
+        }
+        removeOerebWmsLayers();
     }
     
     public void update(String egrid, String oerebServiceBaseUrl) {
+        removeOerebWmsLayers();
         this.egrid = egrid;
                 
         if (container != null) {
@@ -333,30 +353,39 @@ public class OerebElement implements IsElement<HTMLElement> {
         withoutThemes.sort(String.CASE_INSENSITIVE_ORDER);
     }
     
-    private void renderResponse() {
+    private void renderResponse() {        
         {
             HTMLDivElement concernedContainer = div().element();
             tabConcerned.appendChild(concernedContainer);
 
             for (ConcernedTheme theme : concernedThemes) {
-                // String cardTitle = theme.getSubtheme()==null ? theme.getName() :
-                // theme.getSubtheme();
-                Card card = Card.create(theme.getName()).setCollapsible().collapse().elevate(Elevation.LEVEL_0);
+                Image wmsLayer = createOerebWmsLayer(theme.getReferenceWMS());
+                map.addLayer(wmsLayer);
 
+                String layerId = theme.getReferenceWMS().getLayers();
+                oerebWmsLayers.add(layerId);                    
+
+                
+                Card card = Card.create(theme.getName())
+                        .setId(theme.getName())
+                        .setCollapsible()
+                        .collapse()
+                        .elevate(Elevation.LEVEL_0);
                 concernedContainer.appendChild(card.element());
 
                 card.getBody().addHideListener(new HideCompletedHandler() {
                     @Override
                     public void onHidden() {
-                        console.log("hidden3");
-
+                        Image wmsLayer = (Image) getMapLayerById(layerId);
+                        wmsLayer.setVisible(false); 
                     }
                 });
 
                 card.getBody().addShowListener(new ShowCompletedHandler() {
                     @Override
                     public void onShown() {
-                        console.log("show3");
+                        Image wmsLayer = (Image) getMapLayerById(layerId);
+                        wmsLayer.setVisible(true); 
                     }
                 });
 
@@ -393,7 +422,6 @@ public class OerebElement implements IsElement<HTMLElement> {
                     } else if (restriction.getNrOfPoints() != null) {
                         share = fmtInteger.format(restriction.getNrOfPoints());
                     }
-                    
                     
                     HTMLElement symbol = img().attr("src", restriction.getSymbolRef())
                             .attr("alt", "Symbol " + restriction.getInformation())
@@ -498,6 +526,21 @@ public class OerebElement implements IsElement<HTMLElement> {
                     card.appendChild(div().css("empty-row-5").element());
                 }
                 
+                card.appendChild(Row.create().css("empty-row-10", "stripline"));
+                card.appendChild(Row.create().css("empty-row-10"));
+                card.appendChild(Row.create().css("content-row")
+                        .appendChild(Column.span12()
+                                .appendChild(span().css("content-key").textContent("Zuständige Stelle:"))));
+
+                for (Office office : theme.getResponsibleOffice()) {
+                    HTMLElement link = a().css("default-link")
+                            .attr("href", office.getOfficeAtWeb())
+                            .attr("target", "_blank")
+                            .add(TextNode.of(office.getName())).element();
+                    card.appendChild(div().add(link).element());
+                    card.appendChild(div().css("empty-row-5").element());
+                }
+
                 
             }
 
@@ -553,6 +596,61 @@ public class OerebElement implements IsElement<HTMLElement> {
         }
     };
     
+    private Image createOerebWmsLayer(ReferenceWMS referenceWms) {
+        ImageWmsParams imageWMSParams = OLFactory.createOptions();
+        imageWMSParams.setLayers(referenceWms.getLayers());
+
+        ImageWmsOptions imageWMSOptions = OLFactory.createOptions();
+
+        String baseUrl = referenceWms.getBaseUrl();
+
+        imageWMSOptions.setUrl(baseUrl);
+        imageWMSOptions.setParams(imageWMSParams);
+        imageWMSOptions.setRatio(1.5f);
+
+        ImageWms imageWMSSource = new ImageWms(imageWMSOptions);
+
+        LayerOptions layerOptions = OLFactory.createOptions();
+        layerOptions.setSource(imageWMSSource);
+
+        Image wmsLayer = new Image(layerOptions);
+        wmsLayer.set(ID_ATTR_NAME, referenceWms.getLayers());
+        wmsLayer.setVisible(false);
+        wmsLayer.setOpacity(referenceWms.getLayerOpacity());
+ 
+        return wmsLayer;
+    }
+    
+    private void removeOerebWmsLayers() {
+        for (String layerId : oerebWmsLayers) {
+            Image rlayer = (Image) getMapLayerById(layerId);
+            map.removeLayer(rlayer);
+        }
+        oerebWmsLayers.clear();
+    }
+
+    // TODO: utils
+    private Base getMapLayerById(String id) {
+        ol.Collection<Base> layers = map.getLayers();
+        for (int i = 0; i < layers.getLength(); i++) {
+            Base item = layers.item(i);
+            try {
+                String layerId = item.get(ID_ATTR_NAME);
+                if (layerId == null) {
+                    continue;
+                }
+                if (layerId.equalsIgnoreCase(id)) {
+                    return item;
+                }
+            } catch (Exception e) {
+                //console.log(e.getMessage());
+                //console.log("should not reach here");
+            }
+        }
+        return null;
+    }
+
+
     @Override
     public HTMLElement element() {
         return root;

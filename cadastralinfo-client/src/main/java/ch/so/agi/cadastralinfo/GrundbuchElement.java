@@ -78,6 +78,12 @@ public class GrundbuchElement implements IsElement<HTMLElement> {
         root = div().id("gb-element").element();
     }
     
+    public void reset() {
+        if (container != null) {
+            container.remove();
+        }
+    }
+    
     public void update(String egrid, String grundbuchServiceBaseUrl) {
         this.egrid = egrid;
         

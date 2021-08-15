@@ -71,6 +71,4 @@ public class Document {
     public int hashCode() {
         return textAtWeb.hashCode();
     }
-
-
 }

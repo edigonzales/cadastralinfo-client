@@ -61,6 +61,9 @@ import elemental2.dom.Headers;
 import elemental2.dom.Location;
 import elemental2.dom.Node;
 import elemental2.dom.RequestInit;
+import elemental2.dom.URL;
+import elemental2.dom.URLSearchParams;
+import elemental2.dom.Window;
 import jsinterop.base.Any;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
@@ -93,7 +96,7 @@ public class App implements EntryPoint {
     private String myVar;
     private String AV_SERVICE_BASE_URL;
     private String GB_SERVICE_BASE_URL;
-    private String OEREB_SERVICE_BASE_URL = "https://geo.so.ch/api/oereb/"; //extract/reduced/xml/CH857632820629
+    private String OEREB_SERVICE_BASE_URL; // = "https://geo.so.ch/api/oereb/"; //extract/reduced/xml/CH857632820629
     private String SEARCH_SERVICE_URL = "https://geo.so.ch/api/search/v2/?filter=ch.so.agi.av.gebaeudeadressen.gebaeudeeingaenge,ch.so.agi.av.grundstuecke.rechtskraeftig&searchtext=";    
     private String DATA_SERVICE_URL = "https://geo.so.ch/api/data/v1/";
 
@@ -127,19 +130,6 @@ public class App implements EntryPoint {
     private Loader loader;
     
 	public void onModuleLoad() {
-	    // TODO: just for tests
-	    
-//	    String xml = "<root xmlns:ns10='_'><parcel>\n"
-//	            + "      <ns10:number>234</ns10:number>\n"
-//	            + " </parcel></root>";
-//	    
-//	    console.log(org.gwtproject.xml.client.XMLParser.class);
-//	    org.gwtproject.xml.client.Document doc = org.gwtproject.xml.client.XMLParser.parse(xml);
-//	    org.gwtproject.xml.client.Node foundNode = doc.getElementsByTagName("number").item(0);
-//	    console.log(foundNode);
-//	    console.log(foundNode.getFirstChild().getNodeValue());
-	    
-	    
         DomGlobal.fetch("/settings")
         .then(response -> {
             if (!response.ok) {
@@ -151,6 +141,7 @@ public class App implements EntryPoint {
             //console.log(json);
             JsPropertyMap<?> parsed = Js.cast(Global.JSON.parse(json));      
             AV_SERVICE_BASE_URL = Js.asString(parsed.get("avServiceBaseUrl"));
+            OEREB_SERVICE_BASE_URL = Js.asString(parsed.get("oerebServiceBaseUrl"));
             return null;
         }).catch_(error -> {
             loader.stop();
@@ -277,12 +268,14 @@ public class App implements EntryPoint {
         suggestBox.setFocusOnClose(false);
         
         HTMLElement resetIcon = Icons.ALL.close().setId("SearchResetIcon").element();
+        resetIcon.style.cursor = "pointer";
         resetIcon.addEventListener("click", new EventListener() {
             @Override
             public void handleEvent(Event evt) {
                 HTMLInputElement el =(HTMLInputElement) suggestBox.getInputElement().element();
                 el.value = "";
                 suggestBox.unfocus();
+                reset();
             }
         });
         suggestBox.addRightAddOn(resetIcon);
@@ -293,72 +286,7 @@ public class App implements EntryPoint {
         suggestionsMenu.setPosition(new DropDownPositionDown());
         suggestionsMenu.setSearchable(false);
         
-        suggestBox.addSelectionHandler(new SelectionHandler() {
-            @Override
-            public void onSelection(Object value) {
-                SuggestItem<SearchResult> item = (SuggestItem<SearchResult>) value;
-                SearchResult result = (SearchResult) item.getValue();
-                
-                RequestInit requestInit = RequestInit.create();
-                Headers headers = new Headers();
-                headers.append("Content-Type", "application/x-www-form-urlencoded"); // CORS and preflight...
-                requestInit.setHeaders(headers);
-                
-                if (result.getType().equalsIgnoreCase("feature")) {
-                    String dataproductId = result.getDataproductId();
-                    String idFieldName = result.getIdFieldName();
-                    String featureId = String.valueOf(result.getFeatureId());
-                    
-                    String requestUrl;
-                    if (dataproductId.equalsIgnoreCase("ch.so.agi.av.gebaeudeadressen.gebaeudeeingaenge")) {
-                        List<Double> bbox = result.getBbox();                 
-                        String bboxStr = bbox.get(0).toString()+","+bbox.get(1).toString()+","+bbox.get(2).toString()+","+bbox.get(3).toString();
-                        requestUrl = DATA_SERVICE_URL + "ch.so.agi.av.grundstuecke.rechtskraeftig" + "/?bbox="+bboxStr;
-                    } else {
-                        requestUrl = DATA_SERVICE_URL + dataproductId + "/?filter=[[\""+idFieldName+"\",\"=\","+featureId+"]]";
-                    }
-                    
-                    DomGlobal.fetch(requestUrl, requestInit)
-                    .then(response -> {
-                        if (!response.ok) {
-                            return null;
-                        }
-                        return response.text();
-                    })
-                    .then(json -> {
-                        // TODO:
-                        // Fall Adresssuche mehrere Resultate liefert. Welches soll automatisch (?) 
-                        // verwendet werden?
-                        // Auswahl? UX?
-                        
-                        Feature[] features = (new GeoJson()).readFeatures(json); 
-                        String egrid = Js.asString(features[0].getProperties().get("egrid"));                        
-                        
-                        Feature[] fs = new Feature[] {features[0]};
-                        addFeaturesToHighlightingVectorLayer(fs);
-                        avElement.update(egrid, AV_SERVICE_BASE_URL);
-                        grundbuchElement.update(egrid, AV_SERVICE_BASE_URL);
-                        oerebElement.update(egrid, OEREB_SERVICE_BASE_URL);
-                        
-
-                        return null;
-                    }).catch_(error -> {
-                        console.log(error);
-                        return null;
-                    });
-                    
-                    // Zoom to feature.
-                    List<Double> bbox = result.getBbox();                 
-                    Extent extent = new Extent(bbox.get(0), bbox.get(1), bbox.get(2), bbox.get(3));
-                    View view = map.getView();
-                    double resolution = view.getResolutionForExtent(extent);
-                    view.setZoom(Math.floor(view.getZoomForResolution(resolution)) - 1);
-                    double x = extent.getLowerLeftX() + extent.getWidth() / 2;
-                    double y = extent.getLowerLeftY() + extent.getHeight() / 2;
-                    view.setCenter(new Coordinate(x,y));
-                }
-            }
-        });
+        suggestBox.addSelectionHandler(new MySelectionHandler());
 
         searchContainerDiv.appendChild(Row.create()
                 .appendChild(Column.span6()
@@ -371,8 +299,6 @@ public class App implements EntryPoint {
         rootContentRow.appendChild(mapContentCol);
         
         Column textContentCol = Column.span6().setId("text-content-col");
-        //HTMLDivElement fadeoutBottomDiv = div().id("fadeout-bottom").element();
-        //textContentCol.appendChild(fadeoutBottomDiv);
         rootContentRow.appendChild(textContentCol);
         
         // Add the Openlayers map (element) to the body.
@@ -383,11 +309,9 @@ public class App implements EntryPoint {
 
         TabsPanel tabsPanel = TabsPanel.create()
                 .setId("tabs-panel")
-        //        .setColor(Color.RED);
-        .setBackgroundColor(Color.RED_DARKEN_3)
-        .setColor(Color.WHITE);
+                .setBackgroundColor(Color.RED_DARKEN_3)
+                .setColor(Color.WHITE);
 
-        
         tabAv = Tab.create("AMTLICHE VERMESSUNG");
         avElement = new AvElement();
         tabAv.appendChild(avElement);
@@ -397,7 +321,7 @@ public class App implements EntryPoint {
         tabGrundbuch.appendChild(grundbuchElement);
         
         Tab tabOereb = Tab.create("ÖREB-KATASTER");
-        oerebElement = new OerebElement();
+        oerebElement = new OerebElement(map);
         tabOereb.appendChild(oerebElement);
         
         tabsPanel.appendChild(tabAv);
@@ -405,9 +329,106 @@ public class App implements EntryPoint {
         tabsPanel.appendChild(tabOereb);
         textContentCol.appendChild(tabsPanel.element());
              
+        String href = DomGlobal.window.location.href;
+        URL url = new URL(href);
+        URLSearchParams params = url.searchParams;
+
+        if (params.get("egrid") != null) {
+            String egrid = params.get("egrid");
+            reset();
+            avElement.reset();
+            grundbuchElement.reset();
+            oerebElement.reset();
+
+            RequestInit requestInit = RequestInit.create();
+            Headers headers = new Headers();
+            headers.append("Content-Type", "application/x-www-form-urlencoded");
+            requestInit.setHeaders(headers);
+            
+            DomGlobal.fetch(SEARCH_SERVICE_URL + egrid.trim().toLowerCase(), requestInit)
+            .then(response -> {
+                if (!response.ok) {
+                    return null;
+                }
+                return response.text();
+            })
+            .then(json -> {
+                JsPropertyMap<?> parsed = Js.cast(Global.JSON.parse(json));
+                JsArray<?> results = Js.cast(parsed.get("results"));
+                for (int i = 0; i < results.length; i++) {
+                    JsPropertyMap<?> resultObj = Js.cast(results.getAt(i));
+                                                
+                    if (resultObj.has("feature")) {
+                        JsPropertyMap feature = (JsPropertyMap) resultObj.get("feature");
+                        String display = ((JsString) feature.get("display")).normalize();
+                        String dataproductId = ((JsString) feature.get("dataproduct_id")).normalize();
+                        String idFieldName = ((JsString) feature.get("id_field_name")).normalize();
+                        int featureId = new Double(((JsNumber) feature.get("feature_id")).valueOf()).intValue();
+                        List<Double> bbox = ((JsArray) feature.get("bbox")).asList();
+
+                        String requestUrl = DATA_SERVICE_URL + dataproductId + "/?filter=[[\""+idFieldName+"\",\"=\","+featureId+"]]";
+                        
+                        DomGlobal.fetch(requestUrl, requestInit)
+                        .then(response -> {
+                            if (!response.ok) {
+                                return null;
+                            }
+                            return response.text();
+                        })
+                        .then(result -> {                            
+                            Feature[] features = (new GeoJson()).readFeatures(result); 
+                            Feature[] fs = new Feature[] {features[0]};
+                            addFeaturesToHighlightingVectorLayer(fs);
+                            avElement.update(egrid, AV_SERVICE_BASE_URL);
+                            grundbuchElement.update(egrid, AV_SERVICE_BASE_URL);
+                            oerebElement.update(egrid, OEREB_SERVICE_BASE_URL);
+                            updateUrlLocation(egrid);
+                            return null;
+                        }).catch_(error -> {
+                            console.log(error);
+                            return null;
+                        });
+
+                        // TODO: method
+                        // Zoom to feature.
+                        Extent extent = new Extent(bbox.get(0), bbox.get(1), bbox.get(2), bbox.get(3));
+                        View view = map.getView();
+                        double resolution = view.getResolutionForExtent(extent);
+                        view.setZoom(Math.floor(view.getZoomForResolution(resolution)) - 1);
+                        double x = extent.getLowerLeftX() + extent.getWidth() / 2;
+                        double y = extent.getLowerLeftY() + extent.getHeight() / 2;
+                        view.setCenter(new Coordinate(x,y));
+                    }
+                }
+                return null;
+            }).catch_(error -> {
+                console.log(error);
+                return null;
+            });
+        }
         console.log("fubar");
 	}
 		
+	
+	private void updateUrlLocation(String egrid) {
+	    URL url = new URL(DomGlobal.location.href);
+        String host = url.host;
+        String protocol = url.protocol;
+        String pathname = url.pathname;
+        URLSearchParams params = url.searchParams;
+        params.set("egrid", egrid);
+
+        String newUrl = protocol + "//" + host + pathname + "?" + params.toString(); 
+        updateUrlWithoutReloading(newUrl);
+	}
+	
+	private void reset() {
+        removeHighlightVectorLayer();
+        avElement.reset();
+        grundbuchElement.reset();
+        oerebElement.reset();
+	}
+	
 	private void addFeaturesToHighlightingVectorLayer(Feature[] features) {
 	    ol.layer.Vector vectorLayer = (ol.layer.Vector) getMapLayerById(HIGHLIGHT_VECTOR_LAYER_ID);
 	    if (vectorLayer == null) {
@@ -539,6 +560,7 @@ public class App implements EntryPoint {
                             avElement.update(egridMap.get(row.getAttribute("id")), AV_SERVICE_BASE_URL);
                             grundbuchElement.update(egridMap.get(row.getAttribute("id")), AV_SERVICE_BASE_URL);
                             oerebElement.update(egridMap.get(row.getAttribute("id")), OEREB_SERVICE_BASE_URL);
+                            updateUrlLocation(egrid);
                         });                        
                         popupBuilder.add(row);
                     }
@@ -570,6 +592,7 @@ public class App implements EntryPoint {
                     avElement.update(egrid, AV_SERVICE_BASE_URL);
                     grundbuchElement.update(egrid, AV_SERVICE_BASE_URL);
                     oerebElement.update(egrid, OEREB_SERVICE_BASE_URL);
+                    updateUrlLocation(egrid);
                 }
                 return null;
             }).catch_(error -> {
@@ -578,5 +601,76 @@ public class App implements EntryPoint {
             });            
         }
     }
+    
+    public class MySelectionHandler implements SelectionHandler {
+        @Override
+        public void onSelection(Object value) {
+            SuggestItem<SearchResult> item = (SuggestItem<SearchResult>) value;
+            SearchResult result = (SearchResult) item.getValue();
+            
+            RequestInit requestInit = RequestInit.create();
+            Headers headers = new Headers();
+            headers.append("Content-Type", "application/x-www-form-urlencoded"); // CORS and preflight...
+            requestInit.setHeaders(headers);
+            
+            if (result.getType().equalsIgnoreCase("feature")) {
+                String dataproductId = result.getDataproductId();
+                String idFieldName = result.getIdFieldName();
+                String featureId = String.valueOf(result.getFeatureId());
+                
+                String requestUrl;
+                if (dataproductId.equalsIgnoreCase("ch.so.agi.av.gebaeudeadressen.gebaeudeeingaenge")) {
+                    List<Double> bbox = result.getBbox();                 
+                    String bboxStr = bbox.get(0).toString()+","+bbox.get(1).toString()+","+bbox.get(2).toString()+","+bbox.get(3).toString();
+                    requestUrl = DATA_SERVICE_URL + "ch.so.agi.av.grundstuecke.rechtskraeftig" + "/?bbox="+bboxStr;
+                } else {
+                    requestUrl = DATA_SERVICE_URL + dataproductId + "/?filter=[[\""+idFieldName+"\",\"=\","+featureId+"]]";
+                }
+                
+                DomGlobal.fetch(requestUrl, requestInit)
+                .then(response -> {
+                    if (!response.ok) {
+                        return null;
+                    }
+                    return response.text();
+                })
+                .then(json -> {
+                    // TODO:
+                    // Fall Adresssuche mehrere Resultate liefert. Welches soll automatisch (?) 
+                    // verwendet werden?
+                    // Auswahl? UX?
+                    
+                    Feature[] features = (new GeoJson()).readFeatures(json); 
+                    String egrid = Js.asString(features[0].getProperties().get("egrid"));                        
+                    
+                    Feature[] fs = new Feature[] {features[0]};
+                    addFeaturesToHighlightingVectorLayer(fs);
+                    avElement.update(egrid, AV_SERVICE_BASE_URL);
+                    grundbuchElement.update(egrid, AV_SERVICE_BASE_URL);
+                    oerebElement.update(egrid, OEREB_SERVICE_BASE_URL);
+                    updateUrlLocation(egrid);
 
+                    return null;
+                }).catch_(error -> {
+                    console.log(error);
+                    return null;
+                });
+                
+                // Zoom to feature.
+                List<Double> bbox = result.getBbox();                 
+                Extent extent = new Extent(bbox.get(0), bbox.get(1), bbox.get(2), bbox.get(3));
+                View view = map.getView();
+                double resolution = view.getResolutionForExtent(extent);
+                view.setZoom(Math.floor(view.getZoomForResolution(resolution)) - 1);
+                double x = extent.getLowerLeftX() + extent.getWidth() / 2;
+                double y = extent.getLowerLeftY() + extent.getHeight() / 2;
+                view.setCenter(new Coordinate(x,y));
+            }
+        }
+    }
+
+    // Update the URL in the browser without reloading the page.
+    private static native void updateUrlWithoutReloading(String newUrl) /*-{
+        $wnd.history.pushState(newUrl, "", newUrl);
+    }-*/;
 }

@@ -12,6 +12,8 @@ public class Settings {
 
     private String avServiceBaseUrl;
     
+    private String oerebServiceBaseUrl;
+    
     public String getMyVar() {
         return myVar;
     }
@@ -26,5 +28,13 @@ public class Settings {
 
     public void setAvServiceBaseUrl(String avServiceBaseUrl) {
         this.avServiceBaseUrl = avServiceBaseUrl;
+    }
+
+    public String getOerebServiceBaseUrl() {
+        return oerebServiceBaseUrl;
+    }
+
+    public void setOerebServiceBaseUrl(String oerebServiceBaseUrl) {
+        this.oerebServiceBaseUrl = oerebServiceBaseUrl;
     }
 }
