@@ -1,5 +1,11 @@
 # cadastralinfo-client
 
+## Build Docker Image
+```
+docker buildx build --platform linux/amd64,linux/arm64 --push -t edigonzales/cadastralinfo-client-jvm -f cadastralinfo-server/src/main/docker/Dockerfile.jvm .
+```
+
+
 ## todo
 - Suche (fetch) im Hauptfenster: Wie oft muss das gemacht werden? Kann copy/past Code verhindert werden?
 - Wie XXXElement strukturieren? Kann man etwas verallgemeinern (vererben)? Ablauf? Daten holen, parsen, rendern? "Cards" im Konstruktor und Hauptdiv erst sichbar machen, wenn alles fertig?

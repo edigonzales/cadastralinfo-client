@@ -108,8 +108,8 @@ public class AvElement implements IsElement<HTMLElement> {
         Tooltip.create(mapBtn, "Auszug Plan für das Grundbuch").position(PopupPosition.TOP);
         
         mapBtn.addClickListener(evt -> {
-            //Window.open(avServiceBaseUrl+"/extract/pdf/geometry/"+egrid, "_blank", null);
-            Window.open("http://map.geo.gl.ch/api/v1/plotinfo/landreg/CH867022698167", "_blank", null);
+            Window.open(avServiceBaseUrl+"/extract/pdf/map/"+egrid, "_blank", null);
+            //Window.open("http://map.geo.gl.ch/api/v1/plotinfo/landreg/CH867022698167", "_blank", null);
         });
         
         Button resetBtn = Button.create(Icons.ALL.window_close_mdi())
