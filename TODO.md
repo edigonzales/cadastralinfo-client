@@ -14,9 +14,12 @@
 - AV
   * JSON über Bord werfen und XML verwenden
 
-- AV-Plänli -> Button mit Auswahl oder zwei Button.
-
 - ÖREB:
   * XMLUtils: Auslesen einer bestimmten Sprache
   * Sind die Layer sichbar, falls ein anderes Thema aktiviert ist?
 
+
+
+- native-image:
+  * resources/META-INFO? (-> archetype?)
+  * inject fields
