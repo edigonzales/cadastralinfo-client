@@ -33,6 +33,8 @@ spring:
 # ========================
 # APPLICATION
 # ========================
+myService: ${SERVICE:defaultValue}
+
 app:
     myVar: ${VAR:defaultValue}
     avServiceBaseUrl: ${AV_SERVICE_BASE_URL:http://localhost:8081}

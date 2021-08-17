@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 public class OerebService {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    @Value("${app.myVar}")
+    @Value("${myService}")
     private String myVar; 
     
     //@Value("${app.oerebServiceBaseUrl}")
