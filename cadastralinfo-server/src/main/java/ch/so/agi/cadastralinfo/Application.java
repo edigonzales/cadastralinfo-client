@@ -17,8 +17,8 @@ import org.springframework.web.filter.ForwardedHeaderFilter;
 @SpringBootApplication
 @ServletComponentScan
 @Configuration
-@PropertySource("classpath:application.yml")
-//@EnableConfigurationProperties(Settings.class)
+//@PropertySource("classpath:application.yml")
+@EnableConfigurationProperties(Settings.class)
 public class Application extends SpringBootServletInitializer {
   
   public static void main(String[] args) {
