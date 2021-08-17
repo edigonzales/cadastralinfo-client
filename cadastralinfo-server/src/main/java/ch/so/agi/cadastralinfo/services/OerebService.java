@@ -25,7 +25,7 @@ public class OerebService {
     //@Value("${myService}")
     //private String myVar; 
     
-    @Value("${oerebServiceBaseUrl}")
+    @Value("${app.oerebServiceBaseUrl}")
     private String serviceBaseUrl;
 
     public String getParcel(String egrid) throws IOException, InterruptedException {
