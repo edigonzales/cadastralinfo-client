@@ -22,7 +22,10 @@ import org.slf4j.LoggerFactory;
 public class OerebService {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    @Value("${app.oerebServiceBaseUrl}")
+    //@Value("${myService}")
+    //private String myVar; 
+    
+    @Value("${oerebServiceBaseUrl}")
     private String serviceBaseUrl;
 
     public String getParcel(String egrid) throws IOException, InterruptedException {

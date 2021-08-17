@@ -38,7 +38,7 @@ import com.github.underscore.lodash.U;
 public class AvService {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    @Value("${app.avServiceBaseUrl}")
+    @Value("${avServiceBaseUrl}")
     private String serviceBaseUrl;
 
     @Autowired
