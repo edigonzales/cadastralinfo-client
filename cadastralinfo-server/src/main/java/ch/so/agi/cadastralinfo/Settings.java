@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @Configuration
 @Component
 @EnableConfigurationProperties
-//@ConfigurationProperties(prefix = "app")
+@ConfigurationProperties(prefix = "app")
 //@PropertySource("classpath:application.yml")
 public class Settings {
     private String myVar;
