@@ -22,8 +22,11 @@ import org.slf4j.LoggerFactory;
 public class OerebService {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    @Value("${app.oerebServiceBaseUrl}")
-    private String serviceBaseUrl;
+    @Value("${app.myVar}")
+    private String myVar; 
+    
+    //@Value("${app.oerebServiceBaseUrl}")
+    private String serviceBaseUrl = "https://geo.so.ch/api/oereb/";
 
     public String getParcel(String egrid) throws IOException, InterruptedException {
         String tmpdir = Files.createTempDirectory("cadastralinfo").toFile().getAbsolutePath();

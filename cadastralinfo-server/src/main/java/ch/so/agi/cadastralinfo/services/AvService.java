@@ -38,8 +38,8 @@ import com.github.underscore.lodash.U;
 public class AvService {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    @Value("${app.avServiceBaseUrl}")
-    private String serviceBaseUrl;
+    //@Value("${app.avServiceBaseUrl}")
+    private String serviceBaseUrl = "http://localhost:8888";
 
     @Autowired
     Jaxb2Marshaller marshaller;
