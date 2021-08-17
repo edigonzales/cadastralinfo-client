@@ -8,6 +8,7 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.xml.MarshallingHttpMessageConverter;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
@@ -16,6 +17,7 @@ import org.springframework.web.filter.ForwardedHeaderFilter;
 @SpringBootApplication
 @ServletComponentScan
 @Configuration
+@PropertySource("classpath:application.yml")
 //@EnableConfigurationProperties(Settings.class)
 public class Application extends SpringBootServletInitializer {
   
