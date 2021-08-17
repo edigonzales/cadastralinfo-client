@@ -16,7 +16,7 @@ import org.springframework.web.filter.ForwardedHeaderFilter;
 @SpringBootApplication
 @ServletComponentScan
 @Configuration
-@EnableConfigurationProperties(Settings.class)
+//@EnableConfigurationProperties(Settings.class)
 public class Application extends SpringBootServletInitializer {
   
   public static void main(String[] args) {
