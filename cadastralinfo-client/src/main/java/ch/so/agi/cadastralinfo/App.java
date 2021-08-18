@@ -408,7 +408,7 @@ public class App implements EntryPoint {
                 return null;
             });
         }
-        console.log("fubar");
+        //console.log("fubar");
 	}
 		
 	

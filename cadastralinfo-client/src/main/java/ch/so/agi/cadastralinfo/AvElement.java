@@ -124,11 +124,16 @@ public class AvElement implements IsElement<HTMLElement> {
                 
         Tooltip.create(resetBtn, "Reset").position(PopupPosition.TOP);
 
+        /*
         container.appendChild(Row.create().css("content-row")
                 .appendChild(span().add(descBtn))
                 .appendChild(span().add(mapBtn))
                 .appendChild(Column.span9())
                 .appendChild(span().add(resetBtn)).element());
+        */
+        container.appendChild(Row.create().css("content-row")
+                .appendChild(span().add(descBtn))
+                .appendChild(span().add(mapBtn)).element());
         
         container.appendChild(Row.create().css("empty-row-20").element());
         
