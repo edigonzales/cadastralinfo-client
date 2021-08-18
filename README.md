@@ -1,6 +1,6 @@
 # cadastralinfo-client
 
-## Build
+## Build
 
 ### Docker image on Apple Silicon
 ```
@@ -8,5 +8,5 @@ docker buildx build --platform linux/amd64,linux/arm64 --push -t edigonzales/cad
 ```
 
 ### Native image
-Es braucht anscheinend `@PropertySource("classpath:application.yml")`. Sonst funktioniert das Injecten der Fields nicht.
+Seems to be broken. Fehlen config files?
 

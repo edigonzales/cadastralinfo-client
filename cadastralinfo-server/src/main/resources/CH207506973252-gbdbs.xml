@@ -1,0 +1,150 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<S:Envelope xmlns:S="http://schemas.xmlsoap.org/soap/envelope/" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+	<SOAP-ENV:Header/>
+	<S:Body xmlns="http://www.ech.ch/xmlns/eCH-0135/1" xmlns:ns10="http://www.ech.ch/xmlns/eCH-0011/8" xmlns:ns11="http://www.ech.ch/xmlns/eCH-0007/5" xmlns:ns12="http://www.ech.ch/xmlns/eCH-0008/3" xmlns:ns13="http://www.ech.ch/xmlns/eCH-0010/5" xmlns:ns14="http://schemas.terravis.ch/Versioning/1.1" xmlns:ns15="http://schemas.terravis.ch/Versioning/1.0" xmlns:ns16="http://www.ech.ch/xmlns/eCH-0006/2" xmlns:ns17="http://schemas.geo.admin.ch/BJ/TGBV/GBBasisId/2.1" xmlns:ns18="http://schemas.geo.admin.ch/BJ/TGBV/GBBasisTypen/2.1/ext1" xmlns:ns2="http://schemas.geo.admin.ch/BJ/TGBV/GBDBS/2.1" xmlns:ns3="http://schemas.geo.admin.ch/BJ/TGBV/GBBasisTypen/2.1" xmlns:ns4="http://www.ech.ch/xmlns/eCH-0007/6" xmlns:ns5="http://www.ech.ch/xmlns/eCH-0097/2" xmlns:ns6="http://www.ech.ch/xmlns/eCH-0098/3" xmlns:ns7="http://www.ech.ch/xmlns/eCH-0044/4" xmlns:ns8="http://www.ech.ch/xmlns/eCH-0046/3" xmlns:ns9="http://www.ech.ch/xmlns/eCH-0010/6">
+		<ns2:GetParcelsByIdResponse xmlns:ns2="http://schemas.geo.admin.ch/BJ/TGBV/GBDBS/2.1">
+			<ns2:standDerDaten>2019-05-21</ns2:standDerDaten>
+			<ns2:Grundstueck>
+				<ns3:Liegenschaft id="_1d3cc3fb-1818-439c-ae80-9f1e4d039b32_600_2407_575">
+					<ns3:Nummer>CH207506973252:575::2407:</ns3:Nummer>
+					<ns3:istKopie>false</ns3:istKopie>
+					<ns3:InhaltLiegenschaft id="_6bc2607d-794c-41dd-8280-5c09f986d0bb_87c47a5e-6278-4e71-bafe-2924595661dc" vonEGBTBID="CH46200Ersterfassung60" vonTagebuchDatumZeit="1970-01-01T01:00:00+01:00" vonTagebuchNummer="Ersterfassung">
+						<ns3:Fuehrungsart>eidgenoessisch</ns3:Fuehrungsart>
+						<ns3:Flaechenmass>577</ns3:Flaechenmass>
+					</ns3:InhaltLiegenschaft>
+					<ns3:Flurname id="_36808671-0373-4f0f-bc8d-8bdbd5b05a4c_888a3b92-2d3f-44b0-afe5-60522f4a7202">
+						<ns3:Name>Guet</ns3:Name>
+					</ns3:Flurname>
+					<ns3:Gemeinde>
+						<ns4:municipalityId>2407</ns4:municipalityId>
+						<ns4:municipalityName>Oensingen</ns4:municipalityName>
+						<ns4:cantonAbbreviation>SO</ns4:cantonAbbreviation>
+					</ns3:Gemeinde>
+					<ns3:GBAmt id="_8c146121-13fc-40d1-9d3d-33ac631810a3_ed8d891d-567a-461b-925e-62f24146bc7b">
+						<ns3:Name>Thal-Gäu</ns3:Name>
+					</ns3:GBAmt>
+					<ns3:Gebaeude id="_60dea3e8-3d79-4367-aa86-c2a9bac91f4f_f6a556cd-1693-4922-873d-39b4c283b940">
+						<ns3:istProjektiert>false</ns3:istProjektiert>
+						<ns3:istUnterirdisch>false</ns3:istUnterirdisch>
+						<ns3:GebaeudeartStichwort>
+							<ns3:Stichwort>Wohnhaus</ns3:Stichwort>
+							<ns3:uuid>CC4FDF4193424E3592255F5D7B7D2BDF</ns3:uuid>
+						</ns3:GebaeudeartStichwort>
+						<ns3:GebaeudeeingangAdresse id="_b16997f2-c668-4f84-9a3d-de98827976ea_2b219b89-b7ec-4673-b698-0167a04b9151">
+							<ns3:Strasse>Bechburgstrasse</ns3:Strasse>
+							<ns3:Hausnummer>15</ns3:Hausnummer>
+						</ns3:GebaeudeeingangAdresse>
+					</ns3:Gebaeude>
+					<ns3:Grundbuchname>Oensingen</ns3:Grundbuchname>
+				</ns3:Liegenschaft>
+			</ns2:Grundstueck>
+			<ns2:Grundstueck>
+				<ns3:Liegenschaft id="_a6eab743-963d-4ae1-b1dc-632798714f82_600_2407_577">
+					<ns3:Nummer>CH507506983244:577::2407:</ns3:Nummer>
+					<ns3:istKopie>false</ns3:istKopie>
+					<ns3:InhaltLiegenschaft id="_5df92c1c-e92c-42e6-9cb6-9b65054aca84_a1c535c9-fafd-4a8a-8c4b-dc29d4a08d62" vonEGBTBID="CH46200Ersterfassung60" vonTagebuchDatumZeit="1970-01-01T01:00:00+01:00" vonTagebuchNummer="Ersterfassung">
+						<ns3:Fuehrungsart>eidgenoessisch</ns3:Fuehrungsart>
+						<ns3:Flaechenmass>136</ns3:Flaechenmass>
+					</ns3:InhaltLiegenschaft>
+					<ns3:Flurname id="_1fd9d76b-67ee-4091-85d9-413b12d1842c_f604327f-1e66-48ce-b767-0d1ef5b9c9dc">
+						<ns3:Name>Guet</ns3:Name>
+					</ns3:Flurname>
+					<ns3:Gemeinde>
+						<ns4:municipalityId>2407</ns4:municipalityId>
+						<ns4:municipalityName>Oensingen</ns4:municipalityName>
+						<ns4:cantonAbbreviation>SO</ns4:cantonAbbreviation>
+					</ns3:Gemeinde>
+					<ns3:GBAmt id="_b4fff586-7ffb-41ec-a117-8c94f6007f21_ed8d891d-567a-461b-925e-62f24146bc7b">
+						<ns3:Name>Thal-Gäu</ns3:Name>
+					</ns3:GBAmt>
+					<ns3:Grundbuchname>Oensingen</ns3:Grundbuchname>
+				</ns3:Liegenschaft>
+			</ns2:Grundstueck>
+			<ns2:Person>
+				<ns3:NatuerlichePersonGB id="_7c0f3081-56da-470e-b0b9-de35de3abdfb_bcc5dd53-4b9e-43e3-a36d-1eda6915df22">
+					<ns3:Nummer>CH661767682754::::bcc5dd53-4b9e-43e3-a36d-1eda6915df22</ns3:Nummer>
+					<ns3:InhaltNatuerlichePersonGB bisEGBTBID="CH46200000000013156562" bisTagebuchDatumZeit="2006-09-15T15:25:00+02:00" bisTagebuchNummer="006-2006/1464/0" id="_1d65f65c-7480-4ffc-9da8-7ce791eebe42_bee2c92f-8bb9-4bd5-8d01-5e1b78175c82" vonEGBTBID="CH46200Ersterfassung60" vonTagebuchDatumZeit="1970-01-01T01:00:00+01:00" vonTagebuchNummer="Ersterfassung">
+						<ns3:Name>Liegenchaft</ns3:Name>
+						<ns3:Vornamen>Lisa</ns3:Vornamen>
+						<ns3:Geburtsjahr>1939</ns3:Geburtsjahr>
+						<ns3:Geburtsmonat>12</ns3:Geburtsmonat>
+						<ns3:Geburtstag>34</ns3:Geburtstag>
+						<ns3:Heimatort>Testdorf</ns3:Heimatort>
+					</ns3:InhaltNatuerlichePersonGB>
+					<ns3:InhaltNatuerlichePersonGB id="_52d82bda-8523-4daf-926e-b192a67294fc_bcc5dd53-4b9e-43e3-a36d-1eda6915df22" vonEGBTBID="CH46200000000013156562" vonTagebuchDatumZeit="2006-09-15T15:25:00+02:00" vonTagebuchNummer="006-2006/1464/0">
+						<ns3:Name>Liegenchaft</ns3:Name>
+						<ns3:Vornamen>Lisa</ns3:Vornamen>
+						<ns3:Geburtsjahr>1939</ns3:Geburtsjahr>
+						<ns3:Geburtsmonat>12</ns3:Geburtsmonat>
+						<ns3:Geburtstag>24</ns3:Geburtstag>
+						<ns3:Heimatort>Testdorf</ns3:Heimatort>
+					</ns3:InhaltNatuerlichePersonGB>
+					<ns3:NatuerlichePerson id="_5295ca9e-a5ee-480f-ba3f-624a2b82f683_0c2df639-1fb0-4e94-8c31-1fa52867b73f">
+						<ns3:Name>Liegenschaft</ns3:Name>
+						<ns3:Adresse id="_2d254bf3-e61e-4d35-bb48-e2256d7d25cc_30aff8c9-3446-4a75-b083-64cb94329d81">
+							<ns3:Strasse>Fubarstrasse</ns3:Strasse>
+							<ns3:Hausnummer>20</ns3:Hausnummer>
+							<ns3:PLZ>5000</ns3:PLZ>
+							<ns3:Ort>XXXXXX</ns3:Ort>
+							<ns3:Land>Schweiz</ns3:Land>
+							<ns3:Rolle>Wohnadresse</ns3:Rolle>
+						</ns3:Adresse>
+						<ns3:Vornamen>Lisa</ns3:Vornamen>
+						<ns3:Geburtsjahr>1939</ns3:Geburtsjahr>
+						<ns3:Geburtsmonat>12</ns3:Geburtsmonat>
+						<ns3:Geburtstag>24</ns3:Geburtstag>
+						<ns3:Zivilstand>verheiratet</ns3:Zivilstand>
+						<ns3:Buergerort>Bürgerort</ns3:Buergerort>
+						<ns3:Geschlecht>maennlich</ns3:Geschlecht>
+					</ns3:NatuerlichePerson>
+				</ns3:NatuerlichePersonGB>
+			</ns2:Person>
+			<ns2:Recht>
+				<ns3:EigentumAnteil id="_a3dc3f99-a163-4843-8a07-048615c81c46_80889128-8eb5-45dd-8e5c-8580070052f3">
+					<ns3:InhaltEigentumAnteil id="_d494987e-25ad-4cc6-aa7b-86489164fce7_80889128-8eb5-45dd-8e5c-8580070052f3" vonEGBTBID="CH46200Ersterfassung60" vonTagebuchDatumZeit="1970-01-01T01:00:00+01:00" vonTagebuchNummer="Ersterfassung">
+						<ns3:AnteilZaehler>1</ns3:AnteilZaehler>
+						<ns3:AnteilNenner>1</ns3:AnteilNenner>
+						<ns3:SubjektivDinglich>false</ns3:SubjektivDinglich>
+						<ns3:Eigentumsform>AlleinEigentum</ns3:Eigentumsform>
+					</ns3:InhaltEigentumAnteil>
+					<ns3:Nummer>CH93120000000018054668::80889128-8eb5-45dd-8e5c-8580070052f3</ns3:Nummer>
+					<ns3:Berechtigte>CH661767682754::::bcc5dd53-4b9e-43e3-a36d-1eda6915df22</ns3:Berechtigte>
+					<ns3:belastetesGrundstueck>CH207506973252:575::2407:</ns3:belastetesGrundstueck>
+					<ns3:Erwerbsgrund id="_b28254ef-cdcc-456b-ae2d-8ac36bedcb16_f300332a-9a30-47a9-975e-03a5e23baeeb" vonEGBTBID="CH46200Ersterfassung60" vonTagebuchDatumZeit="1970-01-01T01:00:00+01:00" vonTagebuchNummer="Ersterfassung">
+						<ns3:ErwerbsartStichwort>
+							<ns3:Stichwort>Kauf</ns3:Stichwort>
+							<ns3:uuid>70b27a59-97ee-49c2-a9a8-595718e426df</ns3:uuid>
+						</ns3:ErwerbsartStichwort>
+						<ns3:Datum>1968-05-10</ns3:Datum>
+						<ns3:TagebuchNummer>006-K 55</ns3:TagebuchNummer>
+						<ns3:EGBTBID>CH4620000000006-K.5508</ns3:EGBTBID>
+					</ns3:Erwerbsgrund>
+					<ns3:Erwerbsgrund id="_58aa8979-e4a8-4a01-b2ff-d5e701a1197a_d36fc67a-ac8a-4612-8764-05b97fac675c" vonEGBTBID="CH46200000000013156562" vonTagebuchDatumZeit="2006-09-15T15:25:00+02:00" vonTagebuchNummer="006-2006/1464/0">
+						<ns3:ErwerbsartZusatz>Namens-/Firmaänderung</ns3:ErwerbsartZusatz>
+						<ns3:Datum>2006-09-15</ns3:Datum>
+						<ns3:TagebuchNummer>006-K 2006/00323</ns3:TagebuchNummer>
+						<ns3:EGBTBID>CH4620006-K.2006/00373</ns3:EGBTBID>
+					</ns3:Erwerbsgrund>
+				</ns3:EigentumAnteil>
+			</ns2:Recht>
+			<ns2:Recht>
+				<ns3:EigentumAnteil id="_f976965f-5207-4d46-b9c4-f38875b8a0e4_e9307e7f-8db3-424f-a600-8bda7a90658b">
+					<ns3:InhaltEigentumAnteil id="_8c46d601-5b59-4eca-8a7a-5a58250054f9_e9307e7f-8db3-424f-a600-8bda7a90658b" vonEGBTBID="CH46200Ersterfassung60" vonTagebuchDatumZeit="1970-01-01T01:00:00+01:00" vonTagebuchNummer="Ersterfassung">
+						<ns3:AnteilZaehler>1</ns3:AnteilZaehler>
+						<ns3:AnteilNenner>3</ns3:AnteilNenner>
+						<ns3:SubjektivDinglich>true</ns3:SubjektivDinglich>
+						<ns3:Eigentumsform>MitEigentum</ns3:Eigentumsform>
+					</ns3:InhaltEigentumAnteil>
+					<ns3:Nummer>CH93120000000022112052::e9307e7f-8db3-424f-a600-8bda7a90658b</ns3:Nummer>
+					<ns3:Berechtigte>CH207506973252:575::2407:</ns3:Berechtigte>
+					<ns3:belastetesGrundstueck>CH507506983244:577::2407:</ns3:belastetesGrundstueck>
+					<ns3:Erwerbsgrund id="_006168bf-1f3c-48d1-93ca-c702d97e03ba_e2caa3bb-64a9-4316-a701-650313b8fb13" vonEGBTBID="CH46200Ersterfassung60" vonTagebuchDatumZeit="1970-01-01T01:00:00+01:00" vonTagebuchNummer="Ersterfassung">
+						<ns3:Datum>1968-05-10</ns3:Datum>
+						<ns3:TagebuchNummer>006-K 54</ns3:TagebuchNummer>
+						<ns3:EGBTBID>CH4620000000006-K.5407</ns3:EGBTBID>
+					</ns3:Erwerbsgrund>
+				</ns3:EigentumAnteil>
+			</ns2:Recht>
+		</ns2:GetParcelsByIdResponse>
+	</S:Body>
+</S:Envelope>
