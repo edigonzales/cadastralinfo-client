@@ -1,3 +1,6 @@
+## TODO
+- Exceptionhandling (v.a. im GUI)
+
 - Suche (fetch) im Hauptfenster: Wie oft muss das gemacht werden? Kann copy/past Code verhindert werden?
 - Wie XXXElement strukturieren? Kann man etwas verallgemeinern (vererben)? Ablauf? Daten holen, parsen, rendern? "Cards" im Konstruktor und Hauptdiv erst sichbar machen, wenn alles fertig?
 - ...

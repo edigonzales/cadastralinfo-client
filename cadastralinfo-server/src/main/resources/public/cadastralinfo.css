@@ -196,3 +196,13 @@ a.default-link:visited {
     border: 1px solid rgba(204, 204, 204, 0.35);
     margin: -1px -1px 0px -1px;
 }
+
+.btn:focus, .btn:active:focus, .btn.active:focus, .btn.focus, .btn:active.focus, .btn.active.focus {
+    outline: 5px auto 0;
+    outline-offset: -2px;
+    -webkit-box-shadow: none !important;
+    box-shadow: none !important;
+    /* -webkit-box-shadow: 0 2px 4px -1px rgb(0 0 0 / 20%), 0 4px 5px 0 rgb(0 0 0 / 14%), 0 1px 10px 0 rgb(0 0 0 / 12%); */
+    /* box-shadow: 0 2px 4px -1px rgb(0 0 0 / 20%), 0 4px 5px 0 rgb(0 0 0 / 14%), 0 1px 10px 0 rgb(0 0 0 / 12%); */
+}
+
