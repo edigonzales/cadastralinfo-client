@@ -46,6 +46,9 @@ public class AvElement implements IsElement<HTMLElement> {
     private NumberFormat fmtPercent = NumberFormat.getFormat("#0.0");
     private NumberFormat fmtInteger = NumberFormat.getFormat("#,##0");
 
+    private String gwrServiceBaseUrl;
+    private String avServiceBaseUrl;
+    
     private Loader loader;
     private final HTMLElement root;
     private HTMLDivElement container;
@@ -56,7 +59,9 @@ public class AvElement implements IsElement<HTMLElement> {
     private Card controlPointCard;
     private Card contactCard;
     
-    public AvElement() {
+    public AvElement(String avServiceBaseUrl, String gwrServiceBaseUrl) {
+        this.avServiceBaseUrl = avServiceBaseUrl;
+        this.gwrServiceBaseUrl = gwrServiceBaseUrl;
         root = div().id("av-element").element();
     }
 
@@ -66,7 +71,7 @@ public class AvElement implements IsElement<HTMLElement> {
         }
     }
     
-    public void update(String egrid, String avServiceBaseUrl) {
+    public void update(String egrid) {
         if (container != null) {
             container.remove();
         }
@@ -290,7 +295,7 @@ public class AvElement implements IsElement<HTMLElement> {
 
         /*
          * Gebäude (+ Adressen)
-         */
+         */        
         buildingCard
         .appendChild(Row.create().css("content-row-slim")
                 .appendChild(Column.span2()
@@ -350,9 +355,16 @@ public class AvElement implements IsElement<HTMLElement> {
                     }
                 }
 
+                HTMLElement egidElement;
+                if (egid.equalsIgnoreCase("-")) {
+                    egidElement = span().textContent(egid).element();
+                } else {
+                    egidElement = a().css("default-link").attr("href", gwrServiceBaseUrl+"?egid="+egid).attr("target",  "_blank").add(TextNode.of(egid)).element(); 
+                }
+                
                 Row buildingRow = Row.create().css("content-row")
                         .appendChild(Column.span2()
-                                .appendChild(span().css("content-value").textContent(egid)))
+                                .appendChild(span().css("content-value").add(egidElement)))
                         .appendChild(Column.span2()
                                 .appendChild(span().css("content-value right-align").textContent(area + " m").add(span().css("sup").textContent("2"))))
                         .appendChild(Column.span1()

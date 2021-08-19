@@ -16,6 +16,8 @@ public class Settings {
     
     private String oerebServiceBaseUrl;
     
+    private String gwrServiceBaseUrl;
+    
     public String getMyVar() {
         return myVar;
     }
@@ -38,5 +40,13 @@ public class Settings {
 
     public void setOerebServiceBaseUrl(String oerebServiceBaseUrl) {
         this.oerebServiceBaseUrl = oerebServiceBaseUrl;
+    }
+
+    public String getGwrServiceBaseUrl() {
+        return gwrServiceBaseUrl;
+    }
+
+    public void setGwrServiceBaseUrl(String gwrServiceBaseUrl) {
+        this.gwrServiceBaseUrl = gwrServiceBaseUrl;
     }
 }

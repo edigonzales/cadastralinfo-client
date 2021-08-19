@@ -97,6 +97,7 @@ public class App implements EntryPoint {
     private String AV_SERVICE_BASE_URL;
     private String GB_SERVICE_BASE_URL;
     private String OEREB_SERVICE_BASE_URL; // = "https://geo.so.ch/api/oereb/"; //extract/reduced/xml/CH857632820629
+    private String GWR_SERVICE_BASE_URL;
     private String SEARCH_SERVICE_URL = "https://geo.so.ch/api/search/v2/?filter=ch.so.agi.av.gebaeudeadressen.gebaeudeeingaenge,ch.so.agi.av.grundstuecke.rechtskraeftig&searchtext=";    
     private String DATA_SERVICE_URL = "https://geo.so.ch/api/data/v1/";
 
@@ -142,13 +143,16 @@ public class App implements EntryPoint {
             JsPropertyMap<?> parsed = Js.cast(Global.JSON.parse(json));      
             AV_SERVICE_BASE_URL = Js.asString(parsed.get("avServiceBaseUrl"));
             OEREB_SERVICE_BASE_URL = Js.asString(parsed.get("oerebServiceBaseUrl"));
+            GWR_SERVICE_BASE_URL = Js.asString(parsed.get("gwrServiceBaseUrl"));
+            
+            init();
+            
             return null;
         }).catch_(error -> {
             loader.stop();
             console.log(error);
             return null;
         });
-	    init();
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -315,7 +319,7 @@ public class App implements EntryPoint {
                 .setColor(Color.WHITE);
 
         tabAv = Tab.create("AMTLICHE VERMESSUNG");
-        avElement = new AvElement();
+        avElement = new AvElement(AV_SERVICE_BASE_URL, GWR_SERVICE_BASE_URL);
         tabAv.appendChild(avElement);
         
         Tab tabGrundbuch = Tab.create("GRUNDBUCH");
@@ -381,7 +385,7 @@ public class App implements EntryPoint {
                             Feature[] features = (new GeoJson()).readFeatures(result); 
                             Feature[] fs = new Feature[] {features[0]};
                             addFeaturesToHighlightingVectorLayer(fs);
-                            avElement.update(egrid, AV_SERVICE_BASE_URL);
+                            avElement.update(egrid);
                             grundbuchElement.update(egrid, AV_SERVICE_BASE_URL);
                             oerebElement.update(egrid, OEREB_SERVICE_BASE_URL);
                             updateUrlLocation(egrid);
@@ -560,7 +564,7 @@ public class App implements EntryPoint {
                             double y = extent.getLowerLeftY() + extent.getHeight() / 2;
                             view.setCenter(new Coordinate(x,y));
 
-                            avElement.update(egridMap.get(row.getAttribute("id")), AV_SERVICE_BASE_URL);
+                            avElement.update(egridMap.get(row.getAttribute("id")));
                             grundbuchElement.update(egridMap.get(row.getAttribute("id")), AV_SERVICE_BASE_URL);
                             oerebElement.update(egridMap.get(row.getAttribute("id")), OEREB_SERVICE_BASE_URL);
                             updateUrlLocation(egrid);
@@ -592,7 +596,7 @@ public class App implements EntryPoint {
                     view.setCenter(new Coordinate(x,y));
 
                     addFeaturesToHighlightingVectorLayer(features);
-                    avElement.update(egrid, AV_SERVICE_BASE_URL);
+                    avElement.update(egrid);
                     grundbuchElement.update(egrid, AV_SERVICE_BASE_URL);
                     oerebElement.update(egrid, OEREB_SERVICE_BASE_URL);
                     updateUrlLocation(egrid);
@@ -648,7 +652,7 @@ public class App implements EntryPoint {
                     
                     Feature[] fs = new Feature[] {features[0]};
                     addFeaturesToHighlightingVectorLayer(fs);
-                    avElement.update(egrid, AV_SERVICE_BASE_URL);
+                    avElement.update(egrid);
                     grundbuchElement.update(egrid, AV_SERVICE_BASE_URL);
                     oerebElement.update(egrid, OEREB_SERVICE_BASE_URL);
                     updateUrlLocation(egrid);

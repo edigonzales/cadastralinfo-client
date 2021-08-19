@@ -39,3 +39,4 @@ app:
     myVar: ${VAR:defaultValue}
     avServiceBaseUrl: ${AV_SERVICE_BASE_URL:https://av.sogeo.services}
     oerebServiceBaseUrl: ${OEREB_SERVICE_BASE_URL:https://geo.so.ch/api/oereb/}
+    gwrServiceBaseUrl: ${GWR_SERVICE_BASE_URL:https://www.housing-stat.ch/de/query/egid.html}
