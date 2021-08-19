@@ -1,5 +1,15 @@
 # cadastralinfo-client
 
+## Develop
+```
+./mvnw spring-boot:run -Penv-dev -pl *-server -am
+```
+
+```
+./mvnw gwt:codeserver -pl *-client -am
+```
+
+
 ## Build
 
 ### Docker image on Apple Silicon
