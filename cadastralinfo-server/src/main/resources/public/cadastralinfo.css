@@ -1,5 +1,3 @@
-
-
 body {
   margin: 0px;
   padding: 0px;
@@ -13,9 +11,7 @@ body {
     }
   
     span.right-align {
-        /*display: inline-block;*/
         text-align: left;
-        /*width: 100%;*/
     } 
 }
 
@@ -42,7 +38,8 @@ div body {
     width: 2560px;
     max-width: 95%;
     background-color: #FFFFFF;  
-    height: calc(100% - 230px);      
+    /*height: calc(100% - 230px);*/  
+    height: 100%;    
 }
 
 .logo {
@@ -52,13 +49,22 @@ div body {
 }
 
 #root-content-row {
-    height: 100%;
+    height: calc(100% - 230px);
 }
 
 #map-content-col {
-    height: 100%;
-    /*background-color: lightgreen;*/
+    height: calc(100% - 0px);      
 }
+
+@media screen and (max-width: 992px) {
+    #map-content-col div {
+        height: 300px;
+    }
+    #root-content-row div {
+        height: none;
+    }
+}
+
 
 #text-content-col {
     height: 100%;

@@ -298,13 +298,24 @@ public class App implements EntryPoint {
                 .appendChild(Column.span6()
                         .appendChild(div().id("suggestbox").add(suggestBox).element())).element());
         
+        /*
+        HtmlContentBuilder<HTMLDivElement> left = div().css("grid-child purple");
+        HtmlContentBuilder<HTMLDivElement> right = div().css("grid-child green");
+
+        container.appendChild(
+                div().css("grid-container")
+                .add(left)
+                .add(right).element());
+        */
         Row rootContentRow = Row.create().setId("root-content-row");
         container.appendChild(rootContentRow.element());
 
         Column mapContentCol = Column.span6().setId("map-content-col");
+        //left.add(mapContentCol);
         rootContentRow.appendChild(mapContentCol);
         
         Column textContentCol = Column.span6().setId("text-content-col");
+        //right.add(textContentCol);
         rootContentRow.appendChild(textContentCol);
         
         // Add the Openlayers map (element) to the body.
