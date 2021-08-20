@@ -30,6 +30,8 @@ import org.dominokit.domino.ui.icons.Icons;
 import org.dominokit.domino.ui.lists.ListGroup;
 import org.dominokit.domino.ui.loaders.Loader;
 import org.dominokit.domino.ui.loaders.LoaderEffect;
+import org.dominokit.domino.ui.popover.PopupPosition;
+import org.dominokit.domino.ui.popover.Tooltip;
 import org.dominokit.domino.ui.style.Color;
 import org.dominokit.domino.ui.style.Elevation;
 import org.dominokit.domino.ui.style.Styles;
@@ -135,6 +137,8 @@ public class OerebElement implements IsElement<HTMLElement> {
                 .setBorder("1px #c62828 solid")
                 .setPadding("5px 5px 5px 0px;")
                 .setMinWidth(px.of(100)).get();
+        
+        Tooltip.create(pdfBtn, "ÖREB-Katasterauszug").position(PopupPosition.TOP);
         
         pdfBtn.addClickListener(evt -> {
             Window.open(oerebServiceBaseUrl+"extract/reduced/pdf/geometry/"+egrid, "_blank", null);
