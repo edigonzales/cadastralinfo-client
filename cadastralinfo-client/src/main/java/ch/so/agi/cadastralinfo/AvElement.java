@@ -731,7 +731,7 @@ public class AvElement implements IsElement<HTMLElement> {
         stroke.setWidth(0);
         stroke.setColor(new ol.color.Color(249, 128, 0, 1.0));
         //stroke.setColor(new ol.color.Color(230, 0, 0, 0.6));
-        style.setStroke(stroke);
+        //style.setStroke(stroke);
         Fill fill = new Fill();
         fill.setColor(new ol.color.Color(255, 255, 80, 0.6));
         //style.setFill(fill);
