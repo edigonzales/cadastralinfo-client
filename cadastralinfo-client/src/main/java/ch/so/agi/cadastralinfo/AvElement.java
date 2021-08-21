@@ -94,7 +94,7 @@ public class AvElement implements IsElement<HTMLElement> {
                 .setMinWidth(px.of(100)).get();
                 
         Tooltip.create(descBtn, "Grundstücksbeschrieb der amtlichen Vermessung").position(PopupPosition.TOP);
-
+        
         descBtn.addClickListener(evt -> {
             Window.open(avServiceBaseUrl+"/extract/pdf/geometry/"+egrid, "_blank", null);
         });
