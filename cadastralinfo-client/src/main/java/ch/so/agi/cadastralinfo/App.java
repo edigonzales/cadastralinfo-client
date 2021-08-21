@@ -330,7 +330,7 @@ public class App implements EntryPoint {
                 .setColor(Color.WHITE);
 
         tabAv = Tab.create("AMTLICHE VERMESSUNG");
-        avElement = new AvElement(AV_SERVICE_BASE_URL, GWR_SERVICE_BASE_URL);
+        avElement = new AvElement(map, AV_SERVICE_BASE_URL, GWR_SERVICE_BASE_URL);
         tabAv.appendChild(avElement);
         
         Tab tabGrundbuch = Tab.create("GRUNDBUCH");

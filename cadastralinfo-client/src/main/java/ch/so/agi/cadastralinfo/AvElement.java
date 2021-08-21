@@ -40,15 +40,34 @@ import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLDivElement;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
+
+import ol.Feature;
+import ol.FeatureOptions;
+import ol.Map;
+import ol.MapBrowserEvent;
+import ol.OLFactory;
+import ol.format.Wkt;
 import ol.geom.Geometry;
+import ol.layer.Base;
+import ol.layer.VectorLayerOptions;
+import ol.source.Vector;
+import ol.source.VectorOptions;
+import ol.style.Fill;
+import ol.style.Stroke;
+import ol.style.Style;
 
 public class AvElement implements IsElement<HTMLElement> {
     private NumberFormat fmtDefault = NumberFormat.getDecimalFormat();
     private NumberFormat fmtPercent = NumberFormat.getFormat("#0.0");
     private NumberFormat fmtInteger = NumberFormat.getFormat("#,##0");
+    
+    private String ID_ATTR_NAME = "id";
+    private String BUILDING_VECTOR_LAYER_ID = "building_vector_layer";
+    private String VECTOR_FEATURE_ID = "highlight_fid";
 
     private String gwrServiceBaseUrl;
     private String avServiceBaseUrl;
+    private ol.Map map;
     
     private Loader loader;
     private final HTMLElement root;
@@ -60,7 +79,8 @@ public class AvElement implements IsElement<HTMLElement> {
     private Card controlPointCard;
     private Card contactCard;
     
-    public AvElement(String avServiceBaseUrl, String gwrServiceBaseUrl) {
+    public AvElement(ol.Map map, String avServiceBaseUrl, String gwrServiceBaseUrl) {
+        this.map = map;
         this.avServiceBaseUrl = avServiceBaseUrl;
         this.gwrServiceBaseUrl = gwrServiceBaseUrl;
         root = div().id("av-element").element();
@@ -70,9 +90,12 @@ public class AvElement implements IsElement<HTMLElement> {
         if (container != null) {
             container.remove();
         }
+        removeHighlightVectorLayer();
     }
     
-    public void update(String egrid) {
+    public void update(String egrid) {  
+        removeHighlightVectorLayer();
+
         if (container != null) {
             container.remove();
         }
@@ -318,6 +341,7 @@ public class AvElement implements IsElement<HTMLElement> {
         }
 
         HashMap<String,JsPropertyMap<?>> postalAddresses = new HashMap<>();
+        List<Feature> buildingFeatureList = new ArrayList<>();
         for (int i=0; i<buildings.length; i++) {
             JsPropertyMap<?> building = Js.asPropertyMap(buildings.getAt(i));
             
@@ -357,10 +381,15 @@ public class AvElement implements IsElement<HTMLElement> {
                 }
                 
                 Geometry geometry = null;
+                String hashCode = null;
                 if (building.has("Geometry")) {
                     String rawString = Js.asString(building.get("Geometry"));
-                    geometry = new ol.format.Wkt().readGeometry(rawString);
-                    console.log(geometry.toString());
+                    FeatureOptions featureOptions = OLFactory.createOptions();
+                    featureOptions.setGeometry(new ol.format.Wkt().readGeometry(rawString));
+                    Feature feature = new Feature(featureOptions);
+                    hashCode = String.valueOf(rawString.hashCode());
+                    feature.setId(hashCode); // Egid muss nicht zwingend vorhanden sein.
+                    buildingFeatureList.add(feature);
                 }
 
                 HTMLElement egidElement;
@@ -370,7 +399,7 @@ public class AvElement implements IsElement<HTMLElement> {
                     egidElement = a().css("default-link").attr("href", gwrServiceBaseUrl+"?egid="+egid).attr("target",  "_blank").add(TextNode.of(egid)).element(); 
                 }
                 
-                Row buildingRow = Row.create().css("content-row")
+                Row buildingRow = Row.create().css("content-row").setId(hashCode)
                         .appendChild(Column.span2()
                                 .appendChild(span().css("content-value").add(egidElement)))
                         .appendChild(Column.span2()
@@ -384,10 +413,12 @@ public class AvElement implements IsElement<HTMLElement> {
                 
                 bind(buildingRow.element(), mouseover, event -> {
                     buildingRow.element().style.backgroundColor = "rgba(198,40,40,0.2)";
+                    toggleFeatureFill(buildingRow.getId());
                 });
                 
                 bind(buildingRow.element(), mouseout, event -> {
                     buildingRow.element().style.backgroundColor = "white";
+                    toggleFeatureFill(buildingRow.getId());
                 });
 
                 buildingCard
@@ -420,6 +451,7 @@ public class AvElement implements IsElement<HTMLElement> {
                                 number = Js.asString(address.get("Number"));
                             }
                             
+                            //TODO: Sortierung stimmt mit Buchstaben immer noch nicht.
                             // Hausnummer mit Nullen füllen, damit die Sortierung passt. Z.B. 5 vor 17.
                             String leadingZeroNumber = ("00000000" + number).substring(number.length());
                             postalAddresses.put(street+leadingZeroNumber, address);
@@ -428,6 +460,8 @@ public class AvElement implements IsElement<HTMLElement> {
                 }
             }
         }
+        
+        createHighlightVectorLayer(buildingFeatureList);
         
         /*
          * Gebäudeadressen
@@ -667,5 +701,83 @@ public class AvElement implements IsElement<HTMLElement> {
         
         loader.stop();
     }
+    
+    // TODO utils (oder base class)
+    
+    // TODO layer id muss parametrisierbar sein (überall)
+    private void toggleFeatureFill(String id) {
+        ol.layer.Vector vectorLayer = (ol.layer.Vector) getMapLayerById(BUILDING_VECTOR_LAYER_ID);
+        Vector vectorSource = vectorLayer.getSource();
+        Feature feature = vectorSource.getFeatureById(id);
+        
+        Style style = new Style();
+        Fill fill = new Fill();
+        if (feature.get("highlighted") != null && (boolean) feature.get("highlighted")) {
+            vectorLayer.setVisible(false);
+            feature.set("highlighted", false);
+        } else {
+            vectorLayer.setVisible(true);
+            // 198,40,40,0.6
+            fill.setColor(new ol.color.Color(232, 196, 50, 1.0)); //https://so.ch/fileadmin/internet/bjd/bjd-avt/pdf/Downloads/Grundlagen/AVT_CD-Manual.pdf
+            style.setFill(fill);
+            feature.set("highlighted", true);
+        }
+        feature.setStyle(style);        
+    }
+    
+    private void createHighlightVectorLayer(List<Feature> features) {
+        Style style = new Style();
+        Stroke stroke = new Stroke();
+        stroke.setWidth(0);
+        stroke.setColor(new ol.color.Color(249, 128, 0, 1.0));
+        //stroke.setColor(new ol.color.Color(230, 0, 0, 0.6));
+        style.setStroke(stroke);
+        Fill fill = new Fill();
+        fill.setColor(new ol.color.Color(255, 255, 80, 0.6));
+        //style.setFill(fill);
+
+        ol.Collection<Feature> featureCollection = new ol.Collection<Feature>();
+        for (Feature feature : features) {
+            feature.setStyle(style);
+            featureCollection.push(feature);
+        }
+
+        VectorOptions vectorSourceOptions = OLFactory.createOptions();
+        vectorSourceOptions.setFeatures(featureCollection);
+        Vector vectorSource = new Vector(vectorSourceOptions);
+        
+        VectorLayerOptions vectorLayerOptions = OLFactory.createOptions();
+        vectorLayerOptions.setSource(vectorSource);
+        ol.layer.Vector vectorLayer = new ol.layer.Vector(vectorLayerOptions);
+        vectorLayer.set(ID_ATTR_NAME, BUILDING_VECTOR_LAYER_ID);
+        vectorLayer.setVisible(false);
+        map.addLayer(vectorLayer);
+    }
+    
+    private void removeHighlightVectorLayer() {
+        Base vlayer = getMapLayerById(BUILDING_VECTOR_LAYER_ID);
+        map.removeLayer(vlayer);
+    }
+    
+    private Base getMapLayerById(String id) {
+        ol.Collection<Base> layers = map.getLayers();
+        for (int i = 0; i < layers.getLength(); i++) {
+            Base item = layers.item(i);
+            try {
+                String layerId = item.get(ID_ATTR_NAME);
+                if (layerId == null) {
+                    continue;
+                }
+                if (layerId.equalsIgnoreCase(id)) {
+                    return item;
+                }
+            } catch (Exception e) {
+                console.log(e.getMessage());
+                console.log("should not reach here");
+            }
+        }
+        return null;
+    }
+
     
 }
