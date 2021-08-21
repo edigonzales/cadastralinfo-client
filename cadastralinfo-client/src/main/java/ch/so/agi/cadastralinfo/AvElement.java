@@ -40,6 +40,7 @@ import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLDivElement;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
+import ol.geom.Geometry;
 
 public class AvElement implements IsElement<HTMLElement> {
     private NumberFormat fmtDefault = NumberFormat.getDecimalFormat();
@@ -353,6 +354,13 @@ public class AvElement implements IsElement<HTMLElement> {
                     } else {
                         undergroundStructure = "nein";
                     }
+                }
+                
+                Geometry geometry = null;
+                if (building.has("Geometry")) {
+                    String rawString = Js.asString(building.get("Geometry"));
+                    geometry = new ol.format.Wkt().readGeometry(rawString);
+                    console.log(geometry.toString());
                 }
 
                 HTMLElement egidElement;

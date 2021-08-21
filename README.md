@@ -18,5 +18,6 @@ docker buildx build --platform linux/amd64,linux/arm64 --push -t edigonzales/cad
 ```
 
 ### Native image
-Seems to be broken. Fehlen config files?
+- Mit application.yml habe ich es nicht zum Laufen gekriegt. Vielleicht liegt es noch an einem fehlenden yml-Support, obwohl ich diesen explizit _nicht_ ausgeschaltet habe.
+- Jaxb macht nun Probleme. Werfe ich wohl beim Refactoring eh über Bord. AvService verwendet es.
 
