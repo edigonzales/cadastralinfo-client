@@ -1,4 +1,7 @@
 { "rules": [
+    {"includeClasses": "javax.xml.**"},
+    {"includeClasses": "com.sun.xml.**"},
+    {"excludeClasses": "com.sun.xml.internal.bind.v2.runtime.reflect.opt.Injector"},
   {"excludeClasses": "org.apache.maven.surefire.**"},
   {"excludeClasses": "net.bytebuddy.**"},
   {"excludeClasses": "org.apiguardian.**"},
@@ -7,6 +10,6 @@
   {"excludeClasses": "org.mockito.**"},
   {"excludeClasses": "org.springframework.test.**"},
   {"excludeClasses": "org.springframework.boot.test.**"},
-  {"excludeClasses": "${package}.ApplicationTests"}
+  {"excludeClasses": "ch.so.agi.cadastralinfo.ApplicationTests"}
   ]
 }
