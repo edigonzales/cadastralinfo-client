@@ -544,7 +544,6 @@ public class App implements EntryPoint {
     public final class MapSingleClickListener implements ol.event.EventListener<MapBrowserEvent> {
         @Override
         public void onEvent(MapBrowserEvent event) {
-            mapElement.style.pointerEvents = "none";
             Coordinate coordinate = event.getCoordinate();
             
             RequestInit requestInit = RequestInit.create();
@@ -615,6 +614,8 @@ public class App implements EntryPoint {
                             double y = extent.getLowerLeftY() + extent.getHeight() / 2;
                             view.setCenter(new Coordinate(x,y));
 
+                            mapElement.style.pointerEvents = "none";
+
                             avElement.reset();
                             grundbuchElement.reset();
                             oerebElement.reset();
@@ -652,6 +653,8 @@ public class App implements EntryPoint {
                     double x = extent.getLowerLeftX() + extent.getWidth() / 2;
                     double y = extent.getLowerLeftY() + extent.getHeight() / 2;
                     view.setCenter(new Coordinate(x,y));
+                    
+                    mapElement.style.pointerEvents = "none";
 
                     addFeaturesToHighlightingVectorLayer(features);
                     
