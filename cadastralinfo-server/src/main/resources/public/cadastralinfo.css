@@ -48,6 +48,11 @@ div body {
     text-align: right;
 }
 
+#help-button {
+    padding-top: 40px; 
+    float: right;
+}
+
 #root-content-row {
     height: calc(100% - 230px);
 }

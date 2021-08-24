@@ -4,6 +4,7 @@ import static elemental2.dom.DomGlobal.console;
 import static elemental2.dom.DomGlobal.fetch;
 import static elemental2.dom.DomGlobal.location;
 import static elemental2.dom.DomGlobal.fetch;
+import static org.dominokit.domino.ui.style.Unit.px;
 import static org.jboss.elemento.Elements.*;
 import static org.jboss.elemento.EventType.*;
 
@@ -14,6 +15,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
 
+import org.dominokit.domino.ui.button.Button;
+import org.dominokit.domino.ui.button.ButtonSize;
 import org.dominokit.domino.ui.dropdown.DropDownMenu;
 import org.dominokit.domino.ui.forms.SuggestBox;
 import org.dominokit.domino.ui.forms.AbstractSuggestBox.DropDownPositionDown;
@@ -124,6 +127,7 @@ public class App implements EntryPoint {
     //private Feature parcel;
     //private String egrid = null;
     
+    private TabsPanel tabsPanel;
     private Tab tabAv;
     private AvElement avElement;
     private GrundbuchElement grundbuchElement;
@@ -294,28 +298,30 @@ public class App implements EntryPoint {
         
         suggestBox.addSelectionHandler(new MySelectionHandler());
 
+        Button helpBtn = Button.create(Icons.ALL.help_circle_outline_mdi())
+                .setSize(ButtonSize.SMALL)
+                .setContent("Hilfe")
+                .setBackground(Color.WHITE)
+                .elevate(0)
+                .style()
+                .setColor("#c62828")
+                .setBorder("1px #c62828 solid")
+                //.setPadding("5px 5px 5px 0px;")
+                .setMinWidth(px.of(100)).get();
+        
         searchContainerDiv.appendChild(Row.create()
                 .appendChild(Column.span6()
                         .appendChild(div().id("suggestbox").add(suggestBox).element())).element());
+                //.appendChild(Column.span5())
+                //.appendChild(Column.span1().appendChild(div().id("help-button").add(helpBtn))).element());
         
-        /*
-        HtmlContentBuilder<HTMLDivElement> left = div().css("grid-child purple");
-        HtmlContentBuilder<HTMLDivElement> right = div().css("grid-child green");
-
-        container.appendChild(
-                div().css("grid-container")
-                .add(left)
-                .add(right).element());
-        */
         Row rootContentRow = Row.create().setId("root-content-row");
         container.appendChild(rootContentRow.element());
 
         Column mapContentCol = Column.span6().setId("map-content-col");
-        //left.add(mapContentCol);
         rootContentRow.appendChild(mapContentCol);
         
         Column textContentCol = Column.span6().setId("text-content-col");
-        //right.add(textContentCol);
         rootContentRow.appendChild(textContentCol);
         
         // Add the Openlayers map (element) to the body.
@@ -324,7 +330,7 @@ public class App implements EntryPoint {
         map = MapPresets.getColorMap(MAP_DIV_ID);
         map.addSingleClickListener(new MapSingleClickListener());
 
-        TabsPanel tabsPanel = TabsPanel.create()
+        tabsPanel = TabsPanel.create()
                 .setId("tabs-panel")
                 .setBackgroundColor(Color.RED_DARKEN_3)
                 .setColor(Color.WHITE);
@@ -341,9 +347,17 @@ public class App implements EntryPoint {
         oerebElement = new OerebElement(map);
         tabOereb.appendChild(oerebElement);
         
+        Tab tabHelp = Tab.create(Icons.ALL.help_circle_outline_mdi());
+        tabHelp.setId("help-tab");
+        HelpElement helpElement = new HelpElement();
+        tabHelp.appendChild(helpElement);
+                
         tabsPanel.appendChild(tabAv);
         tabsPanel.appendChild(tabGrundbuch);
         tabsPanel.appendChild(tabOereb);
+        tabsPanel.appendChild(tabHelp);
+        tabsPanel.activateTab(tabHelp, false);
+                
         textContentCol.appendChild(tabsPanel.element());
              
         String href = DomGlobal.window.location.href;
@@ -400,6 +414,11 @@ public class App implements EntryPoint {
                             grundbuchElement.update(egrid, AV_SERVICE_BASE_URL);
                             oerebElement.update(egrid, OEREB_SERVICE_BASE_URL);
                             updateUrlLocation(egrid);
+                            
+                            if (tabsPanel.getActiveTab().getId().equalsIgnoreCase("help-tab")) {
+                                tabsPanel.activateTab(0);
+                            }
+
                             return null;
                         }).catch_(error -> {
                             console.log(error);
@@ -579,6 +598,10 @@ public class App implements EntryPoint {
                             grundbuchElement.update(egridMap.get(row.getAttribute("id")), AV_SERVICE_BASE_URL);
                             oerebElement.update(egridMap.get(row.getAttribute("id")), OEREB_SERVICE_BASE_URL);
                             updateUrlLocation(egrid);
+                            
+                            if (tabsPanel.getActiveTab().getId().equalsIgnoreCase("help-tab")) {
+                                tabsPanel.activateTab(0);
+                            }
                         });                        
                         popupBuilder.add(row);
                     }
@@ -611,6 +634,10 @@ public class App implements EntryPoint {
                     grundbuchElement.update(egrid, AV_SERVICE_BASE_URL);
                     oerebElement.update(egrid, OEREB_SERVICE_BASE_URL);
                     updateUrlLocation(egrid);
+                    
+                    if (tabsPanel.getActiveTab().getId().equalsIgnoreCase("help-tab")) {
+                        tabsPanel.activateTab(0);
+                    }
                 }
                 return null;
             }).catch_(error -> {
@@ -667,7 +694,11 @@ public class App implements EntryPoint {
                     grundbuchElement.update(egrid, AV_SERVICE_BASE_URL);
                     oerebElement.update(egrid, OEREB_SERVICE_BASE_URL);
                     updateUrlLocation(egrid);
-
+                    
+                    if (tabsPanel.getActiveTab().getId().equalsIgnoreCase("help-tab")) {
+                        tabsPanel.activateTab(0);
+                    }
+                    
                     return null;
                 }).catch_(error -> {
                     console.log(error);
