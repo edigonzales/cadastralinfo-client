@@ -53,6 +53,8 @@ import ch.so.agi.cadastralinfo.models.oereb.ReferenceWMS;
 import ch.so.agi.cadastralinfo.models.oereb.Restriction;
 import ch.so.agi.cadastralinfo.xml.XMLUtils;
 import elemental2.dom.CSSProperties;
+import elemental2.dom.CustomEvent;
+import elemental2.dom.CustomEventInit;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.Event;
 import elemental2.dom.EventListener;
@@ -172,9 +174,13 @@ public class OerebElement implements IsElement<HTMLElement> {
         .then(xml -> {
             parseResponse(xml);
             renderResponse();
-            
-            
-            //console.log(xml);
+
+            // TODO: abstrakte klasse
+            CustomEventInit eventInit = CustomEventInit.create();
+            eventInit.setBubbles(true);
+            CustomEvent event = new CustomEvent("processed", eventInit);
+            root.dispatchEvent(event);
+
             return null;
         }).catch_(error -> {
             loader.stop();

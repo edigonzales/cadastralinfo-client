@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.dominokit.domino.ui.button.Button;
 import org.dominokit.domino.ui.button.ButtonSize;
@@ -34,16 +35,21 @@ import com.google.gwt.user.client.Window;
 
 import elemental2.core.Global;
 import elemental2.core.JsArray;
+import elemental2.dom.AbortController;
 import elemental2.dom.CSSProperties;
+import elemental2.dom.CustomEvent;
+import elemental2.dom.CustomEventInit;
 import elemental2.dom.DomGlobal;
+import elemental2.dom.Event;
 import elemental2.dom.HTMLElement;
+import elemental2.dom.RequestInit;
 import elemental2.dom.HTMLDivElement;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 
 import ol.Feature;
 import ol.FeatureOptions;
-import ol.Map;
+//import ol.Map;
 import ol.MapBrowserEvent;
 import ol.OLFactory;
 import ol.format.Wkt;
@@ -69,7 +75,8 @@ public class AvElement implements IsElement<HTMLElement> {
     private String avServiceBaseUrl;
     private ol.Map map;
     
-    private Loader loader;
+    private Map<Integer, Loader> loaders = new HashMap<>();
+    //private Loader loader;
     private final HTMLElement root;
     private HTMLDivElement container;
     private Card generalCard;
@@ -78,6 +85,8 @@ public class AvElement implements IsElement<HTMLElement> {
     private Card landCoverLocalNameCard;
     private Card controlPointCard;
     private Card contactCard;
+    
+    private AbortController abortController = null;
     
     public AvElement(ol.Map map, String avServiceBaseUrl, String gwrServiceBaseUrl) {
         this.map = map;
@@ -102,8 +111,9 @@ public class AvElement implements IsElement<HTMLElement> {
         container = div().element();
         container.style.padding = CSSProperties.PaddingUnionType.of("10px"); 
         root.appendChild(container);
-        
-        loader = Loader.create(root, LoaderEffect.ROTATION).setLoadingText("");
+                
+        Loader loader = Loader.create(root, LoaderEffect.ROTATION).setLoadingText("");
+        //loaders.put(loader.hashCode(), loader);
         loader.start();
        
         Button descBtn = Button.create(Icons.ALL.file_pdf_box_outline_mdi())
@@ -160,48 +170,61 @@ public class AvElement implements IsElement<HTMLElement> {
                 .appendChild(Column.span9())
                 .appendChild(span().add(resetBtn)).element());
         */
+        
+        HTMLDivElement content = div().element();
+        
         container.appendChild(Row.create().css("content-row")
                 .appendChild(span().add(descBtn))
                 .appendChild(span().add(mapBtn)).element());
         
-        container.appendChild(Row.create().css("empty-row-20").element());
+        content.appendChild(Row.create().css("empty-row-20").element());
         
         generalCard = Card.create("Allgemeine Informationen")
                 .setCollapsible()
                 .elevate(Elevation.LEVEL_0);
-        container.appendChild(generalCard.element());
+        content.appendChild(generalCard.element());
         
         buildingCard = Card.create("Gebäude")
                 .setCollapsible()
                 .collapse()
                 .elevate(Elevation.LEVEL_0);
-        container.appendChild(buildingCard.element());
+        content.appendChild(buildingCard.element());
         
         buildingAddressCard = Card.create("Gebäudeadressen")
                 .setCollapsible()
                 .collapse()
                 .elevate(Elevation.LEVEL_0);
-        container.appendChild(buildingAddressCard.element());
+        content.appendChild(buildingAddressCard.element());
 
         landCoverLocalNameCard = Card.create("Bodenbedeckung und Flurnamen")
                 .setCollapsible()
                 .collapse()
                 .elevate(Elevation.LEVEL_0);
-        container.appendChild(landCoverLocalNameCard.element());
+        content.appendChild(landCoverLocalNameCard.element());
 
         controlPointCard = Card.create("Fixpunkte")
                 .setCollapsible()
                 .collapse()
                 .elevate(Elevation.LEVEL_0);
-        container.appendChild(controlPointCard.element());
+        content.appendChild(controlPointCard.element());
         
         contactCard = Card.create("Kontakt")
                 .setCollapsible()
                 .collapse()
                 .elevate(Elevation.LEVEL_0);
-        container.appendChild(contactCard.element());
-                
-        DomGlobal.fetch("/av?egrid="+egrid)
+        content.appendChild(contactCard.element());
+        container.appendChild(content);        
+        
+       
+        // TODO: nicht mehr notwendig, da man erst wieder in die Karte klicken kann, wenn request fertig.
+        if (abortController != null) {
+            abortController.abort();
+        }
+        
+        abortController = new AbortController();
+        final RequestInit init = RequestInit.create();
+        init.setSignal(abortController.signal);
+        DomGlobal.fetch("/av?egrid="+egrid, init)
         .then(response -> {
             if (!response.ok) {
                 return null;
@@ -211,10 +234,23 @@ public class AvElement implements IsElement<HTMLElement> {
         .then(json -> {
             JsPropertyMap<?> parsed = Js.cast(Global.JSON.parse(json));
             processResponse(parsed);
+            
+//            Event event = new Event("processed");
+//            root.dispatchEvent(event);
+            
+            CustomEventInit eventInit = CustomEventInit.create();
+            eventInit.setBubbles(true);
+            CustomEvent event = new CustomEvent("processed", eventInit);
+            root.dispatchEvent(event);
+
+            loader.stop();
+            abortController = null;
             return null;
         }).catch_(error -> {
-            loader.stop();
-            console.log(error);
+            abortController = null;
+            if (!error.toString().contains("The user aborted a request")) {
+                loader.stop();
+            }
             return null;
         });
         
@@ -279,6 +315,7 @@ public class AvElement implements IsElement<HTMLElement> {
             landRegistryArea = fmtDefault.format(Double.valueOf(rawString));
         }  
 
+        generalCard.clearBody();
         generalCard
         .appendChild(Row.create().css("content-row")
                 .appendChild(Column.span3()
@@ -320,6 +357,7 @@ public class AvElement implements IsElement<HTMLElement> {
         /*
          * Gebäude (+ Adressen)
          */        
+        buildingCard.clearBody();
         buildingCard
         .appendChild(Row.create().css("content-row-slim")
                 .appendChild(Column.span2()
@@ -461,11 +499,13 @@ public class AvElement implements IsElement<HTMLElement> {
             }
         }
         
+        removeHighlightVectorLayer();
         createHighlightVectorLayer(buildingFeatureList);
         
         /*
          * Gebäudeadressen
          */
+        buildingAddressCard.clearBody();
         buildingAddressCard
         .appendChild(Row.create().css("content-row-slim")
                 .appendChild(Column.span5()
@@ -525,6 +565,7 @@ public class AvElement implements IsElement<HTMLElement> {
          * Bodenbedeckung und Flurnamen
          */
         Row landCoverShareLocalNameRow = Row.create();
+        landCoverLocalNameCard.clearBody();
         landCoverLocalNameCard
         .appendChild(Row.create().css("empty-row"))
         .appendChild(landCoverShareLocalNameRow);
@@ -618,6 +659,7 @@ public class AvElement implements IsElement<HTMLElement> {
          * Adressen: Geometer und Aufsicht
          */
         Row addressesRow = Row.create();
+        contactCard.clearBody();
         contactCard
         .appendChild(Row.create().css("empty-row"))
         .appendChild(addressesRow);
@@ -699,7 +741,7 @@ public class AvElement implements IsElement<HTMLElement> {
         
         addressesRow.appendChild(supervisionAddressColumn);
         
-        loader.stop();
+        //loader.stop();
     }
     
     // TODO utils (oder base class)
@@ -709,6 +751,11 @@ public class AvElement implements IsElement<HTMLElement> {
         ol.layer.Vector vectorLayer = (ol.layer.Vector) getMapLayerById(BUILDING_VECTOR_LAYER_ID);
         Vector vectorSource = vectorLayer.getSource();
         Feature feature = vectorSource.getFeatureById(id);
+        
+        // TODO: wegen update / reset element chaos
+        if (feature == null) {
+            return;
+        }
         
         Style style = new Style();
         Fill fill = new Fill();

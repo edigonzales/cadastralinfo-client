@@ -42,6 +42,8 @@ import org.jboss.elemento.HtmlContentBuilder;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
+import com.google.gwt.dom.client.MapElement;
+
 //import com.google.gwt.xml.client.Document;
 //import com.google.gwt.xml.client.Element;
 //import com.google.gwt.xml.client.XMLParser;
@@ -57,6 +59,7 @@ import elemental2.dom.CSSProperties;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.Event;
 import elemental2.dom.EventListener;
+import elemental2.dom.EventTarget;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLInputElement;
@@ -121,6 +124,7 @@ public class App implements EntryPoint {
     private String MAP_DIV_ID = "map";
 
     private Map map;
+    private HTMLElement mapElement;
     private Overlay realEstatePopup;
 
     private SuggestBox suggestBox;
@@ -133,6 +137,7 @@ public class App implements EntryPoint {
     private GrundbuchElement grundbuchElement;
     private OerebElement oerebElement;
     private Loader loader;
+    private int processed = 0;
     
 	public void onModuleLoad() {
         DomGlobal.fetch("/settings")
@@ -178,6 +183,17 @@ public class App implements EntryPoint {
                
         container = div().id("container").element();
         body().add(container);
+        
+        container.addEventListener("processed", new EventListener() {
+            @Override
+            public void handleEvent(Event evt) {                
+                processed += 1;
+                if (processed == 3) {
+                    processed = 0;
+                    mapElement.style.pointerEvents = "auto";
+                }
+            }
+        });
 
         Location location = DomGlobal.window.location;
         if (location.pathname.length() > 1) {
@@ -325,7 +341,7 @@ public class App implements EntryPoint {
         rootContentRow.appendChild(textContentCol);
         
         // Add the Openlayers map (element) to the body.
-        HTMLElement mapElement = div().id(MAP_DIV_ID).element();
+        mapElement = div().id(MAP_DIV_ID).element();
         mapContentCol.appendChild(mapElement);
         map = MapPresets.getColorMap(MAP_DIV_ID);
         map.addSingleClickListener(new MapSingleClickListener());
@@ -410,6 +426,10 @@ public class App implements EntryPoint {
                             Feature[] features = (new GeoJson()).readFeatures(result); 
                             Feature[] fs = new Feature[] {features[0]};
                             addFeaturesToHighlightingVectorLayer(fs);
+                            
+                            avElement.reset();
+                            grundbuchElement.reset();
+                            oerebElement.reset();
                             avElement.update(egrid);
                             grundbuchElement.update(egrid, AV_SERVICE_BASE_URL);
                             oerebElement.update(egrid, OEREB_SERVICE_BASE_URL);
@@ -524,6 +544,7 @@ public class App implements EntryPoint {
     public final class MapSingleClickListener implements ol.event.EventListener<MapBrowserEvent> {
         @Override
         public void onEvent(MapBrowserEvent event) {
+            mapElement.style.pointerEvents = "none";
             Coordinate coordinate = event.getCoordinate();
             
             RequestInit requestInit = RequestInit.create();
@@ -594,6 +615,9 @@ public class App implements EntryPoint {
                             double y = extent.getLowerLeftY() + extent.getHeight() / 2;
                             view.setCenter(new Coordinate(x,y));
 
+                            avElement.reset();
+                            grundbuchElement.reset();
+                            oerebElement.reset();
                             avElement.update(egridMap.get(row.getAttribute("id")));
                             grundbuchElement.update(egridMap.get(row.getAttribute("id")), AV_SERVICE_BASE_URL);
                             oerebElement.update(egridMap.get(row.getAttribute("id")), OEREB_SERVICE_BASE_URL);
@@ -630,6 +654,10 @@ public class App implements EntryPoint {
                     view.setCenter(new Coordinate(x,y));
 
                     addFeaturesToHighlightingVectorLayer(features);
+                    
+                    avElement.reset();
+                    grundbuchElement.reset();
+                    oerebElement.reset();
                     avElement.update(egrid);
                     grundbuchElement.update(egrid, AV_SERVICE_BASE_URL);
                     oerebElement.update(egrid, OEREB_SERVICE_BASE_URL);
@@ -639,8 +667,10 @@ public class App implements EntryPoint {
                         tabsPanel.activateTab(0);
                     }
                 }
+                //mapElement.style.pointerEvents = "auto";
                 return null;
             }).catch_(error -> {
+                mapElement.style.pointerEvents = "auto";
                 console.log(error);
                 return null;
             });            
@@ -690,6 +720,10 @@ public class App implements EntryPoint {
                     
                     Feature[] fs = new Feature[] {features[0]};
                     addFeaturesToHighlightingVectorLayer(fs);
+                    
+                    avElement.reset();
+                    grundbuchElement.reset();
+                    oerebElement.reset();
                     avElement.update(egrid);
                     grundbuchElement.update(egrid, AV_SERVICE_BASE_URL);
                     oerebElement.update(egrid, OEREB_SERVICE_BASE_URL);

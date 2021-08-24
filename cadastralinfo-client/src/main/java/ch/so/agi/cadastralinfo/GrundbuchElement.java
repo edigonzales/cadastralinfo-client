@@ -37,6 +37,8 @@ import com.google.gwt.user.client.Window;
 
 import elemental2.core.Global;
 import elemental2.dom.CSSProperties;
+import elemental2.dom.CustomEvent;
+import elemental2.dom.CustomEventInit;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
@@ -175,23 +177,25 @@ public class GrundbuchElement implements IsElement<HTMLElement> {
         })
         .then(xml -> {
             processResponse(xml);
+            
+            CustomEventInit eventInit = CustomEventInit.create();
+            eventInit.setBubbles(true);
+            CustomEvent event = new CustomEvent("processed", eventInit);
+            root.dispatchEvent(event);
+
             return null;
         }).catch_(error -> {
             loader.stop();
             console.log(error);
             return null;
-        });
-        
-        
+        });   
     }
     
     private String formatGrundstueckNummer(String nummer) {
-        
         String formattedNummer = nummer.replace(":", " / ").replace("  ", " - ");
         if (nummer.endsWith(":")) {
             formattedNummer += "-";
         }
-        
         return formattedNummer;
     }
     

@@ -97,9 +97,6 @@ public class HelpElement implements IsElement<HTMLElement> {
 
         String helpText = "Um Informationen über ein Grundstück zu erlangen, klicken sie in der Karte auf das gewünschte Grundstück oder suchen sie das Grundstück oder eine Adresse im Suchfeld.";
         helpCard.appendChild(span().textContent(helpText));
-        
-        
-        
     }
 
     @Override

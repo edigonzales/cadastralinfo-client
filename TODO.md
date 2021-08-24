@@ -9,6 +9,8 @@
   * resetIcon nicht sauber zentriert
 - nested fetch -> then()
 
+- Das Ganze braucht jetzt wirklich ein Refactoring. Vor allem bezüglich der fetch()/Ajax-Logik. Wie robust ist es? Suchform müsste auch noch disabled werden. Ebenso müssen alle fetch() behandelt werden. 
+
 
 
 - GBDBS
@@ -16,6 +18,7 @@
   * ...
 - AV
   * JSON über Bord werfen und XML verwenden
+  * Clear/reset elements. Funktioniert chaotisch. Alles gleich machen beim Refactoring.
 
 - ÖREB:
   * XMLUtils: Auslesen einer bestimmten Sprache
