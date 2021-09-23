@@ -3,12 +3,12 @@ package ch.so.agi.cadastralinfo.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.oxm.jaxb.Jaxb2Marshaller;
+//import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.stereotype.Service;
 
 import ch.so.agi.cadastralinfo.models.av.RealEstateDPR;
-import ch.so.geo.schema.agi.cadastre._0_9.extract.Extract;
-import ch.so.geo.schema.agi.cadastre._0_9.extract.GetExtractByIdResponse;
+//import ch.so.geo.schema.agi.cadastre._0_9.extract.Extract;
+//import ch.so.geo.schema.agi.cadastre._0_9.extract.GetExtractByIdResponse;
 
 import java.io.File;
 import java.io.IOException;

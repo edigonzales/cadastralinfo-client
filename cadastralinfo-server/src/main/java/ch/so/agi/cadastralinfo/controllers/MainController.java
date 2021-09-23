@@ -18,7 +18,7 @@ import ch.so.agi.cadastralinfo.Settings;
 import ch.so.agi.cadastralinfo.services.AvService;
 import ch.so.agi.cadastralinfo.services.GrundbuchService;
 import ch.so.agi.cadastralinfo.services.OerebService;
-import ch.so.geo.schema.agi.cadastre._0_9.extract.GetExtractByIdResponse;
+//import ch.so.geo.schema.agi.cadastre._0_9.extract.GetExtractByIdResponse;
 
 @RestController
 public class MainController {

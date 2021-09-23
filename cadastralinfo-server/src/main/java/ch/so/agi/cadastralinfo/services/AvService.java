@@ -3,12 +3,12 @@ package ch.so.agi.cadastralinfo.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.oxm.jaxb.Jaxb2Marshaller;
+//import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.stereotype.Service;
 
-import ch.so.agi.cadastralinfo.models.av.RealEstateDPR;
-import ch.so.geo.schema.agi.cadastre._0_9.extract.Extract;
-import ch.so.geo.schema.agi.cadastre._0_9.extract.GetExtractByIdResponse;
+//import ch.so.agi.cadastralinfo.models.av.RealEstateDPR;
+//import ch.so.geo.schema.agi.cadastre._0_9.extract.Extract;
+//import ch.so.geo.schema.agi.cadastre._0_9.extract.GetExtractByIdResponse;
 
 import java.io.File;
 import java.io.IOException;
@@ -41,8 +41,8 @@ public class AvService {
     @Value("${app.avServiceBaseUrl}")
     private String serviceBaseUrl;
 
-    @Autowired
-    Jaxb2Marshaller marshaller;
+//    @Autowired
+//    Jaxb2Marshaller marshaller;
 
     public String getParcel(String egrid) throws IOException, InterruptedException {
         String tmpdir = Files.createTempDirectory("cadastralinfo").toFile().getAbsolutePath();
@@ -73,14 +73,14 @@ public class AvService {
         
         log.info(xmlFile.toFile().getAbsolutePath());
 
-        StreamSource xmlSource = new StreamSource(xmlFile.toFile());
-        GetExtractByIdResponse obj = (GetExtractByIdResponse) marshaller.unmarshal(xmlSource);
-        Extract xmlExtract = obj.getExtract();
-        ch.so.geo.schema.agi.cadastre._0_9.extract.RealEstateDPR xmlRealEstate = xmlExtract.getRealEstate();
-        
-        RealEstateDPR realEstateDPR = new RealEstateDPR();
-        realEstateDPR.setEgrid(egrid);
-        realEstateDPR.setLandRegistryArea(xmlRealEstate.getLandRegistryArea());
+//        StreamSource xmlSource = new StreamSource(xmlFile.toFile());
+//        GetExtractByIdResponse obj = (GetExtractByIdResponse) marshaller.unmarshal(xmlSource);
+//        Extract xmlExtract = obj.getExtract();
+//        ch.so.geo.schema.agi.cadastre._0_9.extract.RealEstateDPR xmlRealEstate = xmlExtract.getRealEstate();
+//        
+//        RealEstateDPR realEstateDPR = new RealEstateDPR();
+//        realEstateDPR.setEgrid(egrid);
+//        realEstateDPR.setLandRegistryArea(xmlRealEstate.getLandRegistryArea());
         
         String content = Files.readString(xmlFile);
         String contentJson = U.xmlToJson((String) content);
