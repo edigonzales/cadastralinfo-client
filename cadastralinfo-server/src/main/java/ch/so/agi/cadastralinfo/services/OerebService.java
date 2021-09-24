@@ -21,9 +21,6 @@ import org.slf4j.LoggerFactory;
 @Service
 public class OerebService {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
-
-    //@Value("${myService}")
-    //private String myVar; 
     
     @Value("${app.oerebServiceBaseUrl}")
     private String serviceBaseUrl;

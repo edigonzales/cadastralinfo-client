@@ -18,7 +18,6 @@ import ch.so.agi.cadastralinfo.Settings;
 import ch.so.agi.cadastralinfo.services.AvService;
 import ch.so.agi.cadastralinfo.services.GrundbuchService;
 import ch.so.agi.cadastralinfo.services.OerebService;
-//import ch.so.geo.schema.agi.cadastre._0_9.extract.GetExtractByIdResponse;
 
 @RestController
 public class MainController {
@@ -41,7 +40,6 @@ public class MainController {
         return ResponseEntity.ok().body(settings);
     }
     
-    //@GetMapping("/av")
     @RequestMapping(value = "/av", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public String getAv(@RequestParam(value = "egrid", required = true) String egrid) {
         try {
@@ -51,7 +49,6 @@ public class MainController {
             throw new IllegalArgumentException("could not process: CH...");
             // TODO: return json
         }
-        //return ResponseEntity.ok().body("av");
     }
     
     @RequestMapping(value = "/grundbuch", method = RequestMethod.GET, produces = MediaType.APPLICATION_XML_VALUE)
@@ -62,7 +59,6 @@ public class MainController {
             e.printStackTrace();
             throw new IllegalArgumentException("could not process: CH...");
         }
-        //return ResponseEntity.ok().body("av");
     }
     
     @RequestMapping(value = "/oereb", method = RequestMethod.GET, produces = MediaType.APPLICATION_XML_VALUE)
@@ -73,6 +69,5 @@ public class MainController {
             e.printStackTrace();
             throw new IllegalArgumentException("could not process: CH...");
         }
-        //return ResponseEntity.ok().body("av");
     }
 }
