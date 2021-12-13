@@ -9,5 +9,6 @@ COPY --chown=1001:root cadastralinfo-server/target/cadastralinfo-server /work/ap
 
 EXPOSE 8080
 USER 1001
-
+#Log4j 2 CVE-2021-44228
+ENV LOG4J_FORMAT_MSG_NO_LOOKUPS=true
 CMD ["./application"]
